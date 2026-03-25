@@ -1,0 +1,184 @@
+(function(){
+  var canvas = document.getElementById("gym-canvas");
+  if (!canvas) return;
+
+  var rect = canvas.parentElement.getBoundingClientRect();
+  var w = rect.width;
+  var h = Math.min(w * 0.55, 320);
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.height = h + "px";
+  canvas.style.width = "100%";
+  canvas.style.maxWidth = "100%";
+  canvas.style.display = "block";
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x1a1a1a);
+  scene.fog = new THREE.FogExp2(0x1a1a1a, 0.008);
+
+  var aspect = canvas.width / canvas.height;
+  var camera = new THREE.PerspectiveCamera(35, aspect, 0.1, 500);
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setSize(canvas.width, canvas.height);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.4;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+
+  /* ---- orbit state ---- */
+  var isDrag = false, pX = 0, pY = 0;
+  var theta = Math.PI * 0.75, phi = 0.75, radius = 50;
+  var tgt = new THREE.Vector3(0, 0, 0);
+  var minRadius = 10, maxRadius = 120;
+  var tDist = 0;
+  var dragAxis = null;
+
+  function upCam() {
+    camera.position.set(
+      tgt.x + radius * Math.sin(phi) * Math.sin(theta),
+      tgt.y + radius * Math.cos(phi),
+      tgt.z + radius * Math.sin(phi) * Math.cos(theta)
+    );
+    camera.lookAt(tgt);
+  }
+
+  /* ---- Load GLB Model ---- */
+  var loader = new THREE.GLTFLoader();
+  loader.load("../static/models/gym-preview.glb", function(gltf) {
+    var model = gltf.scene;
+
+    var box = new THREE.Box3().setFromObject(model);
+    var center = new THREE.Vector3();
+    var size = new THREE.Vector3();
+    box.getCenter(center);
+    box.getSize(size);
+
+    model.position.x = -center.x;
+    model.position.y = -center.y;
+    model.position.z = -center.z;
+
+    var maxDim = Math.max(size.x, size.y, size.z);
+
+    radius = maxDim * 0.9;
+    minRadius = maxDim * 0.3;
+    maxRadius = maxDim * 2.5;
+    tgt.set(0, size.y * 0.1, 0);
+
+    // 斜上方 45 度俯瞰，接近人站在房间角落往里看的视角
+    phi = 0.65;
+    theta = Math.PI * 0.8;
+
+    // 灯光系统 — 模拟室内顶灯 + 环境光
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+
+    var top1 = new THREE.PointLight(0xfff5ee, 0.8, maxDim * 3);
+    top1.position.set(0, size.y * 1.5, 0);
+    scene.add(top1);
+
+    var top2 = new THREE.PointLight(0xfff5ee, 0.5, maxDim * 3);
+    top2.position.set(maxDim * 0.3, size.y * 1.5, maxDim * 0.3);
+    scene.add(top2);
+
+    var top3 = new THREE.PointLight(0xfff5ee, 0.5, maxDim * 3);
+    top3.position.set(-maxDim * 0.3, size.y * 1.5, -maxDim * 0.3);
+    scene.add(top3);
+
+    // 金色点缀光
+    var accent = new THREE.PointLight(0xc8a44e, 0.3, maxDim * 2);
+    accent.position.set(maxDim * 0.4, size.y * 0.5, maxDim * 0.4);
+    scene.add(accent);
+
+    // 半球光模拟天地色
+    var hemi = new THREE.HemisphereLight(0xffeedd, 0x222222, 0.4);
+    scene.add(hemi);
+
+    model.traverse(function(child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    scene.add(model);
+    upCam();
+  }, undefined, function(err) {
+    console.error("GLB load error:", err);
+  });
+
+  upCam();
+
+  /* Mouse controls */
+  canvas.addEventListener("mousedown", function(e) { isDrag = true; pX = e.clientX; pY = e.clientY; });
+  window.addEventListener("mouseup", function() { isDrag = false; });
+  window.addEventListener("mousemove", function(e) {
+    if (!isDrag) return;
+    theta -= (e.clientX - pX) * 0.005;
+    phi = Math.max(0.15, Math.min(Math.PI / 2.1, phi + (e.clientY - pY) * 0.005));
+    pX = e.clientX; pY = e.clientY;
+    upCam();
+  });
+  canvas.addEventListener("wheel", function(e) {
+    e.preventDefault();
+    radius = Math.max(minRadius, Math.min(maxRadius, radius * (1 + e.deltaY * 0.001)));
+    upCam();
+  }, {passive: false});
+
+  /* Touch controls */
+  canvas.addEventListener("touchstart", function(e) {
+    if (e.touches.length === 1) {
+      pX = e.touches[0].clientX;
+      pY = e.touches[0].clientY;
+      dragAxis = null;
+    }
+    if (e.touches.length === 2) {
+      var dx = e.touches[0].clientX - e.touches[1].clientX;
+      var dy = e.touches[0].clientY - e.touches[1].clientY;
+      tDist = Math.sqrt(dx * dx + dy * dy);
+    }
+  }, {passive: true});
+
+  canvas.addEventListener("touchmove", function(e) {
+    if (e.touches.length === 1) {
+      var dx = e.touches[0].clientX - pX;
+      var dy = e.touches[0].clientY - pY;
+      if (!dragAxis && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+        dragAxis = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+      }
+      if (dragAxis === 'h') {
+        e.preventDefault();
+        theta -= dx * 0.005;
+        pX = e.touches[0].clientX;
+        pY = e.touches[0].clientY;
+        upCam();
+      }
+    }
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      var dx2 = e.touches[0].clientX - e.touches[1].clientX;
+      var dy2 = e.touches[0].clientY - e.touches[1].clientY;
+      var d = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+      var pinchScale = d / tDist;
+      radius = Math.max(minRadius, Math.min(maxRadius, radius / pinchScale));
+      tDist = d;
+      upCam();
+    }
+  }, {passive: false});
+
+  canvas.addEventListener("touchend", function() { isDrag = false; dragAxis = null; }, {passive: true});
+
+  /* ---- Render loop ---- */
+  (function anim() { requestAnimationFrame(anim); renderer.render(scene, camera); })();
+
+  /* ---- Resize ---- */
+  window.addEventListener("resize", function() {
+    var r = canvas.parentElement.getBoundingClientRect();
+    var nw = r.width;
+    var nh = Math.min(nw * 0.55, 320);
+    canvas.width = nw * dpr;
+    canvas.height = nh * dpr;
+    canvas.style.height = nh + "px";
+    camera.aspect = canvas.width / canvas.height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(canvas.width, canvas.height);
+  });
+})();
