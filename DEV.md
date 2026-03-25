@@ -267,3 +267,12 @@ category-nav.js
 gym-3d-scene.js
 内部 IIFE，自动初始化 #gym-canvas
 支持 mouse drag / wheel / touch drag / pinch-zoom
+## 3D 场景集成（2026-03-25）
+- gym-3d-scene.js：GLTFLoader 加载 gym-preview.glb + 自定义环境
+- gym-preview.glb：3.7MB（原28.9MB减面压缩），46K面，CC-BY
+- 器械包围盒：Min(-12,-12,0) Max(28.1,12,8) Size(40.2×24×8) Center(8.1,0,4)
+- 房间46×30高10，无天花板，深色分区地面+镜面+LED灯带
+- 隐藏原模型环境前缀：FloorTile/Walls/Windows/door/Outlet/Lightswitch/Mat
+- BlenderMCP：addon端口9876运行中，Claude Code MCP配置已写入待验证
+- 性能预算：手机10-15万面/30fps，GLB 5-10MB，材质10-20个，贴图1K
+- 下一步：验证BlenderMCP连接→AI建模环境→混元3D器械→bpy自动组装→客户专属页面
