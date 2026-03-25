@@ -1,11 +1,11 @@
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
-    <h1 class="hero-title">{{ package.name }}</h1>
+    <h1 class="hero-title" data-en="{{ package.name }}" data-zh="{{ package.name_zh }}" data-ms="{{ package.name_ms }}">{{ package.name }}</h1>
     <div class="hero-stats">
       <div>
         <div class="hero-stat-number">{{ package.total_machines }}</div>
-        <div class="hero-stat-label">Machines</div>
+        <div class="hero-stat-label" data-en="Machines" data-zh="台器械" data-ms="Mesin">Machines</div>
       </div>
       <div>
         <div class="hero-stat-number">${{ '{:,.0f}'.format(package.fob_total_usd) }}</div>
@@ -14,7 +14,7 @@
     </div>
     <div class="hero-badge">
       <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-      <span>Every machine tested before shipping</span>
+      <span data-en="Every machine tested before shipping" data-zh="每台器械发货前均经过真人试机" data-ms="Setiap mesin diuji sebelum penghantaran">Every machine tested before shipping</span>
     </div>
   </div>
   <div class="scroll-hint">

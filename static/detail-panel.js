@@ -1,150 +1,218 @@
 (function() {
-  var currentDetail = null;
+  var overlay = null;
+  var currentSku = null;
   var currentSelectedItem = null;
+  var touchStartY = 0;
+
+  /* ---- 多语言文案字典 ---- */
+  var TEXTS = {
+    en: {
+      watchVideo: 'Watch 60s Test Video',
+      videoSoon:  'Video coming soon',
+      close:      'Close ✕',
+      askWA:      'Ask about this machine on WhatsApp',
+      fob:        'FOB'
+    },
+    zh: {
+      watchVideo: '观看60秒试机视频',
+      videoSoon:  '视频即将上线',
+      close:      '关闭 ✕',
+      askWA:      '通过 WhatsApp 咨询此器械',
+      fob:        'FOB'
+    },
+    ms: {
+      watchVideo: 'Tonton Video Ujian 60s',
+      videoSoon:  'Video akan datang',
+      close:      'Tutup ✕',
+      askWA:      'Tanya tentang mesin ini di WhatsApp',
+      fob:        'FOB'
+    }
+  };
+
+  var SPEC_KEYS = {
+    en: {},
+    zh: {
+      'Weight Stack':'配重片','Dimensions':'尺寸','Net Weight':'净重',
+      'Target':'目标肌群','Feature':'特点','Type':'类型',
+      'Accessories':'配件','Bar Weight':'杠铃重量','Capacity':'容量',
+      'Angles':'角度调节','Motor':'电机','Speed':'速度',
+      'Belt':'跑带尺寸','Display':'显示屏','Resistance':'阻力',
+      'Stride':'步幅','Flywheel':'飞轮','Rail Length':'滑轨长度'
+    },
+    ms: {
+      'Weight Stack':'Tumpukan Berat','Dimensions':'Dimensi','Net Weight':'Berat Bersih',
+      'Target':'Sasaran','Feature':'Ciri','Type':'Jenis',
+      'Accessories':'Aksesori','Bar Weight':'Berat Bar','Capacity':'Kapasiti',
+      'Angles':'Sudut','Motor':'Motor','Speed':'Kelajuan',
+      'Belt':'Tali Pinggang','Display':'Paparan','Resistance':'Rintangan',
+      'Stride':'Langkah','Flywheel':'Roda Tenaga','Rail Length':'Panjang Rel'
+    }
+  };
+
+  function getLang() {
+    return (window.__QL_LANG && window.__QL_LANG.current()) || 'en';
+  }
+  function t(key) {
+    var lang = getLang();
+    return (TEXTS[lang] && TEXTS[lang][key]) || TEXTS.en[key] || key;
+  }
+  function translateSpecKey(key) {
+    var lang = getLang();
+    return (SPEC_KEYS[lang] && SPEC_KEYS[lang][key]) || key;
+  }
+  function getProductName(gridItem) {
+    var lang = getLang();
+    if (lang === 'zh' && gridItem.dataset.nameZh) return gridItem.dataset.nameZh;
+    if (lang === 'ms' && gridItem.dataset.nameMs) return gridItem.dataset.nameMs;
+    return gridItem.dataset.name;
+  }
 
   document.querySelectorAll(".grid-item").forEach(function(item) {
     item.addEventListener("click", function() { openDetail(item); });
   });
 
-  function getColCount() {
-    return window.innerWidth >= 768 ? 3 : 2;
-  }
-
   function openDetail(gridItem) {
     var sku = gridItem.dataset.sku;
-    if (currentDetail && currentDetail.dataset.forSku === sku) {
-      closeDetail();
-      return;
-    }
-    closeDetailImmediate();
+    if (currentSku === sku && overlay) { closeDetail(); return; }
+    if (overlay) removeOverlayImmediate();
+    if (currentSelectedItem) currentSelectedItem.classList.remove("selected");
 
     var specs = JSON.parse(gridItem.dataset.specs);
     var specsHTML = "";
     for (var k in specs) {
       if (specs.hasOwnProperty(k)) {
-        specsHTML += '<div class="detail-spec-row"><span class="detail-spec-label">' + k + '</span><span class="detail-spec-value">' + specs[k] + '</span></div>';
+        specsHTML += '<div class="detail-spec-row"><span class="detail-spec-label">' + translateSpecKey(k) + '</span><span class="detail-spec-value">' + specs[k] + '</span></div>';
       }
     }
 
+    var productName = getProductName(gridItem);
     var videoUrl = gridItem.dataset.video || "";
     var videoHTML;
     if (videoUrl) {
-      videoHTML = '<div class="detail-video-btn" data-action="toggle-video"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Watch 60s Test Video</div><div class="detail-video-wrap"><video controls preload="none" playsinline><source src="' + videoUrl + '" type="video/mp4"></video></div>';
+      videoHTML = '<div class="detail-video-btn" data-action="toggle-video"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span data-en="' + TEXTS.en.watchVideo + '" data-zh="' + TEXTS.zh.watchVideo + '" data-ms="' + TEXTS.ms.watchVideo + '">' + t('watchVideo') + '</span></div><div class="detail-video-wrap"><video controls preload="none" playsinline><source src="' + videoUrl + '" type="video/mp4"></video></div>';
     } else {
-      videoHTML = '<div class="detail-video-btn" style="opacity:.3;pointer-events:none"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Video coming soon</div>';
+      videoHTML = '<div class="detail-video-btn" style="opacity:.3;pointer-events:none"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span data-en="' + TEXTS.en.videoSoon + '" data-zh="' + TEXTS.zh.videoSoon + '" data-ms="' + TEXTS.ms.videoSoon + '">' + t('videoSoon') + '</span></div>';
     }
 
     var waNum = document.body.dataset.whatsapp || "8613800000000";
-    var panel = document.createElement("div");
-    panel.className = "detail-panel";
-    panel.dataset.forSku = sku;
-    panel.innerHTML = '<div class="detail-close"><span class="detail-close-sku">' + sku + '</span><button class="detail-close-btn">Close ✕</button></div>' +
-      '<div class="detail-image"><img src="' + gridItem.dataset.img + '" alt="' + gridItem.dataset.name + '"></div>' +
-      '<div class="detail-body">' +
-      '<div class="detail-name">' + gridItem.dataset.name + '</div>' +
-      '<div class="detail-price">' + gridItem.dataset.price + ' <span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400">FOB</span></div>' +
-      '<div class="detail-specs">' + specsHTML + '</div>' +
-      videoHTML +
-      '<a class="detail-wa-link" href="https://wa.me/' + waNum + '?text=Hi%2C%20I%27d%20like%20to%20ask%20about%20' + sku + '%20' + encodeURIComponent(gridItem.dataset.name) + '">' +
-      '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>' +
-      'Ask about this machine on WhatsApp</a></div>';
 
-    panel.querySelector(".detail-close-btn").addEventListener("click", function(e) {
+    overlay = document.createElement("div");
+    overlay.className = "detail-overlay";
+    overlay.innerHTML =
+      '<div class="detail-backdrop"></div>' +
+      '<div class="detail-sheet">' +
+        '<div class="detail-handle"></div>' +
+        '<div class="detail-header">' +
+          '<span class="detail-header-sku">' + sku + '</span>' +
+          '<button class="detail-close-btn" data-en="' + TEXTS.en.close + '" data-zh="' + TEXTS.zh.close + '" data-ms="' + TEXTS.ms.close + '">' + t('close') + '</button>' +
+        '</div>' +
+        '<div class="detail-scroll">' +
+          '<div class="detail-image"><img src="' + gridItem.dataset.img + '" alt="' + productName + '"></div>' +
+          '<div class="detail-body">' +
+            '<div class="detail-name" data-en="' + gridItem.dataset.name + '" data-zh="' + (gridItem.dataset.nameZh || gridItem.dataset.name) + '" data-ms="' + (gridItem.dataset.nameMs || gridItem.dataset.name) + '">' + productName + '</div>' +
+            '<div class="detail-price">' + gridItem.dataset.price + ' <span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400">' + t('fob') + '</span></div>' +
+            '<div class="detail-specs">' + specsHTML + '</div>' +
+            videoHTML +
+            '<a class="detail-wa-link" href="https://wa.me/' + waNum + '?text=Hi%2C%20I%27d%20like%20to%20ask%20about%20' + sku + '%20' + encodeURIComponent(gridItem.dataset.name) + '">' +
+              '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>' +
+              '<span data-en="' + TEXTS.en.askWA + '" data-zh="' + TEXTS.zh.askWA + '" data-ms="' + TEXTS.ms.askWA + '">' + t('askWA') + '</span>' +
+            '</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+    document.body.classList.add('overlay-open');
+
+    overlay.querySelector(".detail-close-btn").addEventListener("click", function(e) {
       e.stopPropagation();
       closeDetail();
     });
+    overlay.querySelector(".detail-backdrop").addEventListener("click", closeDetail);
 
-    var vbtn = panel.querySelector("[data-action=toggle-video]");
+    // 视频切换 + 自动滚动到视频可见
+    var vbtn = overlay.querySelector("[data-action=toggle-video]");
     if (vbtn) {
       vbtn.addEventListener("click", function() {
         var wrap = this.nextElementSibling;
         var video = wrap.querySelector("video");
+        var scrollContainer = overlay.querySelector('.detail-scroll');
         if (wrap.classList.contains("active")) {
           wrap.classList.remove("active");
           video.pause();
         } else {
           wrap.classList.add("active");
           video.play().catch(function(){});
-          var p = wrap.closest(".detail-panel");
-          if (p) { p.style.maxHeight = "none"; p.style.overflow = "visible"; }
+          // 等视频 DOM 展开后，滚动到视频区域可见
+          setTimeout(function() {
+            var wrapTop = wrap.offsetTop;
+            var scrollEl = scrollContainer;
+            // 让视频顶部对齐到滚动容器顶部（留一点间距给按钮）
+            var btnHeight = vbtn.offsetHeight;
+            scrollEl.scrollTo({
+              top: wrapTop - btnHeight - 8,
+              behavior: 'smooth'
+            });
+          }, 50);
         }
       });
     }
 
-    var grid = gridItem.closest(".product-grid");
-    var allItems = Array.from(grid.querySelectorAll(".grid-item"));
-    var idx = allItems.indexOf(gridItem);
-    var cols = getColCount();
-    var rowEndIdx = Math.min(idx - (idx % cols) + cols - 1, allItems.length - 1);
-    allItems[rowEndIdx].after(panel);
-
-    panel.style.maxHeight = "0";
-    panel.style.opacity = "0";
-    panel.style.overflow = "hidden";
+    // 下滑手势
+    var handle = overlay.querySelector('.detail-handle');
+    handle.addEventListener('touchstart', function(e) {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    handle.addEventListener('touchmove', function(e) {
+      var dy = e.touches[0].clientY - touchStartY;
+      if (dy > 80) closeDetail();
+    }, { passive: true });
 
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
-        panel.style.transition = "max-height .3s ease-out, opacity .25s ease-out";
-        panel.style.maxHeight = panel.scrollHeight + "px";
-        panel.style.opacity = "1";
+        overlay.classList.add('active');
       });
     });
 
-    panel.addEventListener("transitionend", function handler(e) {
-      if (e.propertyName === "max-height" && panel.style.opacity === "1") {
-        panel.style.maxHeight = "none";
-        panel.style.overflow = "visible";
-        panel.removeEventListener("transitionend", handler);
-      }
-    });
-
-    currentDetail = panel;
+    currentSku = sku;
     currentSelectedItem = gridItem;
     gridItem.classList.add("selected");
-
-    setTimeout(function() {
-      panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }, 80);
-  }
-
-  function closeDetailImmediate() {
-    if (currentDetail) {
-      var video = currentDetail.querySelector("video");
-      if (video) { video.pause(); video.currentTime = 0; }
-      currentDetail.remove();
-      currentDetail = null;
-    }
-    if (currentSelectedItem) {
-      currentSelectedItem.classList.remove("selected");
-      currentSelectedItem = null;
-    }
   }
 
   function closeDetail() {
-    if (!currentDetail) return;
-    var panel = currentDetail;
-    var video = panel.querySelector("video");
+    if (!overlay) return;
+    var ol = overlay;
+    var video = ol.querySelector("video");
     if (video) { video.pause(); video.currentTime = 0; }
-
-    panel.style.overflow = "hidden";
-    panel.style.maxHeight = panel.scrollHeight + "px";
-    requestAnimationFrame(function() {
-      panel.style.transition = "max-height .25s ease-in, opacity .2s ease-in";
-      panel.style.maxHeight = "0";
-      panel.style.opacity = "0";
-    });
-
-    panel.addEventListener("transitionend", function handler(e) {
-      if (e.propertyName === "max-height") {
-        panel.remove();
-        panel.removeEventListener("transitionend", handler);
+    ol.classList.remove('active');
+    document.body.classList.remove('overlay-open');
+    var sheet = ol.querySelector('.detail-sheet');
+    sheet.addEventListener('transitionend', function handler(e) {
+      if (e.propertyName === 'transform') {
+        ol.remove();
+        sheet.removeEventListener('transitionend', handler);
       }
     });
-
+    setTimeout(function() { if (ol.parentNode) ol.remove(); }, 350);
     if (currentSelectedItem) {
       currentSelectedItem.classList.remove("selected");
       currentSelectedItem = null;
     }
-    currentDetail = null;
+    overlay = null;
+    currentSku = null;
+  }
+
+  function removeOverlayImmediate() {
+    if (!overlay) return;
+    var video = overlay.querySelector("video");
+    if (video) { video.pause(); video.currentTime = 0; }
+    overlay.remove();
+    document.body.classList.remove('overlay-open');
+    overlay = null;
+    currentSku = null;
+    if (currentSelectedItem) {
+      currentSelectedItem.classList.remove("selected");
+      currentSelectedItem = null;
+    }
   }
 })();
