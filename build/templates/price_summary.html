@@ -1,0 +1,5 @@
+<div class="price-summary">
+  <div class="price-summary-machines">{{ package.total_machines }} MACHINES · FOB {{ package.fob_location | upper }}</div>
+  <div class="price-summary-total">${{ '{:,.0f}'.format(package.fob_total_usd) }} <span>USD</span></div>
+  <div class="price-summary-cif">Estimated CIF Port Klang: ~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}</div>
+</div>

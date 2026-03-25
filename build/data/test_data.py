@@ -1,0 +1,46 @@
+"""
+Hardcoded test data - to be replaced with Feishu API later
+"""
+
+PACKAGE = {
+    "id": "PKG-400A",
+    "name": "400m2 Commercial Gym Package",
+    "name_zh": "400m2 Commercial Gym Package",
+    "area_sqm": 400,
+    "total_machines": 20,
+    "fob_total_usd": 12800,
+    "cif_port_klang_usd": 14200,
+    "fob_location": "Ningjin",
+    "whatsapp_number": "8613800000000",
+}
+
+CATEGORIES = [
+    {"key": "sel", "label": "Selectorized", "title": "Selectorized Strength"},
+    {"key": "pl",  "label": "Plate Loaded", "title": "Plate Loaded"},
+    {"key": "fw",  "label": "Racks",        "title": "Free Weight / Racks"},
+    {"key": "bn",  "label": "Bench",        "title": "Benches"},
+    {"key": "ca",  "label": "Cardio",       "title": "Cardio"},
+]
+
+PRODUCTS = [
+    {"sku":"SC-A01","name":"Seated Chest Press","name_zh":"Seated Chest Press","category_key":"sel","price_fob_usd":680,"thumb_url":"https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=800&q=75","video_url":"","specs":{"Weight Stack":"80kg","Dimensions":"1600x1200x1550mm","Net Weight":"185kg","Target":"Chest"}},
+    {"sku":"SC-A02","name":"Lat Pulldown","name_zh":"Lat Pulldown","category_key":"sel","price_fob_usd":720,"thumb_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=60","image_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=75","video_url":"","specs":{"Weight Stack":"90kg","Dimensions":"1700x1100x2100mm","Net Weight":"195kg","Target":"Back","Feature":"Multi-grip bar"}},
+    {"sku":"SC-A03","name":"Pec Fly / Rear Delt","name_zh":"Pec Fly / Rear Delt","category_key":"sel","price_fob_usd":620,"thumb_url":"https://images.unsplash.com/photo-1597452485669-2c7bb5fef90d?w=400&q=60","image_url":"https://images.unsplash.com/photo-1597452485669-2c7bb5fef90d?w=800&q=75","video_url":"","specs":{"Weight Stack":"70kg","Dimensions":"1500x1100x1800mm","Net Weight":"175kg","Target":"Chest / Rear Delt","Feature":"Dual function"}},
+    {"sku":"SC-A04","name":"Seated Leg Press","name_zh":"Seated Leg Press","category_key":"sel","price_fob_usd":890,"thumb_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&q=75","video_url":"","specs":{"Weight Stack":"120kg","Dimensions":"2100x1300x1600mm","Net Weight":"280kg","Target":"Legs"}},
+    {"sku":"SC-A05","name":"Shoulder Press","name_zh":"Shoulder Press","category_key":"sel","price_fob_usd":650,"thumb_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=800&q=75","video_url":"","specs":{"Weight Stack":"80kg","Dimensions":"1500x1200x1900mm","Net Weight":"190kg","Target":"Shoulders"}},
+    {"sku":"SC-A06","name":"Seated Row","name_zh":"Seated Row","category_key":"sel","price_fob_usd":700,"thumb_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=75","video_url":"","specs":{"Weight Stack":"90kg","Dimensions":"1800x1100x1600mm","Net Weight":"200kg","Target":"Back","Feature":"Chest pad support"}},
+    {"sku":"PL-A01","name":"Incline Chest Press","name_zh":"Incline Chest Press","category_key":"pl","price_fob_usd":520,"thumb_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=75","video_url":"","specs":{"Type":"Plate Loaded","Dimensions":"1500x1400x1700mm","Net Weight":"95kg","Target":"Upper Chest","Feature":"30 degree fixed angle"}},
+    {"sku":"PL-A02","name":"T-Bar Row","name_zh":"T-Bar Row","category_key":"pl","price_fob_usd":480,"thumb_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=75","video_url":"","specs":{"Type":"Plate Loaded","Dimensions":"1600x800x1200mm","Net Weight":"65kg","Target":"Back","Feature":"Multi-grip handles"}},
+    {"sku":"PL-A03","name":"Hack Squat","name_zh":"Hack Squat","category_key":"pl","price_fob_usd":750,"thumb_url":"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=400&q=60","image_url":"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=800&q=75","video_url":"","specs":{"Type":"Plate Loaded","Dimensions":"2200x1500x1800mm","Net Weight":"210kg","Target":"Quads / Glutes","Feature":"Linear bearing rail"}},
+    {"sku":"PL-A04","name":"Leg Extension / Curl","name_zh":"Leg Extension / Curl","category_key":"pl","price_fob_usd":460,"thumb_url":"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=60","image_url":"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=800&q=75","video_url":"","specs":{"Type":"Plate Loaded","Dimensions":"1400x1000x1500mm","Net Weight":"85kg","Target":"Quads / Hamstrings","Feature":"Adjustable pad angle"}},
+    {"sku":"FM-A01","name":"Power Rack + Platform","name_zh":"Power Rack + Platform","category_key":"fw","price_fob_usd":1200,"thumb_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=800&q=75","video_url":"","specs":{"Dimensions":"2400x1800x2500mm","Net Weight":"320kg","Accessories":"J-hooks, Safety arms","Feature":"Integrated platform"}},
+    {"sku":"FM-A02","name":"Smith Machine","name_zh":"Smith Machine","category_key":"fw","price_fob_usd":1450,"thumb_url":"https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&q=75","video_url":"","specs":{"Dimensions":"2200x1700x2400mm","Net Weight":"350kg","Bar Weight":"Counter-balanced","Feature":"Linear bearings"}},
+    {"sku":"ST-A01","name":"Dumbbell Rack (10 pairs)","name_zh":"Dumbbell Rack (10 pairs)","category_key":"fw","price_fob_usd":380,"thumb_url":"https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=800&q=75","video_url":"","specs":{"Dimensions":"1800x600x900mm","Net Weight":"45kg","Capacity":"10 pairs","Feature":"Rubber-lined saddles"}},
+    {"sku":"BN-A01","name":"Adjustable Bench","name_zh":"Adjustable Bench","category_key":"bn","price_fob_usd":280,"thumb_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=400&q=60","video_url":"","specs":{"Angles":"0-85 deg (7 positions)","Dimensions":"1300x650x450mm","Net Weight":"32kg","Feature":"Commercial grade frame"}},
+    {"sku":"BN-A02","name":"Flat Bench","name_zh":"Flat Bench","category_key":"bn","price_fob_usd":180,"thumb_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","video_url":"","specs":{"Dimensions":"1200x600x430mm","Net Weight":"25kg","Capacity":"300kg","Feature":"High-density foam pad"}},
+    {"sku":"BN-A03","name":"Olympic Bench Press","name_zh":"Olympic Bench Press","category_key":"bn","price_fob_usd":420,"thumb_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=60","video_url":"","specs":{"Dimensions":"1700x1300x1200mm","Net Weight":"68kg","Feature":"Integrated bar hooks, spotter platform"}},
+    {"sku":"CB-A01","name":"Commercial Treadmill","name_zh":"Commercial Treadmill","category_key":"ca","price_fob_usd":1650,"thumb_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","video_url":"","specs":{"Motor":"3.0 HP AC","Speed":"0.8-20 km/h","Belt":"500x1500mm","Display":"15.6 inch touchscreen"}},
+    {"sku":"CB-A02","name":"Elliptical Trainer","name_zh":"Elliptical Trainer","category_key":"ca","price_fob_usd":1200,"thumb_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=60","video_url":"","specs":{"Resistance":"24 levels","Stride":"520mm","Net Weight":"120kg","Display":"10 inch LCD"}},
+    {"sku":"CB-A03","name":"Spin Bike","name_zh":"Spin Bike","category_key":"ca","price_fob_usd":480,"thumb_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=400&q=60","video_url":"","specs":{"Flywheel":"20kg","Resistance":"Magnetic","Net Weight":"55kg","Feature":"Belt drive, silent"}},
+    {"sku":"CB-A04","name":"Rowing Machine","name_zh":"Rowing Machine","category_key":"ca","price_fob_usd":680,"thumb_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=60","video_url":"","specs":{"Resistance":"Air + Magnetic","Rail Length":"1400mm","Net Weight":"42kg","Feature":"Foldable frame"}},
+]

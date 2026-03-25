@@ -1,0 +1,23 @@
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">{{ package.name }}</h1>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-number">{{ package.total_machines }}</div>
+        <div class="hero-stat-label">Machines</div>
+      </div>
+      <div>
+        <div class="hero-stat-number">${{ '{:,.0f}'.format(package.fob_total_usd) }}</div>
+        <div class="hero-stat-label">FOB {{ package.fob_location }}</div>
+      </div>
+    </div>
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+      <span>Every machine tested before shipping</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="rgba(255,255,255,.25)"/></svg>
+  </div>
+</section>
