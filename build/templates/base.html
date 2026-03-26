@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>{{ package.name }} — ProvenLift</title>
 <link rel="stylesheet" href="../static/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
 </head>
 <body data-whatsapp="{{ package.whatsapp_number }}" data-pkg="{{ package.id }}">
 
@@ -35,7 +43,7 @@
   <div id="sec-{{ cat.key }}">
     <div class="section-header">
       <h2 data-en="{{ cat.title }}" data-zh="{{ cat.title_zh }}" data-ms="{{ cat.title_ms }}">{{ cat.title }}</h2>
-      <span class="count">{{ cat_products|length }} {% if cat_products|length == 1 %}unit{% else %}machines{% endif %}</span>
+      <span class="count">{{ cat_products|length }} {% if cat_products|length == 1 %}item{% else %}items{% endif %}</span>
     </div>
     <div class="product-grid">
       {% for p in cat_products %}
@@ -44,15 +52,25 @@
            data-name="{{ p.name }}"
            data-name-zh="{{ p.name_zh }}"
            data-name-ms="{{ p.name_ms }}"
-           data-price="${{ '{:,.0f}'.format(p.price_fob_usd) }}"
+           data-price="{% if p.price_fob_usd is not none %}${{ '{:,.0f}'.format(p.price_fob_usd) }}{% endif %}"
+           data-qty="{{ p.qty or 1 }}"
            data-img="{{ p.image_url }}"
            data-video="{{ p.video_url }}"
-           data-specs='{{ p.specs | tojson }}'>
+           data-specs='{{ p.specs | tojson }}' data-maintenance='{{ p.maintenance | default('{}') | tojson }}'>
         <div class="grid-thumb">
           <img src="{{ p.thumb_url }}" loading="lazy" alt="{{ p.name }}">
+          {% if p.qty and p.qty > 1 %}
+          <span class="qty-badge">×{{ p.qty }}</span>
+          {% endif %}
         </div>
         <div class="grid-item-name" data-en="{{ p.name }}" data-zh="{{ p.name_zh }}" data-ms="{{ p.name_ms }}">{{ p.name }}</div>
-        <div class="grid-item-price">${{ '{:,.0f}'.format(p.price_fob_usd) }}</div>
+        <div class="grid-item-price">
+          {%- if p.price_fob_usd is not none -%}
+            ${{ '{:,.0f}'.format(p.price_fob_usd) }}
+          {%- else -%}
+            <span data-en="Inquire" data-zh="询价" data-ms="Tanya Harga">询价</span>
+          {%- endif -%}
+        </div>
         <div class="grid-item-sku">{{ p.sku }}</div>
       </div>
       {% endfor %}
@@ -61,18 +79,14 @@
   {% endfor %}
 </div>
 
-{% include 'price_summary.html' %}
-{% include 'trust.html' %}
 {% include 'scene_3d.html' %}
 {% include 'bottom_cta.html' %}
 
 <footer class="footer">&copy; 2026 ProvenLift. <span data-en="All rights reserved." data-zh="保留所有权利。" data-ms="Hak cipta terpelihara.">All rights reserved.</span></footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="../static/lang.js"></script>
 <script src="../static/category-nav.js"></script>
 <script src="../static/detail-panel.js"></script>
-<script src="../static/gym-3d-scene.js"></script>
+<script type="module" src="../static/gym-3d-scene.js"></script>
 </body>
 </html>

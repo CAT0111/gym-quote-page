@@ -1,5 +1,25 @@
 <div class="price-summary">
   <div class="price-summary-machines"><span data-en="{{ package.total_machines }} MACHINES · FOB {{ package.fob_location | upper }}" data-zh="{{ package.total_machines }} 台器械 · FOB {{ package.fob_location | upper }}" data-ms="{{ package.total_machines }} MESIN · FOB {{ package.fob_location | upper }}">{{ package.total_machines }} MACHINES · FOB {{ package.fob_location | upper }}</span></div>
-  <div class="price-summary-total">${{ '{:,.0f}'.format(package.fob_total_usd) }} <span>USD</span></div>
-  <div class="price-summary-cif"><span data-en="Estimated CIF Port Klang: ~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}" data-zh="预估 CIF 巴生港到岸价：~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}" data-ms="Anggaran CIF Port Klang: ~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}">Estimated CIF Port Klang: ~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}</span></div>
+  <div class="price-summary-total">
+    {%- if package.fob_total_usd is not none -%}
+      ${{ '{:,.0f}'.format(package.fob_total_usd) }}
+    {%- else -%}
+      <span data-en="TBD" data-zh="待定" data-ms="TBD">待定</span>
+    {%- endif -%}
+    <span>USD</span>
+  </div>
+  <div class="price-summary-cif"><span
+    {%- if package.cif_port_klang_usd is not none %}
+    data-en="Estimated CIF Port Klang: ~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}"
+    data-zh="预估 CIF 巴生港到岸价：~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}"
+    data-ms="Anggaran CIF Port Klang: ~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}"
+    {%- else %}
+    data-en="CIF pricing to be confirmed" data-zh="CIF 到岸价待确认" data-ms="Harga CIF akan disahkan"
+    {%- endif %}>
+    {%- if package.cif_port_klang_usd is not none -%}
+      Estimated CIF Port Klang: ~${{ '{:,.0f}'.format(package.cif_port_klang_usd) }}
+    {%- else -%}
+      CIF 到岸价待确认
+    {%- endif -%}
+  </span></div>
 </div>

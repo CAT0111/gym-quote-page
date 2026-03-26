@@ -1,0 +1,15 @@
+
+# Backups
+backups/
+*.bak
+*.bak-*
+
+# GLB 3D models (too large for git)
+static/models/*.glb
+
+# Preview files
+preview-models.html
+preview-models.html.*
+
+# Layout image
+gym_layout_400sqm.png

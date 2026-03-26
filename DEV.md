@@ -1,4 +1,4 @@
-> 版本：v3 | 更新日期：2026-03-25 | 状态：多语言 + 浮层详情 + 3D 优化
+以下是我的健身器材订购网页完整技术架构，请先通读理解整体架构，然后我们来处理：【今天的任务】
 
 ---
 
@@ -276,3 +276,32 @@ gym-3d-scene.js
 - BlenderMCP：addon端口9876运行中，Claude Code MCP配置已写入待验证
 - 性能预算：手机10-15万面/30fps，GLB 5-10MB，材质10-20个，贴图1K
 - 下一步：验证BlenderMCP连接→AI建模环境→混元3D器械→bpy自动组装→客户专属页面
+
+---
+
+### v3 → v4 | 2026-03-26 | 真实 400 平健身房套餐适配
+
+**数据层变更：**
+- CATEGORIES: 5 区 → 8 区（新增 `fw` 自由重量、`ft` 功能训练、`ac` 辅助配件）
+- PRODUCTS: 20 SKU → 63 SKU，完整覆盖真实 400m² 商用健身房配置
+- PRODUCTS 新增字段：`qty`（数量，如跑步机×5）、`zone`（场地分区 A/B/C/D/E）
+- 所有 `price_fob_usd` 暂为 None（待填），`specs` 键统一英文
+- PACKAGE 的 `fob_total_usd` / `cif_port_klang_usd` 暂为 None
+
+**模板层变更：**
+- `base.html`: 卡片新增 qty badge（`.qty-badge`，qty>1 时显示 ×N）；价格为 None 时显示三语"询价"
+- `hero.html`: FOB 总价为 None 时显示"待定"
+- `price_summary.html`: FOB/CIF 为 None 时显示"待定/待确认"
+
+**样式层变更：**
+- `.cat-nav-inner`: 从 `display:flex; min-width:max-content`（单行横滑）改为 `display:grid; grid-template-columns:repeat(4,1fr)`（两行 4+4 布局）
+- `.cat-nav`: 移除 `overflow-x:auto` 及滚动条隐藏
+- `.cat-tab`: 缩小 padding/font-size 适配两行，新增 `text-align:center`，移除 `text-transform:uppercase`
+- 新增 `.qty-badge` 样式（金色背景，绝对定位于缩略图右上角）
+
+**JS 层变更：**
+- `detail-panel.js` / `category-nav.js`: 本次未改动，待下一步补充新 SPEC_KEYS 翻译
+
+**待完成：**
+- `detail-panel.js`: 补充约 25 个新 specs 键的 SPEC_KEYS / SPEC_VALS 翻译
+- `generator.py`: 暂未改动，新字段 qty/zone 已通过模板直接消费
