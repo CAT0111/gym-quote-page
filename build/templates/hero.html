@@ -3,7 +3,7 @@
   <div class="hero-content">
     <h1 class="hero-title" data-en="{{ package.name }}" data-zh="{{ package.name_zh }}" data-ms="{{ package.name_ms }}">{{ package.name }}</h1>
     <div class="hero-subtitle">
-      <span data-en="{{ package.total_machines }} Machines · DDP {{ package.ddp_port }}" data-zh="{{ package.total_machines }} 台器械 · {{ package.ddp_port_zh }}送货上门" data-ms="{{ package.total_machines }} Mesin · DDP {{ package.ddp_port_ms }}">{{ package.total_machines }} 台器械 · {{ package.ddp_port_zh }}送货上门</span>
+      <span data-en="DDP {{ package.ddp_port }}" data-zh="{{ package.ddp_port_zh }}送货上门" data-ms="DDP {{ package.ddp_port_ms }}">{{ package.ddp_port_zh }}送货上门</span>
     </div>
     <div class="hero-price">
       <span class="hero-price-big" data-en="${{ '{:,}'.format(package.ddp_total_usd) }}" data-zh="¥{{ '{:,}'.format(package.ddp_total_cny) }}" data-ms="RM{{ '{:,}'.format(package.ddp_total_myr) }}">¥{{ '{:,}'.format(package.ddp_total_cny) }}</span>

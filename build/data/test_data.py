@@ -5,9 +5,9 @@ Hardcoded test data - to be replaced with Feishu API later
 
 PACKAGE = {
     "id": "PKG-400A",
-    "name": "400m² Commercial Gym Package",
-    "name_zh": "400平方米商用健身房套餐",
-    "name_ms": "Pakej Gim Komersial 400m²",
+    "name": "400m² Commercial Gym · 55 Machines",
+    "name_zh": "400㎡ 商用健身房 · 55台器械",
+    "name_ms": "Pakej Gim Komersial 400m² · 55 Mesin",
     "area_sqm": 400,
     "total_machines": 55,
     "fob_total_usd": 30000,
