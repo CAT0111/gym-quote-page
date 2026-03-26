@@ -2,10 +2,21 @@
   var tabs = document.querySelectorAll(".cat-tab");
   var sections = document.querySelectorAll("[id^=sec-]");
 
+  function scrollTabIntoView(tab) {
+    var nav = tab.closest(".cat-nav");
+    if (!nav) return;
+    var navRect = nav.getBoundingClientRect();
+    var tabRect = tab.getBoundingClientRect();
+    if (tabRect.left < navRect.left || tabRect.right > navRect.right) {
+      tab.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }
+
   tabs.forEach(function(tab) {
     tab.addEventListener("click", function() {
       tabs.forEach(function(t) { t.classList.remove("active"); });
       tab.classList.add("active");
+      scrollTabIntoView(tab);
       var target = document.getElementById(tab.dataset.target);
       if (target) {
         var y = target.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -20,7 +31,9 @@
       if (window.pageYOffset >= s.offsetTop - 120) current = s.id;
     });
     tabs.forEach(function(t) {
-      t.classList.toggle("active", t.dataset.target === current);
+      var isActive = t.dataset.target === current;
+      t.classList.toggle("active", isActive);
+      if (isActive) scrollTabIntoView(t);
     });
   }, { passive: true });
 

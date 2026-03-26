@@ -7,15 +7,15 @@
 
   var TEXTS = {
     en: { videoLabel:'Watch 60s Test Video', videoSoon:'Video coming soon', close:'Close ✕', askWA:'Ask about this machine on WhatsApp', fob:'FOB', inquire:'Inquire', partsBtn:'View Spare Parts & Maintenance Cycle', qtyLabel:'Qty',
-          maintTitle:'Spare Parts & Maintenance', maintBack:'← Back', maintParts:'SPARE PARTS LIST', maintPartName:'Part', maintPartQty:'Qty', maintPartCycle:'Cycle', maintSchedule:'MAINTENANCE SCHEDULE', maintDurability:'DURABILITY', maintFooter:'Need any spare part? Contact us on WhatsApp for fast delivery.',
+          maintTitle:'Spare Parts & Maintenance', maintBack:'Back', maintParts:'SPARE PARTS LIST', maintPartName:'Part', maintPartQty:'Qty', maintPartCycle:'Cycle', maintSchedule:'MAINTENANCE SCHEDULE', maintDurability:'DURABILITY', maintFooter:'Need any spare part? Contact us on WhatsApp for fast delivery.',
           badgeFullKit:'Full spare parts kit shipped with equipment', badgeLongLife:'Industrial-grade durability, minimal maintenance', badgeConsumable:'Consumable — replace on schedule',
           maintCareTitle:'Maintenance Guide', maintCareLife:'Long-life Equipment' },
     zh: { videoLabel:'观看60秒试机视频', videoSoon:'视频即将上线', close:'关闭 ✕', askWA:'通过 WhatsApp 咨询此器械', fob:'FOB', inquire:'询价', partsBtn:'查看备件包和保养维护周期', qtyLabel:'数量',
-          maintTitle:'备件包与保养维护', maintBack:'← 返回', maintParts:'备件清单', maintPartName:'部件', maintPartQty:'备量', maintPartCycle:'更换周期', maintSchedule:'保养周期表', maintDurability:'耐用性说明', maintFooter:'需要任何备件？WhatsApp联系我们，快速发货。',
+          maintTitle:'备件包与保养维护', maintBack:'返回', maintParts:'备件清单', maintPartName:'部件', maintPartQty:'备量', maintPartCycle:'更换周期', maintSchedule:'保养周期表', maintDurability:'耐用性说明', maintFooter:'需要任何备件？WhatsApp联系我们，快速发货。',
           badgeFullKit:'全套备件已随货配送', badgeLongLife:'工业级耐久，极少维护', badgeConsumable:'消耗品 · 按周期整体更换',
           maintCareTitle:'保养指南', maintCareLife:'长寿命设备' },
     ms: { videoLabel:'Tonton Video Ujian 60s', videoSoon:'Video akan datang', close:'Tutup ✕', askWA:'Tanya tentang mesin ini di WhatsApp', fob:'FOB', inquire:'Tanya Harga', partsBtn:'Lihat Alat Ganti & Kitaran Penyelenggaraan', qtyLabel:'Kuantiti',
-          maintTitle:'Alat Ganti & Penyelenggaraan', maintBack:'← Kembali', maintParts:'SENARAI ALAT GANTI', maintPartName:'Bahagian', maintPartQty:'Kuantiti', maintPartCycle:'Kitaran', maintSchedule:'JADUAL PENYELENGGARAAN', maintDurability:'KETAHANAN', maintFooter:'Perlukan alat ganti? Hubungi kami di WhatsApp untuk penghantaran pantas.',
+          maintTitle:'Alat Ganti & Penyelenggaraan', maintBack:'Kembali', maintParts:'SENARAI ALAT GANTI', maintPartName:'Bahagian', maintPartQty:'Kuantiti', maintPartCycle:'Kitaran', maintSchedule:'JADUAL PENYELENGGARAAN', maintDurability:'KETAHANAN', maintFooter:'Perlukan alat ganti? Hubungi kami di WhatsApp untuk penghantaran pantas.',
           badgeFullKit:'Kit alat ganti lengkap dihantar bersama peralatan', badgeLongLife:'Ketahanan gred industri, penyelenggaraan minimum', badgeConsumable:'Boleh guna — ganti mengikut jadual',
           maintCareTitle:'Panduan Penyelenggaraan', maintCareLife:'Peralatan Jangka Hayat Panjang' }
   };
@@ -302,7 +302,7 @@
             qtyHTML +
             '<div class="detail-specs">' + specsHTML + '</div>' +
             '<div class="detail-parts-btn">' + boxSvg + '<span data-en="' + TEXTS.en.partsBtn + '" data-zh="' + TEXTS.zh.partsBtn + '" data-ms="' + TEXTS.ms.partsBtn + '">' + t('partsBtn') + '</span></div>' +
-            '<a class="detail-wa-link" href="https://wa.me/' + waNum + '?text=Hi%2C%20I%27d%20like%20to%20ask%20about%20' + sku + '%20' + encodeURIComponent(gridItem.dataset.name) + '">' + waSvg + '<span data-en="' + TEXTS.en.askWA + '" data-zh="' + TEXTS.zh.askWA + '" data-ms="' + TEXTS.ms.askWA + '">' + t('askWA') + '</span></a>' +
+            '<a class="detail-wa-link" href="https://wa.me/' + waNum + '?text=Hi%2C%20I%27d%20like%20to%20ask%20about%20' + sku + '%20' + encodeURIComponent(gridItem.dataset.name) + '">' + '<span data-en="' + TEXTS.en.askWA + '" data-zh="' + TEXTS.zh.askWA + '" data-ms="' + TEXTS.ms.askWA + '">' + t('askWA') + '</span></a>' +
           '</div>' +
         '</div>' +
         '<div class="maint-page"></div>' +
