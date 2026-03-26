@@ -17,7 +17,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   function getSize() {
     var w = wrap.clientWidth;
-    var h = Math.round(w * 0.5);
+    var h = wrap.clientHeight || w; // 彻底解除封印，读取真实 CSS 高度
     return { w: w, h: h };
   }
 
@@ -40,7 +40,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   scene.fog = new THREE.FogExp2(0x0a0a0a, 0.015);
 
   // Camera
-  var camera = new THREE.PerspectiveCamera(48, W / H, 0.5, 200);
+  var camera = new THREE.PerspectiveCamera(48, W / H, 0.5, 380);
 
   // Controls
   var ctrl = new OrbitControls(camera, canvas);
@@ -63,7 +63,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   l2.position.set(-9, 3, 0); l2.lookAt(0, 1, 0); envScene.add(l2);
   var l3 = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), new THREE.MeshBasicMaterial({ color: 0xffc875, side: THREE.DoubleSide }));
   l3.position.set(9, 2, 5); l3.lookAt(0, 1, 0); envScene.add(l3);
-  var bg = new THREE.Mesh(new THREE.SphereGeometry(30, 16, 16), new THREE.MeshBasicMaterial({ color: 0x111111, side: THREE.BackSide }));
+  var bg = new THREE.Mesh(new THREE.SphereGeometry(30, 16, 16), new THREE.MeshBasicMaterial({ color: 0x1a1a1e, side: THREE.BackSide }));
   envScene.add(bg);
   scene.environment = pmrem.fromScene(envScene, 0.04).texture;
   envScene.traverse(function (o) { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
@@ -132,7 +132,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     scene.add(model);
 
     var maxD = Math.max(size.x, size.y, size.z);
-    var dist = maxD * 1.1;
+    var dist = maxD * 1.6;
     camera.position.set(dist * 0.5, dist * 0.65, dist * 0.5);
     camera.near = maxD * 0.001;
     camera.far = maxD * 20;

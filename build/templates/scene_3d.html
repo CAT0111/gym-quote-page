@@ -1,9 +1,20 @@
 <section class="layout-section">
-  <h2 class="layout-title" data-en="Your Gym Layout" data-zh="您的健身房布局" data-ms="Susun Atur Gim Anda">Your Gym Layout</h2>
-  <p class="layout-subtitle" data-en="Drag to rotate · Pinch to zoom" data-zh="拖动旋转 · 双指缩放" data-ms="Seret untuk pusing · Cubit untuk zum">Drag to rotate · Pinch to zoom</p>
-  <canvas id="gym-canvas"></canvas>
-  <div class="layout-cta">
-    <span data-en="Want a custom layout?" data-zh="需要定制布局？" data-ms="Mahu susun atur tersuai?">Want a custom layout?</span>
-    <a href="https://wa.me/{{ package.whatsapp_number }}?text=Hi%2C%20I'd%20like%20a%20custom%20gym%20layout." data-en="Send us your floor plan →" data-zh="发送您的平面图 →" data-ms="Hantar pelan lantai anda →">Send us your floor plan →</a>
+  <div class="layout-header">
+    <h2 class="layout-title" data-en="Your Gym Layout" data-zh="您的健身房布局" data-ms="Susun Atur Gim Anda">Your Gym Layout</h2>
+    <p class="layout-subtitle" data-en="Drag to rotate · Pinch to zoom" data-zh="拖动旋转 · 双指缩放" data-ms="Seret untuk pusing · Cubit untuk zum">Drag to rotate · Pinch to zoom</p>
+  </div>
+  
+  <div class="layout-3d-wrapper">
+    <div class="layout-3d-container">
+      <canvas id="gym-canvas"></canvas>
+    </div>
+  </div>
+
+  <div class="layout-cta-card">
+    <div class="layout-cta-text">
+      <svg viewBox="0 0 24 24" class="layout-cta-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-en="Want a custom layout?" data-zh="需要定制布局？" data-ms="Mahu susun atur tersuai?">Want a custom layout?</span>
+    </div>
+    <a href="https://wa.me/{{ package.whatsapp_number }}?text=Hi%2C%20I'd%20like%20a%20custom%20gym%20layout." class="layout-cta-btn" data-en="Send floor plan →" data-zh="发送平面图 →" data-ms="Hantar pelan →">Send floor plan →</a>
   </div>
 </section>
