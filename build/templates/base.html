@@ -79,7 +79,8 @@
   {% endfor %}
 </div>
 
-{% include 'scene_3d.html' %}
+{% include 'parts.html' %}
+  {% include 'scene_3d.html' %}
   {% include 'bottom_cta.html' %}
   {% include 'about.html' %}
 
@@ -89,5 +90,23 @@
 <script src="../static/category-nav.js"></script>
 <script src="../static/detail-panel.js"></script>
 <script type="module" src="../static/gym-3d-scene.js"></script>
+
+<script>
+  // 页面滚动监听：滑动到元素时触发入场动画
+  document.addEventListener("DOMContentLoaded", function() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target); // 播放一次后解除监听
+        }
+      });
+    }, { threshold: 0.15 }); // 元素露出 15% 时触发
+    
+    document.querySelectorAll('.promise-card').forEach(function(el) {
+      observer.observe(el);
+    });
+  });
+</script>
 </body>
 </html>

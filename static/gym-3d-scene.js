@@ -44,15 +44,22 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   // Controls
   var ctrl = new OrbitControls(camera, canvas);
+  canvas.addEventListener('touchstart', function(e) {
+    if (e.touches.length > 1) { e.preventDefault(); }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) {
+    if (e.touches.length > 1) { e.preventDefault(); }
+  }, { passive: false });
+
   ctrl.enableDamping = true;
   ctrl.dampingFactor = 0.08;
   ctrl.enablePan = false;
+  ctrl.enableZoom = true;
+  ctrl.zoomSpeed = 1.5;
   ctrl.minPolarAngle = 0.3;
   ctrl.maxPolarAngle = 1.3;
   ctrl.minDistance = 3;
   ctrl.maxDistance = 30;
-  ctrl.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY };
-
   // Environment map
   var pmrem = new THREE.PMREMGenerator(renderer);
   pmrem.compileEquirectangularShader();
@@ -153,8 +160,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     fillLight.position.set(-maxD * 0.5, maxD * 0.5, -maxD * 0.3);
     rimLight.position.set(0, maxD * 0.3, -maxD * 0.8);
 
-    ctrl.minDistance = maxD * 0.3;
-    ctrl.maxDistance = maxD * 2;
+    ctrl.minDistance = maxD * 0.05;
+    ctrl.maxDistance = maxD * 5.0;
   }, undefined, function (err) {
     console.error('GLB load error:', err);
   });
