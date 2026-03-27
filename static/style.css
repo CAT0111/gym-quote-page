@@ -433,3 +433,268 @@ a{color:inherit;text-decoration:none}
 .pi-quicklook.active .pi-ql-content { transform: scale(1); }
 .pi-ql-content img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
 .pi-ql-content h4 { margin: 12px 0 4px; color: #fff; font-size: 14px; text-align: center; font-weight: 500; }
+
+/* ═══ PI MODAL: 强制固定序号与缩略图列 (冻结列特效) ═══ */
+.pi-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.pi-table {
+    border-collapse: separate !important; /* Sticky 必须配合 separate 否则边框会乱 */
+    border-spacing: 0;
+}
+
+.pi-table th, .pi-table td {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* 冻结第 1 列：序号 */
+.pi-table th:nth-child(1),
+.pi-table td:nth-child(1) {
+    position: sticky !important;
+    left: 0 !important;
+    background-color: #1c1c1e !important; /* 纯深灰背景，防止底部滑动内容穿透 */
+    z-index: 10;
+    width: 45px;
+    min-width: 45px;
+    text-align: center;
+}
+
+/* 冻结第 2 列：缩略图 */
+.pi-table th:nth-child(2),
+.pi-table td:nth-child(2) {
+    position: sticky !important;
+    left: 45px !important; /* 紧贴第一列的宽度 */
+    background-color: #1c1c1e !important;
+    z-index: 10;
+    width: 65px;
+    min-width: 65px;
+}
+
+/* 在冻结列的右侧边缘加上阴影，滑动时产生立体的层次感 */
+.pi-table th:nth-child(2)::after,
+.pi-table td:nth-child(2)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -4px;
+    bottom: -1px;
+    width: 4px;
+    background: linear-gradient(to right, rgba(0,0,0,0.5), transparent);
+    pointer-events: none;
+}
+
+/* 表头冻结列需要更高的 z-index，防止垂直滚动时被覆盖 */
+.pi-table th:nth-child(1),
+.pi-table th:nth-child(2) {
+    z-index: 11 !important;
+    background-color: #2c2c2e !important; /* 表头的颜色稍微亮一点 */
+}
+
+
+/* ═══ PI MODAL: 核心信息聚合列样式 ═══ */
+.pi-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 200px; /* 保证首屏完整露出 */
+    text-align: left;
+    padding: 6px 0;
+}
+
+.pi-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f4f4f5;
+    line-height: 1.4;
+    white-space: normal; /* 允许超长品名换行 */
+}
+
+.pi-item-calc {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    padding-top: 6px;
+    margin-top: 2px;
+}
+
+.pi-unit-calc {
+    font-size: 13px;
+    color: #a1a1aa;
+    font-family: monospace; /* 数字对齐更好看 */
+}
+
+.pi-amount {
+    color: #d4af37; /* 金色突出合计 */
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* 适配表格宽度：由于列数减少，适当缩减 min-width */
+.pi-table { min-width: 580px !important; }
+
+
+/* ═══ 紧急修复：PI 弹窗全屏覆盖层 (脱离文档流) ═══ */
+.pi-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.85) !important;
+    z-index: 99999 !important; /* 确保在最顶层 */
+    backdrop-filter: blur(5px);
+    /* display 由 JS 控制 (flex/none) */
+    align-items: center;
+    justify-content: center;
+}
+
+.pi-modal-content {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 800px;
+    background-color: #121214 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 防止内部溢出破坏结构 */
+}
+
+@media (min-width: 768px) {
+    .pi-modal-content {
+        height: 90% !important;
+        border-radius: 12px;
+    }
+}
+
+/* 确保三明治结构的上下固定，中间滑动 */
+.pi-header { flex-shrink: 0; background: #1c1c1e; padding: 16px; }
+.pi-table-wrapper { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; }
+.pi-footer { flex-shrink: 0; background: #1c1c1e; padding: 16px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+
+/* ========================================= */
+/* 🔴 核心修复：PI 报价单基础 Flexbox 布局 (防回退版) */
+/* ========================================= */
+
+/* --- 1. Header 顶部对齐 (修复图标堆叠) --- */
+.pi-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.pi-header-top h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #fff;
+    line-height: 1.2;
+}
+.pi-actions {
+    display: flex;
+    gap: 16px; /* 图标横向排列 */
+}
+.pi-icon-btn {
+    background: none;
+    border: none;
+    color: #a1a1aa;
+    cursor: pointer;
+    padding: 4px;
+}
+.pi-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #a1a1aa;
+    background: #252528;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+/* --- 2. Table 表格内边距 (修复价格串行) --- */
+.pi-table {
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    text-align: left;
+}
+.pi-table th {
+    padding: 12px 16px !important; /* 强制增加表头间距 */
+    background: #252528 !important;
+    font-size: 12px;
+    color: #8f8f94;
+    font-weight: normal;
+    white-space: nowrap;
+}
+.pi-table td {
+    padding: 16px !important; /* 强制增加单元格间距，防止内容贴边 */
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pi-img-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #252528;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pi-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.pi-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 200px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.pi-item-calc {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    padding-top: 8px;
+    width: 100%; /* 确保只在当前单元格内撑开 */
+}
+
+/* --- 3. Footer 底部对齐 (修复总价跑偏) --- */
+.pi-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px !important;
+}
+.pi-terms {
+    font-size: 13px;
+    color: #a1a1aa;
+    line-height: 1.6;
+}
+.pi-summary {
+    display: flex;
+    justify-content: space-between; /* 核心：左边件数，右边总价 */
+    align-items: flex-end;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 16px;
+}
+.pi-total-qty {
+    font-size: 14px;
+    color: #f4f4f5;
+}
+.pi-total-price {
+    text-align: right; /* 文字靠右 */
+    font-size: 14px;
+    color: #a1a1aa;
+}
+.pi-total-price strong {
+    display: block;
+    margin-top: 4px;
+}
