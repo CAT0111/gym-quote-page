@@ -254,7 +254,15 @@
 
     var name = prodName(gridItem);
     var videoUrl = gridItem.dataset.video || "";
-    var priceRaw = gridItem.dataset.price || "";
+    var lang = getLang();
+    var priceRaw = "";
+    if (lang === "zh" && gridItem.dataset.priceCny) {
+      priceRaw = "¥" + gridItem.dataset.priceCny;
+    } else if (lang === "ms" && gridItem.dataset.priceMyr) {
+      priceRaw = "RM" + gridItem.dataset.priceMyr;
+    } else if (gridItem.dataset.priceUsd) {
+      priceRaw = "$" + gridItem.dataset.priceUsd;
+    }
     var qty = parseInt(gridItem.dataset.qty) || 1;
 
     var priceHTML;

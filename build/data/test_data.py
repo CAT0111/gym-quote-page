@@ -109,7 +109,7 @@ PRODUCTS = [
     # ============================================================
     #  固定力量 Pin-Loaded (sel) — 18 units
     # ============================================================
-    {"sku":"FS-001","name":"Rear Delt / Pec Fly","name_zh":"反飞鸟","name_ms":"Mesin Rear Delt / Pec Fly","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-001","name":"Rear Delt / Pec Fly","name_zh":"反飞鸟","name_ms":"Mesin Rear Delt / Pec Fly","category_key":"sel","price_fob_usd":629,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100538/1725384701/100538-video-720.mp4",
      "specs":{"Dimensions":"1250×1430×2080 mm","Weight Stack":"Standard pin-loaded","Packing":"2300×1500×1200 mm (4 wooden crates)","Gross Weight":"<4 tons (incl. packing)","Target":"Rear Delt / Chest","Feature":"Pec fly + reverse fly 2-in-1"},
      "maintenance": {
@@ -242,7 +242,7 @@ PRODUCTS = [
         'durability_note_zh': '全机备件均来自通用备件库，任何单一零件损坏均可现场快速更换，无需等待海外发货。',
         'durability_note_ms': 'Semua alat ganti datang dari stok alat ganti universal. Sebarang kerosakan komponen tunggal boleh diganti dengan cepat di lokasi — tiada perlu menunggu penghantaran dari luar negara.',
     }},
-    {"sku":"FS-002","name":"Seated Shoulder Press","name_zh":"坐式举肩","name_ms":"Mesin Tekan Bahu Duduk","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-002","name":"Seated Shoulder Press","name_zh":"坐式举肩","name_ms":"Mesin Tekan Bahu Duduk","category_key":"sel","price_fob_usd":568,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"1530×1430×1630 mm","Weight Stack":"Standard pin-loaded","Target":"Front / Middle Deltoid"},
      "maintenance": {
@@ -375,7 +375,7 @@ PRODUCTS = [
         'durability_note_zh': '商用级插片式结构，配重片导轨经硬铬处理，耐磨寿命超过50万次动作循环。',
         'durability_note_ms': 'Struktur pin-loaded gred komersial. Rod panduan tindanan berat disalut krom keras, hayat kehausan melebihi 500,000 kitaran gerakan.',
     }},
-    {"sku":"FS-003","name":"Seated Row (Adjustable Handle)","name_zh":"坐式划船（反手拉背）","name_ms":"Mesin Dayung Duduk","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-003","name":"Seated Row (Adjustable Handle)","name_zh":"坐式划船（反手拉背）","name_ms":"Mesin Dayung Duduk","category_key":"sel","price_fob_usd":629,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100538/1725384701/100538-video-720.mp4",
      "specs":{"Dimensions":"1330×860×1930 mm","Weight Stack":"Standard pin-loaded","Target":"Lats / Rhomboids / Biceps","Feature":"Adjustable handle"},
      "maintenance": {
@@ -508,7 +508,7 @@ PRODUCTS = [
         'durability_note_zh': '可调把手采用工业级锁紧机构，十万次调节无松动。钢丝绳走线采用大弧度设计，减少弯折磨损。',
         'durability_note_ms': 'Pemegang boleh laras menggunakan mekanisme pengunci gred industri — tiada kelonggaran selepas 100,000 pelarasan. Laluan kabel menggunakan reka bentuk jejari besar untuk mengurangkan kehausan lenturan.',
     }},
-    {"sku":"FS-004","name":"Bicep Curl Machine","name_zh":"二头肌训练器","name_ms":"Mesin Bisep Curl","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-004","name":"Bicep Curl Machine","name_zh":"二头肌训练器","name_ms":"Mesin Bisep Curl","category_key":"sel","price_fob_usd":568,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=60","image_url":"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"1150×1100×1400 mm","Weight Stack":"Standard pin-loaded","Target":"Biceps"},
      "maintenance": {
@@ -619,7 +619,7 @@ PRODUCTS = [
         'durability_note_zh': '单关节运动器械，传动路径短、受力简单，是所有固定器械中故障率最低的类型之一。',
         'durability_note_ms': 'Mesin pengasingan sendi tunggal dengan laluan transmisi pendek dan dinamik daya yang ringkas — salah satu jenis kadar kerosakan paling rendah antara semua peralatan pin-loaded.',
     }},
-    {"sku":"FS-005","name":"Prone Leg Curl","name_zh":"俯卧曲腿","name_ms":"Mesin Leg Curl Telungkup","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-005","name":"Prone Leg Curl","name_zh":"俯卧曲腿","name_ms":"Mesin Leg Curl Telungkup","category_key":"sel","price_fob_usd":568,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100538/1725384701/100538-video-720.mp4",
      "specs":{"Dimensions":"1680×1000×1630 mm","Weight Stack":"Standard pin-loaded","Target":"Hamstrings","Feature":"Quick-adjust key"},
      "maintenance": {
@@ -741,7 +741,7 @@ PRODUCTS = [
         'durability_note_zh': '快调键采用弹簧锁销结构，已备充足替换件，随坏随换30秒搞定。',
         'durability_note_ms': 'Kunci laras pantas menggunakan mekanisme pin kunci spring. Stok alat ganti mencukupi — penggantian hanya mengambil 30 saat apabila diperlukan.',
     }},
-    {"sku":"FS-006","name":"Seated Leg Extension","name_zh":"坐式伸腿","name_ms":"Mesin Leg Extension Duduk","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-006","name":"Seated Leg Extension","name_zh":"坐式伸腿","name_ms":"Mesin Leg Extension Duduk","category_key":"sel","price_fob_usd":568,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=400&q=60","image_url":"https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"1150×1100×1630 mm","Weight Stack":"Standard pin-loaded","Target":"Quadriceps","Feature":"Quick-adjust key"},
      "maintenance": {
@@ -863,7 +863,7 @@ PRODUCTS = [
         'durability_note_zh': '与俯卧曲腿共用同规格快调键备件，互为冗余保障。',
         'durability_note_ms': 'Berkongsi alat ganti kunci laras pantas spesifikasi sama dengan prone leg curl — sandaran redundansi bersama.',
     }},
-    {"sku":"FS-007","name":"Hip Adductor / Abductor","name_zh":"扶手款大腿内外侧","name_ms":"Mesin Adduktor / Abduktor Pinggul","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-007","name":"Hip Adductor / Abductor","name_zh":"扶手款大腿内外侧","name_ms":"Mesin Adduktor / Abduktor Pinggul","category_key":"sel","price_fob_usd":711,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1597452485669-2c7bb5fef90d?w=400&q=60","image_url":"https://images.unsplash.com/photo-1597452485669-2c7bb5fef90d?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"1550×670×1400 mm","Weight Stack":"Standard pin-loaded","Target":"Inner / Outer Thigh","Feature":"Adjustable backrest, single machine switches inner/outer"},
      "maintenance": {
@@ -985,7 +985,7 @@ PRODUCTS = [
         'durability_note_zh': '内外侧一机切换设计，靠背角度可调，调节机构采用齿条锁定，10万次切换无松动。',
         'durability_note_ms': 'Satu mesin bertukar antara paha dalam/luar dengan sandaran boleh laras. Mekanisme penukaran menggunakan kunci rak-dan-pinion — tiada kelonggaran selepas 100,000 penukaran.',
     }},
-    {"sku":"FS-008","name":"Adjustable Cable Crossover (Hi-Lo)","name_zh":"可调节高低拉（新款）","name_ms":"Mesin Kabel Boleh Laras","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-008","name":"Adjustable Cable Crossover (Hi-Lo)","name_zh":"可调节高低拉（新款）","name_ms":"Mesin Kabel Boleh Laras","category_key":"sel","price_fob_usd":690,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=60","image_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"2230×890×2255 mm","Weight Stack":"Standard pin-loaded","Target":"Full body multi-joint","Feature":"Adjustable seat, stepless hi-lo pulley"},
      "maintenance": {
@@ -1107,7 +1107,7 @@ PRODUCTS = [
         'durability_note_zh': '高低滑轮无极调节，功能覆盖面最广的单台器械。钢丝绳走线虽长但采用大弧度滑轮组，弯折应力小。',
         'durability_note_ms': 'Pelarasan takal tinggi-rendah tanpa had — peralatan tunggal paling serba guna. Laluan kabel panjang tetapi menggunakan kumpulan takal jejari besar, meminimumkan tekanan lenturan.',
     }},
-    {"sku":"FS-009","name":"Cable Crossover (Gen 2)","name_zh":"新款大剪刀（二代）","name_ms":"Mesin Cable Crossover (Gen 2)","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-009","name":"Cable Crossover (Gen 2)","name_zh":"新款大剪刀（二代）","name_ms":"Mesin Cable Crossover (Gen 2)","category_key":"sel","price_fob_usd":771,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1621289431871-4467c388e04a?w=400&q=60","image_url":"https://images.unsplash.com/photo-1621289431871-4467c388e04a?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"1645×1310×2020 mm","Net Weight":"268 kg","Weight Stack":"Standard pin-loaded","Target":"Chest / Back / Shoulders multi-function"},
      "maintenance": {
@@ -1218,7 +1218,7 @@ PRODUCTS = [
         'durability_note_zh': '二代升级款，净重268kg，整机稳定性极强。双配重塔独立运行互不干扰。',
         'durability_note_ms': 'Naik taraf Gen 2, berat bersih 268kg — kestabilan sangat tinggi. Dua tindanan berat beroperasi secara bebas tanpa gangguan antara satu sama lain.',
     }},
-    {"sku":"FS-010","name":"Lateral Raise Machine","name_zh":"侧平举","name_ms":"Mesin Lateral Raise","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-010","name":"Lateral Raise Machine","name_zh":"侧平举","name_ms":"Mesin Lateral Raise","category_key":"sel","price_fob_usd":711,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1532029837206-abbe2b7620e3?w=400&q=60","image_url":"https://images.unsplash.com/photo-1532029837206-abbe2b7620e3?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"1450×800×1950 mm","Weight Stack":"Standard pin-loaded","Target":"Middle Deltoid"},
      "maintenance": {
@@ -1318,7 +1318,7 @@ PRODUCTS = [
         'durability_note_zh': '单关节孤立动作器械，传动路径最短，结构最简单，故障率极低。',
         'durability_note_ms': 'Mesin pengasingan sendi tunggal dengan laluan transmisi paling pendek dan struktur paling ringkas — kadar kerosakan sangat rendah.',
     }},
-    {"sku":"FS-011","name":"Diverging Lat Pulldown","name_zh":"分动式高拉","name_ms":"Mesin Lat Pulldown Diverging","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-011","name":"Diverging Lat Pulldown","name_zh":"分动式高拉","name_ms":"Mesin Lat Pulldown Diverging","category_key":"sel","price_fob_usd":1218,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1598268030450-7a476f602060?w=400&q=60","image_url":"https://images.unsplash.com/photo-1598268030450-7a476f602060?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"2680×1750×2520 mm","Weight Stack":"Standard pin-loaded","Target":"Lats / Teres Major","Feature":"Independent diverging arms"},
      "maintenance": {
@@ -1440,7 +1440,7 @@ PRODUCTS = [
         'durability_note_zh': '分动独立臂设计，左右配重塔独立运行。整机高度2520mm，采用加厚方管主架体，稳定性出色。',
         'durability_note_ms': 'Reka bentuk lengan bebas diverging dengan tindanan berat kiri/kanan berasingan. Ketinggian 2520mm dengan rangka utama tiub persegi tebal tambahan — kestabilan cemerlang.',
     }},
-    {"sku":"FS-012","name":"Seated Shoulder Press (Pin-Loaded)","name_zh":"坐式推肩","name_ms":"Mesin Tekan Bahu Duduk (Pin)","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-012","name":"Seated Shoulder Press (Pin-Loaded)","name_zh":"坐式推肩","name_ms":"Mesin Tekan Bahu Duduk (Pin)","category_key":"sel","price_fob_usd":568,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=400&q=60","image_url":"https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"1450×1650×1650 mm","Weight Stack":"Standard pin-loaded","Target":"Deltoid / Triceps"},
      "maintenance": {
@@ -1551,7 +1551,7 @@ PRODUCTS = [
         'durability_note_zh': '推肩类器械受力方向为垂直向上，配重片导轨磨损最小，是所有固定器械中导轨寿命最长的类型。',
         'durability_note_ms': 'Mesin tekan bahu mempunyai arah daya menegak ke atas — kehausan rod panduan paling minimum, hayat rod panduan paling lama antara semua peralatan pin-loaded.',
     }},
-    {"sku":"FS-013","name":"Diverging Seated Row","name_zh":"分动插片配重式划艇拉背训练器","name_ms":"Mesin Dayung Duduk Diverging","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-013","name":"Diverging Seated Row","name_zh":"分动插片配重式划艇拉背训练器","name_ms":"Mesin Dayung Duduk Diverging","category_key":"sel","price_fob_usd":497,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1596357395104-ba989e72b5ec?w=400&q=60","image_url":"https://images.unsplash.com/photo-1596357395104-ba989e72b5ec?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"1500×1270×1300 mm","Net Weight":"169 kg","Packing":"1700×1100×520 mm (wooden crate)","Target":"Lats / Rhomboids","Feature":"Independent diverging arms"},
      "maintenance": {
@@ -1673,7 +1673,7 @@ PRODUCTS = [
         'durability_note_zh': '分动独立臂设计纠正左右力量不平衡，双配重塔独立运行，单侧故障不影响另一侧使用。',
         'durability_note_ms': 'Lengan bebas diverging membetulkan ketidakseimbangan kekuatan kiri/kanan. Dua tindanan berat beroperasi secara bebas — kerosakan satu sisi tidak menjejaskan sisi yang lain.',
     }},
-    {"sku":"FS-014","name":"Diverging Incline Chest Press","name_zh":"分动式超上斜推胸训练器","name_ms":"Mesin Tekan Dada Incline Diverging","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-014","name":"Diverging Incline Chest Press","name_zh":"分动式超上斜推胸训练器","name_ms":"Mesin Tekan Dada Incline Diverging","category_key":"sel","price_fob_usd":497,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52080/52080-720.mp4",
      "specs":{"Dimensions":"1270×1500×1530 mm","Net Weight":"169 kg","Packing":"1700×1220×580 mm (wooden crate)","Target":"Upper Chest / Front Deltoid"},
      "maintenance": {
@@ -1795,7 +1795,7 @@ PRODUCTS = [
         'durability_note_zh': '超上斜角度精准锁定，角度调节齿条经渗碳处理，硬度HRC58以上，数万次调节无磨损。',
         'durability_note_ms': 'Sudut super-incline dikunci dengan tepat. Rak pelarasan sudut dikarburkan ke kekerasan HRC58+ — tiada kehausan selepas berpuluh ribu pelarasan.',
     }},
-    {"sku":"FS-015","name":"Diverging Wide Chest Press","name_zh":"分动式阔角度推胸训练器","name_ms":"Mesin Tekan Dada Lebar Diverging","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-015","name":"Diverging Wide Chest Press","name_zh":"分动式阔角度推胸训练器","name_ms":"Mesin Tekan Dada Lebar Diverging","category_key":"sel","price_fob_usd":497,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1571388208497-71bedc66e932?w=400&q=60","image_url":"https://images.unsplash.com/photo-1571388208497-71bedc66e932?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100538/1725384701/100538-video-720.mp4",
      "specs":{"Dimensions":"1150×1500×1760 mm","Net Weight":"180 kg","Packing":"2250×1100×580 mm (wooden crate)","Target":"Outer Chest / Serratus Anterior"},
      "maintenance": {
@@ -1917,7 +1917,7 @@ PRODUCTS = [
         'durability_note_zh': '阔角度运动轨迹设计，关节轴承承受侧向力较大，已在通用库中为此类器械额外备足关节轴承。',
         'durability_note_ms': 'Trajektori gerakan sudut lebar mengenakan daya sisi yang lebih tinggi pada galas sfera. Galas sfera tambahan telah disimpan dalam inventori alat ganti universal untuk jenis ini.',
     }},
-    {"sku":"FS-016","name":"Tricep Dip / Back Machine","name_zh":"臂下压背肌训练器","name_ms":"Mesin Tricep Dip / Belakang","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-016","name":"Tricep Dip / Back Machine","name_zh":"臂下压背肌训练器","name_ms":"Mesin Tricep Dip / Belakang","category_key":"sel","price_fob_usd":536,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1520948013839-62020f374478?w=400&q=60","image_url":"https://images.unsplash.com/photo-1520948013839-62020f374478?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"1380×1300×1500 mm","Net Weight":"182 kg","Packing":"2250×1080×580 mm (wooden crate)","Target":"Triceps / Lats"},
      "maintenance": {
@@ -2028,7 +2028,7 @@ PRODUCTS = [
         'durability_note_zh': '臂下压动作行程短、配重轻，钢丝绳和滑轮受力最小，全场固定器械中最耐用的几台之一。',
         'durability_note_ms': 'Tricep dip mempunyai julat gerakan pendek dan beban berat ringan. Kabel dan takal mengalami tekanan paling sedikit — salah satu mesin pin-loaded paling tahan lama di gim.',
     }},
-    {"sku":"FS-017","name":"Diverging Decline Chest Press","name_zh":"分动插片配重式下斜推胸训练器","name_ms":"Mesin Tekan Dada Decline Diverging","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-017","name":"Diverging Decline Chest Press","name_zh":"分动插片配重式下斜推胸训练器","name_ms":"Mesin Tekan Dada Decline Diverging","category_key":"sel","price_fob_usd":497,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=75","video_url":"https://assets.mixkit.co/videos/40248/40248-720.mp4",
      "specs":{"Dimensions":"1300×1380×1730 mm","Net Weight":"150 kg","Packing":"1700×1370×470 mm (wooden crate)","Target":"Lower Chest"},
      "maintenance": {
@@ -2150,7 +2150,7 @@ PRODUCTS = [
         'durability_note_zh': '下斜角度固定设计，无角度调节机构，结构件更少，可靠性更高。',
         'durability_note_ms': 'Reka bentuk sudut decline tetap — tiada mekanisme pelarasan sudut bermakna komponen struktur lebih sedikit dan kebolehpercayaan lebih tinggi.',
     }},
-    {"sku":"FS-018","name":"Diverging Flat Chest Press","name_zh":"分动式平卧推胸训练器","name_ms":"Mesin Tekan Dada Rata Diverging","category_key":"sel","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"FS-018","name":"Diverging Flat Chest Press","name_zh":"分动式平卧推胸训练器","name_ms":"Mesin Tekan Dada Rata Diverging","category_key":"sel","price_fob_usd":497,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=60","image_url":"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"1680×1550×1070 mm","Net Weight":"158 kg","Packing":"1100×1700×660 mm (wooden crate)","Target":"Mid Chest"},
      "maintenance": {
@@ -2276,7 +2276,7 @@ PRODUCTS = [
     # ============================================================
     #  挂片式 Plate-Loaded (pl) — 5 units
     # ============================================================
-    {"sku":"PL-001","name":"V-Squat / Hack Squat","name_zh":"联动V字哈克深蹲","name_ms":"Mesin V-Squat / Hack Squat","category_key":"pl","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"PL-001","name":"V-Squat / Hack Squat","name_zh":"联动V字哈克深蹲","name_ms":"Mesin V-Squat / Hack Squat","category_key":"pl","price_fob_usd":974,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=400&q=60","image_url":"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Dimensions":"1800×1500×1650 mm","Net Weight":"198 kg","Loading":"Plate loaded","Target":"Quads / Glutes","Feature":"Adjustable foot plate height & travel range"},
      "maintenance": {
@@ -2379,7 +2379,7 @@ PRODUCTS = [
         'durability_note_zh': '安全锁扣是这台器械唯一的高频易损件，已备双倍数量。导轨采用45#钢镀硬铬，承载160kg用户反复深蹲无变形。',
         'durability_note_ms': 'Kunci keselamatan adalah satu-satunya alat ganti kehausan tinggi pada mesin ini — stok berganda telah disediakan. Rel panduan diperbuat daripada keluli 45# dengan salutan krom keras, menampung pengguna 160kg melakukan squat berulang tanpa ubah bentuk.',
     }},
-    {"sku":"PL-002","name":"Leg Press / Squat Machine","name_zh":"大腿深蹲训练器","name_ms":"Mesin Leg Press / Squat","category_key":"pl","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"PL-002","name":"Leg Press / Squat Machine","name_zh":"大腿深蹲训练器","name_ms":"Mesin Leg Press / Squat","category_key":"pl","price_fob_usd":934,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1434608519344-49d77a699e1d?w=400&q=60","image_url":"https://images.unsplash.com/photo-1434608519344-49d77a699e1d?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"2490×1550×1550 mm","Loading":"Plate loaded","Target":"Quads / Glutes / Hamstrings"},
      "maintenance": {
@@ -2471,7 +2471,7 @@ PRODUCTS = [
         'durability_note_zh': '与哈克深蹲共用同规格安全锁扣备件，互为冗余。主体框架采用100×50mm矩形钢管，承载力远超额定值。',
         'durability_note_ms': 'Berkongsi kunci keselamatan spesifikasi sama dengan hack squat — redundansi bersama. Rangka utama menggunakan tiub keluli segi empat 100×50mm, kapasiti beban jauh melebihi nilai dinilai.',
     }},
-    {"sku":"PL-003","name":"Flat Bench Press Station","name_zh":"平卧推胸训练器（杠铃卧推架）","name_ms":"Stesen Bench Press Rata","category_key":"pl","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"PL-003","name":"Flat Bench Press Station","name_zh":"平卧推胸训练器（杠铃卧推架）","name_ms":"Stesen Bench Press Rata","category_key":"pl","price_fob_usd":467,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"2059×1778×1384 mm","Net Weight":"168 kg","Gross Weight":"218 kg","Packing":"2100×1200×450 mm","Loading":"Plate loaded (Olympic barbell + plates)","Target":"Chest / Front Deltoid / Triceps"},
      "maintenance": {
@@ -2544,7 +2544,7 @@ PRODUCTS = [
         'durability_note_zh': '没有钢丝绳、没有滑轮、没有电子件——纯钢焊接结构，能坏的只有橡胶垫和皮面。J-Hook橡胶垫是唯一消耗品，已备充足。这台器械可以用到你下一次装修。',
         'durability_note_ms': 'Tiada kabel, tiada takal, tiada elektronik — pembinaan kimpalan keluli tulen. Satu-satunya yang haus ialah pad getah dan upholsteri. Pelapik getah J-Hook adalah satu-satunya bahan guna habis, stok penuh. Mesin ini akan bertahan sehingga pengubahsuaian anda yang seterusnya.',
     }},
-    {"sku":"PL-004","name":"Incline Bench Press Station","name_zh":"上斜推胸训练器（杠铃上斜卧推架）","name_ms":"Stesen Bench Press Incline","category_key":"pl","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"PL-004","name":"Incline Bench Press Station","name_zh":"上斜推胸训练器（杠铃上斜卧推架）","name_ms":"Stesen Bench Press Incline","category_key":"pl","price_fob_usd":609,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"2059×1895×1516 mm","Net Weight":"180 kg (frame) / 250 kg (with weights)","Gross Weight":"300 kg","Packing":"2100×1200×800 mm","Loading":"Plate loaded (Olympic barbell + plates)","Target":"Upper Chest / Front Deltoid"},
      "maintenance": {
@@ -2617,7 +2617,7 @@ PRODUCTS = [
         'durability_note_zh': '同PL-003，纯钢焊接，零电子零绳索。净重250kg的自重本身就是稳定性的最好保证。',
         'durability_note_ms': 'Sama dengan PL-003 — kimpalan keluli tulen, sifar elektronik, sifar kabel. Berat bersih 250kg itu sendiri adalah jaminan kestabilan terbaik.',
     }},
-    {"sku":"PL-005","name":"5-Station Multi Gym","name_zh":"五人站（综合训练器）","name_ms":"Mesin Gym Multi 5-Stesen","category_key":"pl","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"PL-005","name":"5-Station Multi Gym","name_zh":"五人站（综合训练器）","name_ms":"Mesin Gym Multi 5-Stesen","category_key":"pl","price_fob_usd":2436,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1558611848-73f7eb4001a1?w=400&q=60","image_url":"https://images.unsplash.com/photo-1558611848-73f7eb4001a1?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100538/1725384701/100538-video-720.mp4",
      "specs":{"Dimensions":"3641×4700×2400 mm","Net Weight":"660 kg (2 crates combined)","Crate 1":"2470×1470×970 mm, net 470kg, gross 568kg","Crate 2":"2520×1020×900 mm, net 190kg, gross 246kg","Gross Weight":"814 kg","Target":"Full body (lat pull / low row / pec fly / legs etc.)"},
      "maintenance": {
@@ -2754,7 +2754,7 @@ PRODUCTS = [
     # ============================================================
     #  力量架 Racks & Frames (rf) — 6 items
     # ============================================================
-    {"sku":"RF-001","name":"Smith Machine","name_zh":"史密斯训练器","name_ms":"Mesin Smith","category_key":"rf","price_fob_usd":None,"qty":1,"zone":"B",
+    {"sku":"RF-001","name":"Smith Machine","name_zh":"史密斯训练器","name_ms":"Mesin Smith","category_key":"rf","price_fob_usd":974,"qty":1,"zone":"B",
      "thumb_url":"https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52080/52080-720.mp4",
      "specs":{"Dimensions":"1250×2210×2370 mm","Net Weight":"321 kg","Gross Weight":"391 kg","Packing":"2400×1600×450 mm (mixed crate)","Target":"Full body (squat / bench press / row / shrug etc.)"},
      "maintenance": {
@@ -2854,7 +2854,7 @@ PRODUCTS = [
         'durability_note_zh': '史密斯的核心是两根导轨——经过硬铬镀层处理，表面硬度HRC65以上，正常保养下导轨本身基本不会磨损，磨损的是铜套，换铜套就像换灯泡一样简单。',
         'durability_note_ms': 'Teras Smith machine ialah dua rel panduannya — disalut krom keras dengan kekerasan permukaan HRC65+. Dengan penyelenggaraan normal, rel itu sendiri pada dasarnya tidak akan haus. Yang haus ialah sesendal — mengganti sesendal semudah menukar mentol lampu.',
     }},
-    {"sku":"RF-002","name":"Open Squat Rack / Power Rack","name_zh":"开放深蹲架","name_ms":"Rak Squat Terbuka","category_key":"rf","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"RF-002","name":"Open Squat Rack / Power Rack","name_zh":"开放深蹲架","name_ms":"Rak Squat Terbuka","category_key":"rf","price_fob_usd":355,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Dimensions":"1300×1300×2250 mm","Gross Weight":"~300 kg (with T-platform)","Packing":"Platform 2440×1220×180 mm + Rack 2400×750×500 mm","Target":"Squat / Deadlift / Bench Press / Pull-up"},
      "maintenance": {
@@ -2927,7 +2927,7 @@ PRODUCTS = [
         'durability_note_zh': '一根根钢管焊在一起，没有任何运动部件。这是健身房里最不可能坏的东西。你看到那些用了20年还在用的老铁馆，深蹲架永远是最初那个。',
         'durability_note_ms': 'Tiub keluli dikimpal bersama tanpa sebarang bahagian bergerak. Ini adalah benda yang paling tidak mungkin rosak di gim. Gim hardcore berusia 20 tahun yang anda lihat? Rak squat sentiasa yang asal.',
     }},
-    {"sku":"RF-003","name":"Deadlift / Squat Platform","name_zh":"T型深蹲架训练平台","name_ms":"Platform Squat / Deadlift","category_key":"rf","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"RF-003","name":"Deadlift / Squat Platform","name_zh":"T型深蹲架训练平台","name_ms":"Platform Squat / Deadlift","category_key":"rf","price_fob_usd":244,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52080/52080-720.mp4",
      "specs":{"Dimensions":"2300×1100×30 mm (length customizable)","Material":"High-density rubber + solid wood composite","Feature":"Pairs with open squat rack, flush-mount installation"},
      "maintenance": {
@@ -2966,7 +2966,7 @@ PRODUCTS = [
         'durability_note_zh': '一块木板加两块橡胶垫，没有任何机械部件。它的工作就是躺在地上被你踩，这件事它可以做一辈子。',
         'durability_note_ms': 'Satu papan kayu ditambah dua tikar getah — tiada bahagian mekanikal langsung. Tugasnya ialah berbaring di lantai dan dipijak, dan ia boleh melakukannya seumur hidup.',
     }},
-    {"sku":"RF-004","name":"2-Tier Dumbbell Rack","name_zh":"双层哑铃架","name_ms":"Rak Dumbbell 2-Tingkat","category_key":"rf","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"RF-004","name":"2-Tier Dumbbell Rack","name_zh":"双层哑铃架","name_ms":"Rak Dumbbell 2-Tingkat","category_key":"rf","price_fob_usd":173,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Dimensions":"2450×780×750 mm","Net Weight":"75 kg (empty)","Gross Weight":"105 kg","Packing":"2360×650×330 mm","Capacity":"10 pairs (2.5–25 kg)"},
      "maintenance": {
@@ -3009,7 +3009,7 @@ PRODUCTS = [
         'durability_note_zh': '钢管焊接架子，承重设计远超实际负载。唯一会坏的是橡胶托垫被哑铃砸凹，换垫即可。',
         'durability_note_ms': 'Rak kimpalan tiub keluli dengan kapasiti beban jauh melebihi penggunaan sebenar. Satu-satunya yang rosak ialah pad getah penyangga dilekukkan oleh dumbbell — ganti pad sahaja.',
     }},
-    {"sku":"RF-005","name":"Single-Tier Dumbbell Rack","name_zh":"补充单层哑铃架","name_ms":"Rak Dumbbell 1-Tingkat","category_key":"rf","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"RF-005","name":"Single-Tier Dumbbell Rack","name_zh":"补充单层哑铃架","name_ms":"Rak Dumbbell 1-Tingkat","category_key":"rf","price_fob_usd":122,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1623874514711-0f321325f318?w=400&q=60","image_url":"https://images.unsplash.com/photo-1623874514711-0f321325f318?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52099/52099-720.mp4",
      "specs":{"Dimensions":"1800×600×750 mm","Net Weight":"~55 kg","Capacity":"6 pairs (27.5–40 kg)","Note":"Recommended add-on, not in original list"},
      "maintenance": {
@@ -3052,7 +3052,7 @@ PRODUCTS = [
         'durability_note_zh': '同RF-004，钢管架子，买回来就不用管它。',
         'durability_note_ms': 'Sama seperti RF-004 — rak tiub keluli, beli dan lupakan sahaja.',
     }},
-    {"sku":"RF-006","name":"Weight Plate Tree","name_zh":"杠铃片树架","name_ms":"Rak Plat Berat","category_key":"rf","price_fob_usd":None,"qty":2,"zone":"C",
+    {"sku":"RF-006","name":"Weight Plate Tree","name_zh":"杠铃片树架","name_ms":"Rak Plat Berat","category_key":"rf","price_fob_usd":71,"qty":2,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Dimensions":"~600×600×1100 mm each","Net Weight":"~45 kg each","Capacity":"~150 kg Olympic plates per rack","Note":"Recommended add-on x2, not in original list"},
      "maintenance": {
@@ -3087,7 +3087,7 @@ PRODUCTS = [
     # ============================================================
     #  训练凳 Benches (bn) — 6 units
     # ============================================================
-    {"sku":"BN-001","name":"Flat Bench","name_zh":"水平训练椅","name_ms":"Bangku Rata","category_key":"bn","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"BN-001","name":"Flat Bench","name_zh":"水平训练椅","name_ms":"Bangku Rata","category_key":"bn","price_fob_usd":96,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Dimensions":"1270×560×410 mm","Net Weight":"54 kg","Packing":"1320×620×420 mm (wooden crate)"},
      "maintenance": {
@@ -3138,7 +3138,7 @@ PRODUCTS = [
         'durability_note_zh': '水平训练椅没有任何可调机构——一个钢架一块垫子。钢架不会坏，垫子坏了本地包皮比从中国运一块新的便宜十倍。',
         'durability_note_ms': 'Bangku rata mempunyai sifar mekanisme boleh laras — satu rangka keluli, satu pad. Rangka tidak akan rosak. Apabila pad retak, upholsteri semula tempatan kos sepuluh kali lebih murah daripada menghantar yang baru dari China.',
     }},
-    {"sku":"BN-002","name":"Sit-Up / Ab Board","name_zh":"腹肌板","name_ms":"Papan Sit-Up / Ab","category_key":"bn","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"BN-002","name":"Sit-Up / Ab Board","name_zh":"腹肌板","name_ms":"Papan Sit-Up / Ab","category_key":"bn","price_fob_usd":179,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=60","image_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Dimensions":"1740×610×880 mm","Net Weight":"60 kg","Packing":"1620×820×670 mm (carton)"},
      "maintenance": {
@@ -3192,7 +3192,7 @@ PRODUCTS = [
         'durability_note_zh': '腹肌板受力方向单一，结构简单。脚钩泡棉是唯一会被磨损的部件，已随货配送备用。',
         'durability_note_ms': 'Papan ab mempunyai beban satu arah dan struktur ringkas. Span cangkuk kaki adalah satu-satunya bahagian haus — alat ganti dihantar bersama peralatan.',
     }},
-    {"sku":"BN-003","name":"Dumbbell Bench (Adjustable)","name_zh":"哑铃练习凳","name_ms":"Bangku Dumbbell (Boleh Laras)","category_key":"bn","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"BN-003","name":"Dumbbell Bench (Adjustable)","name_zh":"哑铃练习凳","name_ms":"Bangku Dumbbell (Boleh Laras)","category_key":"bn","price_fob_usd":136,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534368959876-26bf04f2c947?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Dimensions":"1100×630×780 mm","Net Weight":"60 kg","Packing":"1040×970×600 mm (carton)"},
      "maintenance": {
@@ -3254,7 +3254,7 @@ PRODUCTS = [
         'durability_note_zh': '可调凳最常见的问题就是锁销弹簧疲劳——通用库已备足替换锁销，30秒自行更换。',
         'durability_note_ms': 'Masalah paling biasa dengan bangku boleh laras ialah kelesuan spring pin kunci — stok universal mempunyai pin gantian yang mencukupi. Penggantian sendiri 30 saat.',
     }},
-    {"sku":"BN-004","name":"75 Incline Bench","name_zh":"上斜练习椅-75度","name_ms":"Bangku Incline 75","category_key":"bn","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"BN-004","name":"75 Incline Bench","name_zh":"上斜练习椅-75度","name_ms":"Bangku Incline 75","category_key":"bn","price_fob_usd":96,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Dimensions":"1300×640×940 mm","Net Weight":"70 kg","Packing":"1350×700×970 mm (wooden crate)"},
      "maintenance": {
@@ -3297,7 +3297,7 @@ PRODUCTS = [
         'durability_note_zh': '75度固定角度，没有任何调节机构，比可调凳少了唯一的故障点。钢架终身使用，皮面本地翻新。',
         'durability_note_ms': 'Sudut tetap 75 darjah tanpa mekanisme pelarasan — menghapuskan satu-satunya titik kerosakan yang terdapat pada bangku boleh laras. Rangka keluli untuk penggunaan seumur hidup, upholsteri diupholsteri semula secara tempatan.',
     }},
-    {"sku":"BN-005","name":"Adjustable Bench (FID)","name_zh":"可调式训练椅","name_ms":"Bangku Boleh Laras (FID)","category_key":"bn","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"BN-005","name":"Adjustable Bench (FID)","name_zh":"可调式训练椅","name_ms":"Bangku Boleh Laras (FID)","category_key":"bn","price_fob_usd":179,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1620188526357-d0e5c0061f8c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1620188526357-d0e5c0061f8c?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52112/52112-720.mp4",
      "specs":{"Dimensions":"1330×560×470 mm","Net Weight":"65 kg","Packing":"1390×620×460 mm (wooden crate)","Feature":"Flat / Incline / Decline multi-angle adjustable"},
      "maintenance": {
@@ -3359,7 +3359,7 @@ PRODUCTS = [
         'durability_note_zh': 'FID多角度可调，锁销是唯一活动部件，通用库已备足。日常只要每天擦汗、每周按一按锁销就行了。',
         'durability_note_ms': 'FID pelbagai sudut boleh laras — pin kunci adalah satu-satunya bahagian bergerak, stok penuh dalam inventori universal. Harian hanya perlu lap peluh, mingguan tekan-tekan pin kunci.',
     }},
-    {"sku":"BN-006","name":"Back Extension / Hyperextension","name_zh":"背部伸展训练器","name_ms":"Mesin Ekstensi Belakang","category_key":"bn","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"BN-006","name":"Back Extension / Hyperextension","name_zh":"背部伸展训练器","name_ms":"Mesin Ekstensi Belakang","category_key":"bn","price_fob_usd":179,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=400&q=60","image_url":"https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52089/52089-720.mp4",
      "specs":{"Dimensions":"1500×720×1000 mm","Net Weight":"96 kg","Packing":"1540×770×580 mm (wooden crate)","Target":"Erector Spinae / Glutes"},
      "maintenance": {
@@ -3414,7 +3414,7 @@ PRODUCTS = [
     # ============================================================
     #  有氧器械 Cardio (ca) — 5 SKU / 12 units
     # ============================================================
-    {"sku":"CD-001","name":"Commercial Treadmill (LED)","name_zh":"豪华商用跑步机（LED屏）","name_ms":"Treadmill Komersial (LED)","category_key":"ca","price_fob_usd":None,"qty":5,"zone":"A",
+    {"sku":"CD-001","name":"Commercial Treadmill (LED)","name_zh":"豪华商用跑步机（LED屏）","name_ms":"Treadmill Komersial (LED)","category_key":"ca","price_fob_usd":913,"qty":5,"zone":"A",
      "thumb_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100531/1725383901/100531-video-720.mp4",
      "specs":{"Dimensions":"2130×920×1650 mm","Motor":"3.0 HP AC (2.2 kW)","Speed":"1-20 km/h","Incline":"0-20%","Max Load":"180 kg","Net Weight":"180 kg","Gross Weight":"220 kg","Packing":"Crate 2255×970×370 mm / Carton 1170×960×380 mm","Display":"LED display","Roller Diameter":"100 mm","Feature":"Anti-static, anti-EMI, anti-slip side rails, belt anti-drift design"},
      "maintenance": {
@@ -3580,7 +3580,7 @@ PRODUCTS = [
         'durability_note_zh': '商用级3.0Hp直流电机，连续运转设计，日均使用12小时以上无压力。数字信号控制系统杜绝急停和飞车，100mm大直径滚筒延长电机和跑带寿命。',
         'durability_note_ms': 'Motor DC 3.0HP gred komersial direka untuk operasi berterusan, mampu mengendalikan penggunaan harian 12+ jam dengan mudah. Sistem kawalan isyarat digital mencegah berhenti mengejut dan lari laju tanpa kawalan. Penggelek berdiameter besar 100mm memanjangkan hayat motor dan tali lari.',
     }},
-    {"sku":"CD-002","name":"Elliptical Trainer","name_zh":"椭圆机","name_ms":"Mesin Elliptical","category_key":"ca","price_fob_usd":None,"qty":2,"zone":"A",
+    {"sku":"CD-002","name":"Elliptical Trainer","name_zh":"椭圆机","name_ms":"Mesin Elliptical","category_key":"ca","price_fob_usd":406,"qty":2,"zone":"A",
      "thumb_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100531/1725383901/100531-video-720.mp4",
      "specs":{"Dimensions":"2050×740×1710 mm","Resistance":"Magnetic","Drive":"Rear-wheel drive","Handlebar":"PU foam","Max Load":"160 kg","Net Weight":"98 kg","Gross Weight":"133 kg","Packing":"2120×730×880 mm (wooden crate)","Target":"Shoulders / Arms / Glutes / Legs","Container":"20ft/18 pcs, 40ft/39 pcs, 40HQ/43 pcs"},
      "maintenance": {
@@ -3694,7 +3694,7 @@ PRODUCTS = [
         'durability_note_zh': '磁控阻力系统无接触摩擦，后轮驱动结构传动损耗低，整机设计寿命8年以上商用连续使用。',
         'durability_note_ms': 'Sistem rintangan magnet tanpa geseran sentuhan. Struktur pacuan roda belakang meminimumkan kehilangan transmisi. Direka untuk 8+ tahun penggunaan komersial berterusan.',
     }},
-    {"sku":"CD-003","name":"Stair Climber","name_zh":"楼梯机","name_ms":"Mesin Stair Climber","category_key":"ca","price_fob_usd":None,"qty":2,"zone":"A",
+    {"sku":"CD-003","name":"Stair Climber","name_zh":"楼梯机","name_ms":"Mesin Stair Climber","category_key":"ca","price_fob_usd":670,"qty":2,"zone":"A",
      "thumb_url":"https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=800&q=75","video_url":"https://assets.mixkit.co/videos/50972/50972-720.mp4",
      "specs":{"Model":"1018 Stair Climber","Dimensions":"1400×860×2100 mm","Power":"AC220V±10% or AC110V±10% (switching PSU)","Speed":"15-164 steps/min","Max Load":"160 kg","Net Weight":"166 kg","Gross Weight":"210 kg","Packing":"1370×960×1300 mm","Crate Volume":"1.7 m3","Feature":"Injection-molded shell, durable & aesthetic"},
      "maintenance": {
@@ -3819,7 +3819,7 @@ PRODUCTS = [
         'durability_note_zh': '注塑外壳一体成型，结实耐用不变形。工业级链条传动系统，设计承载160kg持续运转。',
         'durability_note_ms': 'Sarung acuan suntikan dibentuk satu keping, kukuh dan tahan ubah bentuk. Sistem pacuan rantai gred industri direka untuk operasi berterusan pada beban 160kg.',
     }},
-    {"sku":"CD-004","name":"Commercial Recumbent Bike","name_zh":"商用卧式健身车","name_ms":"Basikal Recumbent Komersial","category_key":"ca","price_fob_usd":None,"qty":2,"zone":"A",
+    {"sku":"CD-004","name":"Commercial Recumbent Bike","name_zh":"商用卧式健身车","name_ms":"Basikal Recumbent Komersial","category_key":"ca","price_fob_usd":609,"qty":2,"zone":"A",
      "thumb_url":"https://images.unsplash.com/photo-1591291621164-2c6367723315?w=400&q=60","image_url":"https://images.unsplash.com/photo-1591291621164-2c6367723315?w=800&q=75","video_url":"https://assets.mixkit.co/videos/50972/50972-720.mp4",
      "specs":{"Dimensions":"~1700×650×1300 mm","Net Weight":"~75 kg","Resistance":"Magnetic","Max Load":"~150 kg","Note":"Recommended add-on, ideal for elderly members & rehabilitation"},
      "maintenance": {
@@ -3903,7 +3903,7 @@ PRODUCTS = [
         'durability_note_zh': '磁控阻力无物理接触，零磨损调阻。卧式设计重心低，机身结构受力均匀，整机几乎无故障点。适合长时间高频次商用。',
         'durability_note_ms': 'Rintangan magnet tanpa sentuhan fizikal, pelarasan rintangan tanpa kehausan. Reka bentuk berbaring menjadikan pusat graviti rendah dengan pengagihan tekanan struktur yang sekata. Hampir tiada titik kerosakan. Sesuai untuk penggunaan komersial berfrekuensi tinggi dan berpanjangan.',
     }},
-    {"sku":"CD-005","name":"Air Bike / Fan Bike","name_zh":"风阻单车","name_ms":"Basikal Angin","category_key":"ca","price_fob_usd":None,"qty":1,"zone":"A",
+    {"sku":"CD-005","name":"Air Bike / Fan Bike","name_zh":"风阻单车","name_ms":"Basikal Angin","category_key":"ca","price_fob_usd":264,"qty":1,"zone":"A",
      "thumb_url":"https://images.unsplash.com/photo-1519311726-5cced7383240?w=400&q=60","image_url":"https://images.unsplash.com/photo-1519311726-5cced7383240?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52079/52079-720.mp4",
      "specs":{"Dimensions":"~1500×680×1150 mm","Net Weight":"~58 kg","Resistance":"Air (infinite)","Target":"Full body (upper + lower limbs linked)","Note":"Recommended add-on, essential for HIIT PT sessions"},
      "maintenance": {
@@ -3991,7 +3991,7 @@ PRODUCTS = [
     # ============================================================
     #  自由重量 Free Weights (fw) — 7 items
     # ============================================================
-    {"sku":"FW-001","name":"Dumbbells 2.5-25 kg Set","name_zh":"哑铃（2.5~25kg）","name_ms":"Set Dumbbell 2.5-25 kg","category_key":"fw","price_fob_usd":None,"qty":20,"zone":"C",
+    {"sku":"FW-001","name":"Dumbbells 2.5-25 kg Set","name_zh":"哑铃（2.5~25kg）","name_ms":"Set Dumbbell 2.5-25 kg","category_key":"fw","price_fob_usd":313,"qty":20,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52099/52099-720.mp4",
      "specs":{"Spec":"2.5/5/7.5/10/12.5/15/17.5/20/22.5/25 kg, 2 each","Total Qty":"20 pcs (10 pairs)","Total Net Weight":"575 kg","Total Gross Weight":"585 kg","Packing":"1 pallet ~800×800×650 mm","Material":"Chrome / rubber-coated (per factory)"},
      "maintenance": {
@@ -4022,7 +4022,7 @@ PRODUCTS = [
         'durability_note_zh': '一块铁。它在你之前的健身房存在，也会在你之后继续存在。没有保养周期，因为铁不会过期。',
         'durability_note_ms': 'Seketul besi. Ia wujud sebelum gim anda dan akan terus wujud selepasnya. Tiada jadual penyelenggaraan kerana besi tidak luput.',
     }},
-    {"sku":"FW-002","name":"Dumbbells 27.5-40 kg Set","name_zh":"哑铃补充（27.5~40kg）","name_ms":"Set Dumbbell 27.5-40 kg","category_key":"fw","price_fob_usd":None,"qty":12,"zone":"C",
+    {"sku":"FW-002","name":"Dumbbells 27.5-40 kg Set","name_zh":"哑铃补充（27.5~40kg）","name_ms":"Set Dumbbell 27.5-40 kg","category_key":"fw","price_fob_usd":460,"qty":12,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1623874514711-0f321325f318?w=400&q=60","image_url":"https://images.unsplash.com/photo-1623874514711-0f321325f318?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Spec":"27.5/30/32.5/35/37.5/40 kg, 2 each","Total Qty":"12 pcs (6 pairs)","Total Net Weight":"~405 kg","Note":"Recommended add-on, retain advanced members"},
      "maintenance": {
@@ -4053,7 +4053,7 @@ PRODUCTS = [
         'durability_note_zh': '同FW-001。一块更重的铁。',
         'durability_note_ms': 'Sama seperti FW-001. Seketul besi yang lebih berat.',
     }},
-    {"sku":"FW-003","name":"Olympic Weight Plates 2.5-25 kg","name_zh":"杠铃片（2.5~25kg）","name_ms":"Plat Berat Olimpik 2.5-25 kg","category_key":"fw","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"FW-003","name":"Olympic Weight Plates 2.5-25 kg","name_zh":"杠铃片（2.5~25kg）","name_ms":"Plat Berat Olimpik 2.5-25 kg","category_key":"fw","price_fob_usd":396,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=60","image_url":"https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52080/52080-720.mp4",
      "specs":{"Spec":"2.5/5/10/15/20/25 kg","Total Weight":"300 kg","Bore":"Olympic 50 mm","Material":"Cast iron / rubber-coated"},
      "maintenance": {
@@ -4076,7 +4076,7 @@ PRODUCTS = [
         'durability_note_zh': '铸铁杠铃片从上世纪用到现在的比比皆是。保持干燥不生锈就行，实在生锈了砂纸打一打继续用。',
         'durability_note_ms': 'Plat berat besi tuang dari abad lepas masih digunakan di mana-mana. Pastikan kering untuk mengelak karat. Jika berkarat, gosok dengan kertas pasir dan teruskan.',
     }},
-    {"sku":"FW-004","name":"Additional Weight Plates","name_zh":"杠铃片补充","name_ms":"Plat Berat Tambahan","category_key":"fw","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"FW-004","name":"Additional Weight Plates","name_zh":"杠铃片补充","name_ms":"Plat Berat Tambahan","category_key":"fw","price_fob_usd":264,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52091/52091-720.mp4",
      "specs":{"Total Weight":"200 kg","Bore":"Olympic 50 mm","Note":"Recommended add-on +200 kg, ensures 4 barbell stations can be loaded simultaneously"},
      "maintenance": {
@@ -4099,7 +4099,7 @@ PRODUCTS = [
         'durability_note_zh': '同FW-003。',
         'durability_note_ms': 'Sama seperti FW-003.',
     }},
-    {"sku":"FW-005","name":"2.2 m Olympic Barbell","name_zh":"轴承杆2.2米","name_ms":"Palang Olimpik 2.2 m","category_key":"fw","price_fob_usd":None,"qty":4,"zone":"C",
+    {"sku":"FW-005","name":"2.2 m Olympic Barbell","name_zh":"轴承杆2.2米","name_ms":"Palang Olimpik 2.2 m","category_key":"fw","price_fob_usd":49,"qty":4,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52089/52089-720.mp4",
      "specs":{"Length":"2200 mm","Diameter":"30 mm","Bar Weight":"20 kg each","Material":"45# steel","Bearing":"Bearing + bronze bushing","Packing":"4 pcs/bundle, 228cm x 9cm, gross 88 kg"},
      "maintenance": {
@@ -4172,7 +4172,7 @@ PRODUCTS = [
         'durability_note_zh': '45#钢杆身硬度和弹性兼顾，商用环境下杆身本体基本不会弯曲变形。轴承和铜套是唯一消耗件，已备足，自行更换难度等同于换自行车轮胎。',
         'durability_note_ms': 'Bar keluli 45# mengimbangi kekerasan dan keanjalan — aci bar pada dasarnya tidak akan bengkok atau berubah bentuk dalam penggunaan komersial. Galas dan sesendal adalah satu-satunya bahan guna habis, stok penuh. Kesukaran penggantian sendiri setara dengan menukar tayar basikal.',
     }},
-    {"sku":"FW-006","name":"1.2 m Straight Barbell","name_zh":"轴承杆1.2米直杆","name_ms":"Palang Lurus 1.2 m","category_key":"fw","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"FW-006","name":"1.2 m Straight Barbell","name_zh":"轴承杆1.2米直杆","name_ms":"Palang Lurus 1.2 m","category_key":"fw","price_fob_usd":30,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=75","video_url":"https://assets.mixkit.co/videos/4506/4506-720.mp4",
      "specs":{"Length":"1200 mm","Diameter":"28 mm","Bar Weight":"8.6 kg","Material":"45# steel","Bearing":"Dual bearing + dual bronze bushing","Packing":"1 pc, 125cm x 15cm, gross 18 kg (packed with EZ bar)"},
      "maintenance": {
@@ -4237,7 +4237,7 @@ PRODUCTS = [
         'durability_note_zh': '双轴承双铜套设计，比单轴承杆更顺滑更耐用。',
         'durability_note_ms': 'Reka bentuk galas berkembar + sesendal gangsa berkembar — lebih lancar dan lebih tahan lama daripada bar galas tunggal.',
     }},
-    {"sku":"FW-007","name":"1.2 m EZ Curl Bar","name_zh":"轴承杆1.2米曲杆","name_ms":"Palang EZ Curl 1.2 m","category_key":"fw","price_fob_usd":None,"qty":1,"zone":"C",
+    {"sku":"FW-007","name":"1.2 m EZ Curl Bar","name_zh":"轴承杆1.2米曲杆","name_ms":"Palang EZ Curl 1.2 m","category_key":"fw","price_fob_usd":30,"qty":1,"zone":"C",
      "thumb_url":"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=60","image_url":"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52099/52099-720.mp4",
      "specs":{"Length":"1200 mm","Diameter":"28 mm","Bar Weight":"8.6 kg","Material":"45# steel","Bearing":"Dual bearing + dual bronze bushing","Target":"Bicep curl / Triceps"},
      "maintenance": {
@@ -4306,7 +4306,7 @@ PRODUCTS = [
     # ============================================================
     #  功能训练 Functional Training (ft) — 12 items
     # ============================================================
-    {"sku":"FT-001","name":"Kettlebell Set","name_zh":"壶铃组","name_ms":"Set Kettlebell","category_key":"ft","price_fob_usd":None,"qty":12,"zone":"D",
+    {"sku":"FT-001","name":"Kettlebell Set","name_zh":"壶铃组","name_ms":"Set Kettlebell","category_key":"ft","price_fob_usd":273,"qty":12,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=800&q=75","video_url":"https://assets.mixkit.co/active_storage/video_items/100548/1725385743/100548-video-720.mp4",
      "specs":{"Spec":"4/8/12/16/20/24 kg, 2 each","Total Qty":"12 pcs","Total Weight":"168 kg","Material":"Cast iron + powder coat / competition KB","Note":"Recommended add-on, core PT prop"},
      "maintenance": {
@@ -4337,7 +4337,7 @@ PRODUCTS = [
         'durability_note_zh': '一块带把手的铁。摔不坏，砸不烂，用不完。',
         'durability_note_ms': 'Seketul besi dengan pemegang. Tidak boleh dipecahkan, tidak boleh dihancurkan, tidak boleh dihabiskan.',
     }},
-    {"sku":"FT-002","name":"Kettlebell Rack","name_zh":"壶铃架","name_ms":"Rak Kettlebell","category_key":"ft","price_fob_usd":None,"qty":1,"zone":"D",
+    {"sku":"FT-002","name":"Kettlebell Rack","name_zh":"壶铃架","name_ms":"Rak Kettlebell","category_key":"ft","price_fob_usd":51,"qty":1,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=400&q=60","image_url":"https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52317/52317-720.mp4",
      "specs":{"Dimensions":"~1200×400×700 mm","Net Weight":"~25 kg","Note":"Recommended add-on"},
      "maintenance": {
@@ -4360,7 +4360,7 @@ PRODUCTS = [
         'durability_note_zh': '放壶铃的架子，比壶铃还不容易坏。',
         'durability_note_ms': 'Rak untuk memegang kettlebell — lebih susah rosak daripada kettlebell itu sendiri.',
     }},
-    {"sku":"FT-003","name":"Medicine Ball Set","name_zh":"药球组","name_ms":"Set Bola Perubatan","category_key":"ft","price_fob_usd":None,"qty":8,"zone":"D",
+    {"sku":"FT-003","name":"Medicine Ball Set","name_zh":"药球组","name_ms":"Set Bola Perubatan","category_key":"ft","price_fob_usd":137,"qty":8,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1591291621164-2c6367723315?w=400&q=60","image_url":"https://images.unsplash.com/photo-1591291621164-2c6367723315?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52079/52079-720.mp4",
      "specs":{"Spec":"3/5/8/10 kg, 2 each","Total Qty":"8 pcs","Total Weight":"52 kg","Diameter":"~230-350 mm","Note":"Recommended add-on"},
      "maintenance": {
@@ -4391,7 +4391,7 @@ PRODUCTS = [
         'durability_note_zh': '药球是唯一有「寿命」的训练工具。外皮开裂是正常现象，说明你的会员在认真练。本地体育用品店随时可以补货，无需从中国进口。',
         'durability_note_ms': 'Medicine ball adalah satu-satunya alat latihan yang benar-benar mempunyai "hayat." Kulit retak adalah normal — ia bermakna ahli anda berlatih dengan bersungguh-sungguh. Boleh didapati di mana-mana kedai sukan tempatan, tiada perlu import dari China.',
     }},
-    {"sku":"FT-004","name":"Medicine Ball Rack","name_zh":"药球架","name_ms":"Rak Bola Perubatan","category_key":"ft","price_fob_usd":None,"qty":1,"zone":"D",
+    {"sku":"FT-004","name":"Medicine Ball Rack","name_zh":"药球架","name_ms":"Rak Bola Perubatan","category_key":"ft","price_fob_usd":41,"qty":1,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1591291621164-2c6367723315?w=400&q=60","image_url":"https://images.unsplash.com/photo-1591291621164-2c6367723315?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52101/52101-720.mp4",
      "specs":{"Dimensions":"~800×500×900 mm","Net Weight":"~18 kg","Note":"Recommended add-on"},
      "maintenance": {
@@ -4414,7 +4414,7 @@ PRODUCTS = [
         'durability_note_zh': '同壶铃架，放东西的架子没有坏的理由。',
         'durability_note_ms': 'Sama seperti rak kettlebell — rak untuk memegang barang tiada sebab untuk rosak.',
     }},
-    {"sku":"FT-005","name":"Battle Rope","name_zh":"战绳","name_ms":"Tali Battle Rope","category_key":"ft","price_fob_usd":None,"qty":1,"zone":"D",
+    {"sku":"FT-005","name":"Battle Rope","name_zh":"战绳","name_ms":"Tali Battle Rope","category_key":"ft","price_fob_usd":41,"qty":1,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1601422407692-ec73fc9e5e0c?w=400&q=60","image_url":"https://images.unsplash.com/photo-1601422407692-ec73fc9e5e0c?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52104/52104-720.mp4",
      "specs":{"Length":"12 m","Diameter":"38 mm","Weight":"~12 kg","Material":"Polyester / hemp","Installation":"Wall-mounted anchor point","Note":"Recommended add-on"},
      "maintenance": {
@@ -4465,7 +4465,7 @@ PRODUCTS = [
         'durability_note_zh': '战绳的寿命取决于地面——如果地胶够厚够滑，绳子磨损就慢。锚点螺栓是安全关键件，已备足替换。绳子本身不贵，本地Decathlon随时买得到。',
         'durability_note_ms': 'Hayat battle rope bergantung pada lantai — lantai gim yang lebih tebal dan licin bermakna kehausan tali lebih perlahan. Bolt sauh adalah alat ganti kritikal keselamatan, stok penuh. Tali itu sendiri murah dan boleh didapati di Decathlon pada bila-bila masa.',
     }},
-    {"sku":"FT-006","name":"TRX Suspension Trainer","name_zh":"TRX悬挂训练带","name_ms":"TRX Tali Suspensi","category_key":"ft","price_fob_usd":None,"qty":3,"zone":"D",
+    {"sku":"FT-006","name":"TRX Suspension Trainer","name_zh":"TRX悬挂训练带","name_ms":"TRX Tali Suspensi","category_key":"ft","price_fob_usd":37,"qty":3,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=60","image_url":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=75","video_url":"https://assets.mixkit.co/videos/40248/40248-720.mp4",
      "specs":{"Installation":"Ceiling / beam anchor point","Unit Weight":"~1.5 kg","Target":"Full body (core focused)","Note":"Recommended add-on, includes anchor + strap + foot loop per set"},
      "maintenance": {
@@ -4516,7 +4516,7 @@ PRODUCTS = [
         'durability_note_zh': 'TRX是承重织带，会员全身重量悬挂在上面，安全第一。每月认真检查缝线就好，正常使用1年以上没问题。锚点螺栓已备足。',
         'durability_note_ms': 'TRX adalah tali anyaman yang menanggung beban — berat badan penuh ahli bergantung padanya. Keselamatan diutamakan. Periksa jahitan dengan teliti setiap bulan. Penggunaan normal tahan 1+ tahun dengan mudah. Bolt sauh stok penuh.',
     }},
-    {"sku":"FT-007","name":"Resistance Band Set (5-Level)","name_zh":"弹力带套装","name_ms":"Set Band Rintangan (5-Tahap)","category_key":"ft","price_fob_usd":None,"qty":3,"zone":"D",
+    {"sku":"FT-007","name":"Resistance Band Set (5-Level)","name_zh":"弹力带套装","name_ms":"Set Band Rintangan (5-Tahap)","category_key":"ft","price_fob_usd":8,"qty":3,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1598268030450-7a476f602060?w=400&q=60","image_url":"https://images.unsplash.com/photo-1598268030450-7a476f602060?w=800&q=75","video_url":"https://assets.mixkit.co/videos/4506/4506-720.mp4",
      "specs":{"Spec":"5 resistance levels (Yellow/Red/Green/Blue/Black)","Storage":"Wall-mounted hook rack","Note":"Recommended add-on"},
      "maintenance": {
@@ -4547,7 +4547,7 @@ PRODUCTS = [
         'durability_note_zh': '弹力带是橡胶制品，天然会老化。好消息是它也是最便宜的训练工具之一——一套不到RM30，本地Shopee随时下单次日到。不值得从中国运。',
         'durability_note_ms': 'Resistance band adalah produk getah yang secara semula jadi menua. Berita baiknya: ia antara alat latihan paling murah — satu set di bawah RM30. Pesan di Shopee untuk penghantaran esok. Tidak berbaloi dihantar dari China.',
     }},
-    {"sku":"FT-008","name":"Exercise / Yoga Mat","name_zh":"训练地垫/瑜伽垫","name_ms":"Tikar Senaman / Yoga","category_key":"ft","price_fob_usd":None,"qty":10,"zone":"D",
+    {"sku":"FT-008","name":"Exercise / Yoga Mat","name_zh":"训练地垫/瑜伽垫","name_ms":"Tikar Senaman / Yoga","category_key":"ft","price_fob_usd":4,"qty":10,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=60","image_url":"https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52088/52088-720.mp4",
      "specs":{"Unit Size":"1830×610×10 mm","Unit Weight":"~1.2 kg","Material":"NBR / TPE","Note":"Recommended add-on"},
      "maintenance": {
@@ -4578,7 +4578,7 @@ PRODUCTS = [
         'durability_note_zh': '训练垫是卫生消耗品，再好的垫子用一年多也该换了。本地Mr. DIY / Decathlon随时有货，每张不到RM20。',
         'durability_note_ms': 'Tikar senaman adalah bahan guna habis kebersihan — tikar terbaik sekalipun patut diganti selepas setahun lebih. Boleh didapati di Mr. DIY / Decathlon pada bila-bila masa, di bawah RM20 setiap satu.',
     }},
-    {"sku":"FT-009","name":"Foam Roller","name_zh":"泡沫轴","name_ms":"Penggelek Busa","category_key":"ft","price_fob_usd":None,"qty":8,"zone":"D",
+    {"sku":"FT-009","name":"Foam Roller","name_zh":"泡沫轴","name_ms":"Penggelek Busa","category_key":"ft","price_fob_usd":4,"qty":8,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1570655652364-2e0a67455ac6?w=400&q=60","image_url":"https://images.unsplash.com/photo-1570655652364-2e0a67455ac6?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52112/52112-720.mp4",
      "specs":{"Size":"900×150 mm","Unit Weight":"~0.8 kg","Material":"EVA / EPP","Note":"Recommended add-on, essential for myofascial release in stretching area"},
      "maintenance": {
@@ -4609,7 +4609,7 @@ PRODUCTS = [
         'durability_note_zh': '泡沫轴用久了会被压扁变形，这是正常的。本地Shopee搜"foam roller"一大把，RM15-30一根，不值得跨国运输。',
         'durability_note_ms': 'Foam roller akan kemek rata dari semasa ke semasa — itu normal. Cari "foam roller" di Shopee — RM15-30 setiap satu. Tidak berbaloi penghantaran antarabangsa.',
     }},
-    {"sku":"FT-010","name":"3-in-1 Plyo Box","name_zh":"可堆叠跳箱（3合1）","name_ms":"Kotak Plyo 3-in-1","category_key":"ft","price_fob_usd":None,"qty":2,"zone":"D",
+    {"sku":"FT-010","name":"3-in-1 Plyo Box","name_zh":"可堆叠跳箱（3合1）","name_ms":"Kotak Plyo 3-in-1","category_key":"ft","price_fob_usd":41,"qty":2,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=60","image_url":"https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=75","video_url":"https://assets.mixkit.co/videos/40248/40248-720.mp4",
      "specs":{"Size":"510×610×760 mm (3 heights)","Unit Weight":"~25 kg","Material":"Plywood + anti-slip soft cover","Note":"Recommended add-on"},
      "maintenance": {
@@ -4652,7 +4652,7 @@ PRODUCTS = [
         'durability_note_zh': '3合1跳箱用18mm多层板制作，能承受反复跳跃冲击。木头本身不会坏，防滑面是唯一消耗面，本地五金店的防滑砂纸贴RM10一卷搞定。',
         'durability_note_ms': 'Kotak plyo 3-dalam-1 diperbuat daripada papan lapis 18mm — menampung hentaman lompatan berulang. Kayu itu sendiri tidak akan rosak. Permukaan anti-gelincir adalah satu-satunya bahan guna habis — RM10 segulung pita anti-gelincir di mana-mana kedai perkakasan.',
     }},
-    {"sku":"FT-011","name":"Wall-Mounted Pull-Up Bar","name_zh":"引体向上架（壁挂式）","name_ms":"Bar Pull-Up Dinding","category_key":"ft","price_fob_usd":None,"qty":1,"zone":"D",
+    {"sku":"FT-011","name":"Wall-Mounted Pull-Up Bar","name_zh":"引体向上架（壁挂式）","name_ms":"Bar Pull-Up Dinding","category_key":"ft","price_fob_usd":61,"qty":1,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=400&q=60","image_url":"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52080/52080-720.mp4",
      "specs":{"Dimensions":"1200×900×600 mm","Net Weight":"~35 kg","Installation":"Wall-mounted bolts, load-bearing wall required","Target":"Lats / Biceps / Core","Note":"Recommended add-on"},
      "maintenance": {
@@ -4714,7 +4714,7 @@ PRODUCTS = [
         'durability_note_zh': '钢架本身不会坏，关键是墙面锚固。安装时必须打在承重墙/混凝土墙上，膨胀螺栓用M12以上规格。装好之后定期检查螺栓就行。',
         'durability_note_ms': 'Rangka keluli itu sendiri tidak akan rosak — kuncinya ialah sauh dinding. Mesti dipasang pada dinding galas beban/konkrit dengan bolt pengembangan M12+. Setelah dipasang, hanya perlu periksa bolt secara berkala.',
     }},
-    {"sku":"FT-012","name":"Tire Flip (Training Tire)","name_zh":"翻转轮胎","name_ms":"Tayar Latihan Flip","category_key":"ft","price_fob_usd":None,"qty":1,"zone":"D",
+    {"sku":"FT-012","name":"Tire Flip (Training Tire)","name_zh":"翻转轮胎","name_ms":"Tayar Latihan Flip","category_key":"ft","price_fob_usd":102,"qty":1,"zone":"D",
      "thumb_url":"https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=400&q=60","image_url":"https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&q=75","video_url":"https://assets.mixkit.co/videos/52317/52317-720.mp4",
      "specs":{"Size":"~1200×500 mm","Weight":"~120 kg","Target":"Full body explosive power / Core / Glutes & Legs","Note":"Recommended add-on, for functional training / PT sessions"},
      "maintenance": {

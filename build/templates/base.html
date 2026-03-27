@@ -52,7 +52,9 @@
            data-name="{{ p.name }}"
            data-name-zh="{{ p.name_zh }}"
            data-name-ms="{{ p.name_ms }}"
-           data-price="{% if p.price_fob_usd is not none %}${{ '{:,.0f}'.format(p.price_fob_usd) }}{% endif %}"
+           data-price-usd="{% if p.price_fob_usd is not none %}{{ '{:,.0f}'.format(p.price_fob_usd) }}{% endif %}"
+           data-price-cny="{% if p.price_fob_usd is not none %}{{ '{:,.0f}'.format((p.price_fob_usd / 0.145)|round|int) }}{% endif %}"
+           data-price-myr="{% if p.price_fob_usd is not none %}{{ '{:,.0f}'.format((p.price_fob_usd / 0.145 * 0.578)|round|int) }}{% endif %}" 
            data-qty="{{ p.qty or 1 }}"
            data-img="{{ p.image_url }}"
            data-video="{{ p.video_url }}"
@@ -66,7 +68,7 @@
         <div class="grid-item-name" data-en="{{ p.name }}" data-zh="{{ p.name_zh }}" data-ms="{{ p.name_ms }}">{{ p.name }}</div>
         <div class="grid-item-price">
           {%- if p.price_fob_usd is not none -%}
-            ${{ '{:,.0f}'.format(p.price_fob_usd) }}
+            <span data-en="${{ '{:,.0f}'.format(p.price_fob_usd) }}" data-zh="¥{{ '{:,.0f}'.format((p.price_fob_usd / 0.145)|round|int) }}" data-ms="RM{{ '{:,.0f}'.format((p.price_fob_usd / 0.145 * 0.578)|round|int) }}">${{ '{:,.0f}'.format(p.price_fob_usd) }}</span>
           {%- else -%}
             <span data-en="Inquire" data-zh="询价" data-ms="Tanya Harga">询价</span>
           {%- endif -%}

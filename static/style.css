@@ -291,3 +291,80 @@ a{color:inherit;text-decoration:none}
 /* 弱化刺眼感：改为柔和的珍珠灰白 #f0f0f0 */
 .promise-keyword { font-size: 17px; font-weight: 800; color: #f0f0f0; margin-bottom: 6px; line-height: 1.2; letter-spacing: 0.5px; }
 .promise-desc { font-size: 13.5px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+
+
+
+/* 保证卡片层级在光影之上 */
+.product-grid { position: relative; z-index: 1; }
+
+/* 2. 卡片材质重构：金属微渐变 + 顶部高光 + 内发光 */
+.grid-item {
+  background: linear-gradient(145deg, #18181c 0%, #0d0d0f 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important; /* 核心：模拟顶光打在边缘的反光 */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
+}
+
+/* 3. 分类标题提神：加一点点发光感，不至于被淹没 */
+.section-header h2 {
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══ ELEVATION & DEPTH (Dark Mode Redesign) ═══ */
+/* 1. 彻底垫高列表区背景，告别死黑，改为深碳灰 */
+.products-wrap {
+  background-color: #111111 !important; /* 基础层上浮 */
+  padding-top: 16px;
+  position: relative;
+}
+
+/* 为了平滑过渡，顶部加一点渐变阴影 */
+.products-wrap::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40px;
+  background: linear-gradient(to bottom, rgba(10,10,10,1) 0%, rgba(17,17,17,0) 100%);
+  pointer-events: none; z-index: 1;
+}
+
+/* 2. 卡片二阶上浮：明显的深灰渐变，抛弃生硬边框 */
+.grid-item {
+  background: linear-gradient(180deg, #1f1f1f 0%, #161616 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important; /* 明显的顶侧高光 */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  border-radius: 16px !important; /* 让圆角更圆润一点，更有卡片感 */
+}
+
+/* 3. 增强类目标题的对比度，防止在变亮的背景里糊掉 */
+.section-header {
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+.section-header h2 {
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* ═══ PREMIUM BACKGROUND UPGRADE ═══ */
+/* 将产品区域背景改为高级深灰渐变，彻底告别纯黑 */
+.products-wrap, .layout-main {
+    background: linear-gradient(180deg, #1c1c1e 0%, #121214 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 增加顶部的微弱舞台光晕（金色调），营造空间纵深感 */
+.products-wrap::before, .layout-main::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 800px;
+    background-image: radial-gradient(ellipse at 50% 0%, rgba(200, 164, 78, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 确保商品网格和标题在光晕上方 */
+.product-grid, .section-header { 
+    position: relative; 
+    z-index: 1; 
+}
