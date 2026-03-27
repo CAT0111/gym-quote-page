@@ -1730,6 +1730,7 @@
 
 <!-- ═══ PROFORMA INVOICE (PI) MODAL ═══ -->
 <div id="pi-modal" class="pi-modal">
+  <!-- 顶部固定区 -->
   <div class="pi-header">
     <div class="pi-header-left">
       <div class="pi-logo-text">Provenlift</div>
@@ -1753,32 +1754,37 @@
     <div><strong>Validity:</strong> 30 Days</div>
   </div>
   
-  <div class="pi-table-container">
+  <!-- 中间独立滑动区 (支持上下左右滑动) -->
+  <div class="pi-table-wrapper">
     <table class="pi-table">
       <thead>
         <tr>
-          <th width="12%" style="text-align:center;">NO.</th>
-          <th width="18%" data-en="IMAGE" data-zh="图片" data-ms="IMEJ">图片</th>
-          <th width="55%" data-en="DESCRIPTION" data-zh="品名与型号" data-ms="PENERANGAN">品名与型号</th>
-          <th width="15%" style="text-align:center;" data-en="QTY" data-zh="数量" data-ms="KUANTITI">数量</th>
+          <th width="6%" style="text-align:center;">NO.</th>
+          <th width="8%">IMAGE</th>
+          <th width="30%" data-en="Description & Model" data-zh="品名与型号" data-ms="Penerangan">品名与型号</th>
+          <th width="26%" data-en="Dimensions (CBM)" data-zh="包装尺寸" data-ms="Dimensi">包装尺寸</th>
+          <th width="10%" style="text-align:right;" data-en="U.Price" data-zh="单价(¥)" data-ms="Harga">单价(¥)</th>
+          <th width="8%" style="text-align:center;" data-en="QTY" data-zh="数量" data-ms="Kuantiti">数量</th>
+          <th width="12%" style="text-align:right;" data-en="Amount" data-zh="合计(¥)" data-ms="Jumlah">合计(¥)</th>
         </tr>
       </thead>
       <tbody id="pi-tbody">
         <!-- JS 动态填入 -->
       </tbody>
     </table>
+  </div>
     
-    <div class="pi-summary-box">
-      <div class="pi-terms">
-        <p><strong>Trade Term:</strong> Delivery to Door (KL)</p>
-        <p><strong>Payment:</strong> 30% Deposit, 70% Before Dispatch</p>
-        <p><strong>Lead Time:</strong> Check with Sales</p>
-      </div>
-      <div class="pi-total-section">
-        <div class="pi-qty-total"><span data-en="Total Qty:" data-zh="总件数:" data-ms="Jumlah:">总件数:</span> <strong id="pi-total-count">0</strong></div>
-        <div class="pi-grand-total">
-          <span data-en="GRAND TOTAL:" data-zh="落地总价:" data-ms="JUMLAH BESAR:">落地总价:</span> <br><strong id="pi-total-price">--</strong>
-        </div>
+  <!-- 底部固定区 -->
+  <div class="pi-summary-box">
+    <div class="pi-terms">
+      <p><strong>Trade Term:</strong> Delivery to Door (KL)</p>
+      <p><strong>Payment:</strong> 30% Deposit, 70% Before Dispatch</p>
+      <p><strong>Lead Time:</strong> Check with Sales</p>
+    </div>
+    <div class="pi-total-section">
+      <div class="pi-qty-total"><span data-en="Total Qty:" data-zh="总件数:" data-ms="Jumlah:">总件数:</span> <strong id="pi-total-count">0</strong> Units</div>
+      <div class="pi-grand-total">
+        <span data-en="GRAND TOTAL:" data-zh="落地总价:" data-ms="JUMLAH BESAR:">落地总价:</span> <br><strong id="pi-total-price">¥0</strong>
       </div>
     </div>
   </div>
@@ -1794,7 +1800,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 【恢复】：将外面丢失的绿灰双按钮重新挂载到分类导航上方
+    // 【必须恢复的挂载代码】：把绿灰双按钮动态生成并插在外面分类导航的上方
     const catNav = document.querySelector('.cat-nav');
     if (catNav && !document.querySelector('.hero-dual-btn-wrap')) {
         const dualBtns = document.createElement('div');
@@ -1815,49 +1821,73 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('pi-modal');
     const tbody = document.getElementById('pi-tbody');
     
-    // 初始化日期和单号
+    // 初始化日期单号
     const today = new Date();
     document.getElementById('pi-date').innerText = today.toISOString().split('T')[0];
     document.getElementById('pi-no').innerText = 'PL-' + today.getFullYear() + (today.getMonth()+1).toString().padStart(2,'0') + Math.floor(Math.random()*1000).toString().padStart(3,'0');
-    
-    // 抓取页面总价
-    const priceMatch = document.body.innerText.match(/(?:RM|USD|¥)\s*[0-9,]+/i);
-    const grandTotalPrice = priceMatch ? priceMatch[0] : 'Check via WhatsApp';
+
+    // 💡【核心数据模拟器】提取自 Excel 真实数据
+    const mockDB = [
+        { keys: ["跑步机", "Treadmill"], dim: "2255*970*370mm (木箱)", price: 4500, qty: 5 },
+        { keys: ["椭圆", "Elliptical"], dim: "2120*730*880mm (木箱)", price: 2800, qty: 2 },
+        { keys: ["楼梯", "Stair"], dim: "1370*960*1300mm (木箱)", price: 6500, qty: 2 },
+        { keys: ["史密斯", "Smith"], dim: "2400*1600*450mm (混装)", price: 3800, qty: 1 },
+        { keys: ["五人站", "Station"], dim: "2470*1470*970mm (2件)", price: 8500, qty: 1 },
+        { keys: ["飞鸟", "Crossover"], dim: "2300*1500*1200mm", price: 3200, qty: 1 },
+        { keys: ["推胸", "Chest Press"], dim: "2100*1200*450mm", price: 2200, qty: 1 },
+        { keys: ["哑铃", "Dumbbell"], dim: "800*800*650mm (托盘)", price: 12, qty: 275 },
+        { keys: ["杠铃", "Barbell"], dim: "1250*150mm (纸箱)", price: 15, qty: 300 },
+        { keys: ["深蹲", "Squat"], dim: "1300*1300*2250mm", price: 2600, qty: 1 }
+    ];
 
     const buildTable = () => {
         tbody.innerHTML = '';
         const items = document.querySelectorAll('.grid-item');
-        document.getElementById('pi-total-count').innerText = items.length;
-        document.getElementById('pi-total-price').innerText = grandTotalPrice;
+        let globalTotalQty = 0;
+        let globalTotalPrice = 0;
 
         items.forEach((item, index) => {
             const imgEl = item.querySelector('img');
             const imgSrc = imgEl ? imgEl.src : '';
             
-            // 终极抓取术：直接找带有 data-zh 翻译属性的元素，确保抓取到正确的标题
             let titleEl = item.querySelector('[data-zh]');
-            if (!titleEl) titleEl = item.querySelector('.product-title, h3, h4, strong, p'); // 兜底
+            if (!titleEl) titleEl = item.querySelector('.product-title, h3, h4, strong, p'); 
             
-            // 提取出三种语言的原始文案
             let nameEn = titleEl && titleEl.getAttribute('data-en') ? titleEl.getAttribute('data-en') : 'Equipment ' + (index+1);
             let nameZh = titleEl && titleEl.getAttribute('data-zh') ? titleEl.getAttribute('data-zh') : '器材 ' + (index+1);
             let nameMs = titleEl && titleEl.getAttribute('data-ms') ? titleEl.getAttribute('data-ms') : 'Peralatan ' + (index+1);
-            
-            // 获取当前页面正在显示的文字（完美继承当前语言状态）
             let currentText = titleEl ? titleEl.innerText : nameEn;
+
+            // 数据匹配逻辑
+            let itemDim = "1500*1000*800mm (Standard)";
+            let itemPrice = 1800; // 默认单价
+            let itemQty = 1;      // 默认数量
+
+            for(let db of mockDB) {
+                if(db.keys.some(k => nameZh.includes(k) || nameEn.includes(k))) {
+                    itemDim = db.dim;
+                    itemPrice = db.price;
+                    itemQty = db.qty;
+                    break;
+                }
+            }
+
+            let amount = itemPrice * itemQty;
+            globalTotalQty += itemQty;
+            globalTotalPrice += amount;
 
             const tr = document.createElement('tr');
             tr.className = 'pi-row';
             tr.innerHTML = `
                 <td style="text-align:center; color:#aaa; font-size:12px;">${(index + 1).toString().padStart(2, '0')}</td>
                 <td><div class="pi-img-box"><img src="${imgSrc}"></div></td>
-                <td class="pi-desc-cell">
-                    <div class="pi-item-name" data-en="${nameEn}" data-zh="${nameZh}" data-ms="${nameMs}">${currentText}</div>
-                </td>
-                <td style="text-align:center; font-weight:700; color:#c8a44e; font-size:14px;">1</td>
+                <td class="pi-desc-cell"><div class="pi-item-name" data-en="${nameEn}" data-zh="${nameZh}" data-ms="${nameMs}">${currentText}</div></td>
+                <td style="color:#aaa; font-size:12px; line-height:1.4;">${itemDim}</td>
+                <td style="text-align:right; color:#ccc; font-family:monospace;">${itemPrice.toLocaleString()}</td>
+                <td style="text-align:center; font-weight:700; color:#c8a44e;">${itemQty}</td>
+                <td style="text-align:right; font-weight:600; color:#e8d090; font-family:monospace;">${amount.toLocaleString()}</td>
             `;
 
-            // 点击预览事件
             tr.addEventListener('click', () => {
                 if(imgSrc) {
                     document.getElementById('pi-ql-img').src = imgSrc;
@@ -1867,31 +1897,40 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             tbody.appendChild(tr);
         });
+
+        document.getElementById('pi-total-count').innerText = globalTotalQty;
+        document.getElementById('pi-total-price').innerText = '¥' + globalTotalPrice.toLocaleString();
         
-        // 尝试调用系统的全局翻译函数（如果有的话），确保动态内容被接管
         if(typeof updateLanguage === 'function') updateLanguage();
     };
 
-    // 绑定事件
+    // 绑定事件 (事件委托防失效)
     document.body.addEventListener('click', (e) => {
         const btn = e.target.closest('#btn-open-pi');
         if(btn && modal) {
             buildTable();
             modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // 防止外层背景滚动
         }
     });
 
     document.getElementById('pi-close').addEventListener('click', () => { modal.classList.remove('active'); document.body.style.overflow = ''; });
     document.getElementById('pi-quicklook').addEventListener('click', function(e) { if(e.target === this) this.classList.remove('active'); });
 
-    // 导出包含动态语言的数据
+    // 导出包含全量数据的 CSV
     document.getElementById('btn-export-csv').addEventListener('click', () => {
-        let csv = '\uFEFFNo.,Description,Qty\n';
-        document.querySelectorAll('#pi-tbody .pi-row').forEach((row, i) => {
-            let nameEl = row.querySelector('.pi-item-name');
-            let name = nameEl ? nameEl.innerText.replace(/,/g, '，').replace(/\n/g, ' ') : ('Equipment ' + (i+1));
-            csv += `${i + 1},${name},1\n`;
+        let csv = '\uFEFFNo.,Description,Dimensions,Unit Price,Qty,Amount\n';
+        document.querySelectorAll('#pi-tbody .pi-row').forEach((row) => {
+            let cols = row.querySelectorAll('td');
+            if(cols.length >= 7) {
+                let no = cols[0].innerText;
+                let name = cols[2].innerText.replace(/,/g, '，').replace(/\n/g, ' ');
+                let dim = cols[3].innerText.replace(/,/g, '，');
+                let price = cols[4].innerText.replace(/,/g, '');
+                let qty = cols[5].innerText;
+                let amount = cols[6].innerText.replace(/,/g, '');
+                csv += `${no},${name},${dim},${price},${qty},${amount}\n`;
+            }
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); 
