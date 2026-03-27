@@ -368,3 +368,59 @@ a{color:inherit;text-decoration:none}
     position: relative; 
     z-index: 1; 
 }
+
+
+/* ═══ SAFE HIDE OLD BANNER (绝对安全隐藏旧版文字) ═══ */
+.custom-banner-wrapper, .custom-banner, .custom-banner-elegant { display: none !important; height: 0 !important; width: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; pointer-events: none !important; opacity: 0 !important; }
+
+/* ═══ DUAL ACTION BAR (原生绿 WhatsApp + 深灰 PI) ═══ */
+.hero-dual-btn-wrap { display: flex; gap: 12px; justify-content: center; margin: 32px 16px 24px; position: relative; z-index: 10; }
+.btn-wa-custom, .btn-pi-view { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 14px 8px; border-radius: 12px; font-size: 13.5px; font-weight: 600; text-decoration: none; flex: 1; transition: transform 0.2s, background 0.2s; white-space: nowrap; cursor: pointer; }
+.btn-wa-custom { background: #25D366; color: #ffffff; box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25); }
+.btn-wa-custom:active { transform: scale(0.97); background: #20BA56; }
+.btn-wa-custom svg { width: 18px; height: 18px; fill: currentColor; }
+.btn-pi-view { background: rgba(255, 255, 255, 0.08); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+.btn-pi-view:active { transform: scale(0.97); background: rgba(255, 255, 255, 0.15); }
+.btn-pi-view svg { width: 17px; height: 17px; color: #cccccc; }
+
+/* ═══ PI MODAL ═══ */
+.pi-modal { position: fixed; inset: 0; background: #0a0a0a; z-index: 9999; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.pi-modal.active { opacity: 1; pointer-events: auto; }
+.pi-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: #111; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.pi-logo-text { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: 1px; }
+.pi-doc-title { font-size: 11px; color: #c8a44e; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+.pi-header-right { display: flex; align-items: center; gap: 8px; }
+.pi-header-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 4px; }
+.pi-icon-btn { background: none; border: none; color: #aaa; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.pi-icon-btn:active { background: rgba(255,255,255,0.1); color: #fff; }
+.pi-icon-btn svg { width: 20px; height: 20px; }
+.pi-close-btn { color: #fff; }
+
+.pi-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px 20px; background: #151518; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: rgba(255,255,255,0.6); }
+.pi-meta-grid strong { color: #ccc; font-weight: 600; display: inline-block; width: 55px; }
+.pi-table-container { flex: 1; overflow-y: auto; background: #0a0a0a; display: flex; flex-direction: column; }
+.pi-table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.pi-table { width: 100%; min-width: 500px; border-collapse: collapse; font-family: monospace, sans-serif; }
+.pi-table th { position: sticky; top: 0; background: #1a1a1c; color: rgba(255,255,255,0.5); font-weight: 500; font-size: 11px; text-transform: uppercase; padding: 10px 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.pi-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e0e0e0; font-size: 13px; vertical-align: middle; }
+.pi-row { cursor: pointer; }
+.pi-row:active { background: rgba(200, 164, 78, 0.1); }
+.pi-img-box { width: 36px; height: 36px; border-radius: 4px; overflow: hidden; background: #111; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05); }
+.pi-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+.pi-summary-box { margin-top: auto; border-top: 1px dashed rgba(255,255,255,0.15); background: #111; padding: 20px; }
+.pi-terms { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 16px; line-height: 1.6; }
+.pi-terms strong { color: #888; }
+.pi-terms p { margin: 0; }
+.pi-total-section { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px; }
+.pi-qty-total { font-size: 13px; color: #aaa; }
+.pi-qty-total strong { color: #fff; }
+.pi-grand-total { text-align: right; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+.pi-grand-total strong { display: block; font-size: 20px; color: #c8a44e; margin-top: 4px; font-family: sans-serif; letter-spacing: 0; }
+
+.pi-quicklook { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 20px; }
+.pi-quicklook.active { opacity: 1; pointer-events: auto; }
+.pi-ql-content { background: #1c1c1e; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); width: 280px; transform: scale(0.95); transition: transform 0.2s; }
+.pi-quicklook.active .pi-ql-content { transform: scale(1); }
+.pi-ql-content img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
+.pi-ql-content h4 { margin: 12px 0 4px; color: #fff; font-size: 14px; text-align: center; font-weight: 500; }

@@ -1727,5 +1727,172 @@
     });
   });
 </script>
+
+<!-- ═══ PROFORMA INVOICE (PI) MODAL ═══ -->
+<div id="pi-modal" class="pi-modal">
+  <div class="pi-header">
+    <div class="pi-header-left">
+      <div class="pi-logo-text">Provenlift</div>
+      <div class="pi-doc-title" data-en="PROFORMA INVOICE" data-zh="商业形式发票" data-ms="INVOIS PROFORMA">PROFORMA INVOICE</div>
+    </div>
+    <div class="pi-header-right">
+      <button id="btn-export-csv" class="pi-icon-btn" title="Export CSV">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      </button>
+      <div class="pi-header-divider"></div>
+      <button id="pi-close" class="pi-icon-btn pi-close-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+  
+  <div class="pi-meta-grid">
+    <div><strong>Date:</strong> <span id="pi-date"></span></div>
+    <div><strong>PI No:</strong> <span id="pi-no"></span></div>
+    <div><strong>To:</strong> Valued Client</div>
+    <div><strong>Validity:</strong> 30 Days</div>
+  </div>
+  
+  <div class="pi-table-container">
+    <div class="pi-table-wrapper">
+      <table class="pi-table">
+        <thead>
+          <tr>
+            <th width="8%" style="text-align:center;">No.</th>
+            <th width="12%">Image</th>
+            <th width="45%" data-en="Description & Model" data-zh="品名与型号" data-ms="Penerangan">品名与型号</th>
+            <th width="10%" style="text-align:center;">Qty</th>
+            <th width="12%" style="text-align:right;">U.Price</th>
+            <th width="13%" style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="pi-tbody">
+          <!-- JS 动态填入 -->
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pi-summary-box">
+      <div class="pi-terms">
+        <p><strong>Trade Term:</strong> Delivery to Door (KL)</p>
+        <p><strong>Payment:</strong> 30% Deposit, 70% Before Dispatch</p>
+        <p><strong>Lead Time:</strong> Check with Sales</p>
+      </div>
+      <div class="pi-total-section">
+        <div class="pi-qty-total">Total Qty: <strong id="pi-total-count">0</strong> Units</div>
+        <div class="pi-grand-total">
+          Grand Total: <br><strong id="pi-total-price">--</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pi-quicklook" class="pi-quicklook">
+  <div class="pi-ql-content">
+    <img id="pi-ql-img" src="" alt="Preview">
+    <h4 id="pi-ql-title"></h4>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 【终极隐身术】：JS 再次确保所有包含旧文案的节点消失
+    document.querySelectorAll('a, span, div').forEach(el => {
+        if(el.innerText && (el.innerText.includes('支持 100% 自定义') || el.innerText.includes('自由更换方案内器械'))) {
+            el.style.display = 'none';
+        }
+    });
+
+    // 【神奇定位术】：在 cat-nav (分类导航) 正上方精准插入双按钮
+    const catNav = document.querySelector('.cat-nav');
+    if (catNav && !document.querySelector('.hero-dual-btn-wrap')) {
+        const dualBtns = document.createElement('div');
+        dualBtns.className = 'hero-dual-btn-wrap';
+        dualBtns.innerHTML = `
+          <a href="#bottom-cta-anchor" class="btn-wa-custom">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.305-.885-.653-1.48-1.459-1.653-1.756-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            <span data-en="Customize Package" data-zh="自由搭配器材套餐" data-ms="Pakej Tersuai">自由搭配器材套餐</span>
+          </a>
+          <div class="btn-pi-view" id="btn-open-pi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2-2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span data-en="Overview PI Quote" data-zh="总览 PI 报价单" data-ms="Lihat PI">总览 PI 报价单</span>
+          </div>
+        `;
+        catNav.parentNode.insertBefore(dualBtns, catNav);
+    }
+
+    // PI 逻辑初始化
+    const modal = document.getElementById('pi-modal');
+    const tbody = document.getElementById('pi-tbody');
+    const today = new Date();
+    document.getElementById('pi-date').innerText = today.toISOString().split('T')[0];
+    document.getElementById('pi-no').innerText = 'PL-' + today.getFullYear() + (today.getMonth()+1).toString().padStart(2,'0') + Math.floor(Math.random()*1000).toString().padStart(3,'0');
+    const priceMatch = document.body.innerText.match(/(?:RM|USD|¥)\s*[0-9,]+/i);
+    const grandTotalPrice = priceMatch ? priceMatch[0] : 'Check via WhatsApp';
+
+    const buildTable = () => {
+        tbody.innerHTML = '';
+        const items = document.querySelectorAll('.grid-item');
+        document.getElementById('pi-total-count').innerText = items.length;
+        document.getElementById('pi-total-price').innerText = grandTotalPrice;
+
+        items.forEach((item, index) => {
+            const imgEl = item.querySelector('img');
+            const titleEl = item.querySelector('h3, h4, .product-title, .title, strong');
+            const imgSrc = imgEl ? imgEl.src : '';
+            const clonedTitle = titleEl ? titleEl.cloneNode(true) : document.createElement('span');
+            clonedTitle.style.fontSize = '13px'; clonedTitle.style.margin = '0'; clonedTitle.style.lineHeight = '1.3';
+
+            const tr = document.createElement('tr');
+            tr.className = 'pi-row';
+            tr.innerHTML = `
+                <td style="text-align:center; color:#aaa;">${(index + 1).toString().padStart(2, '0')}</td>
+                <td><div class="pi-img-box"><img src="${imgSrc}"></div></td>
+                <td class="pi-desc-cell"></td>
+                <td style="text-align:center; font-weight:600; color:#c8a44e;">1</td>
+                <td style="text-align:right; color:#666; font-size:11px;">Pkg</td>
+                <td style="text-align:right; color:#666; font-size:11px;">Pkg</td>
+            `;
+            tr.querySelector('.pi-desc-cell').appendChild(clonedTitle);
+
+            tr.addEventListener('click', () => {
+                if(imgSrc) {
+                    document.getElementById('pi-ql-img').src = imgSrc;
+                    document.getElementById('pi-ql-title').innerText = clonedTitle.innerText;
+                    document.getElementById('pi-quicklook').classList.add('active');
+                }
+            });
+            tbody.appendChild(tr);
+        });
+    };
+
+    // 绑定事件 (使用事件委托防止找不到动态元素)
+    document.body.addEventListener('click', (e) => {
+        const btn = e.target.closest('#btn-open-pi');
+        if(btn && modal) {
+            buildTable();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    });
+
+    document.getElementById('pi-close').addEventListener('click', () => { modal.classList.remove('active'); document.body.style.overflow = ''; });
+    document.getElementById('pi-quicklook').addEventListener('click', function(e) { if(e.target === this) this.classList.remove('active'); });
+
+    document.getElementById('btn-export-csv').addEventListener('click', () => {
+        let csv = '\uFEFFNo.,Description,Qty,Unit Price,Amount\n';
+        document.querySelectorAll('.grid-item').forEach((item, i) => {
+            const titleEl = item.querySelector('h3, h4, .product-title, .title, strong');
+            let name = titleEl ? titleEl.innerText.replace(/,/g, '，').replace(/\n/g, ' ') : ('Equipment ' + (i+1));
+            csv += `${i + 1},${name},1,Package,Package\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); 
+        a.download = 'Provenlift_PI_' + document.getElementById('pi-no').innerText + '.csv';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    });
+});
+</script>
 </body>
 </html>
