@@ -1754,23 +1754,19 @@
   </div>
   
   <div class="pi-table-container">
-    <div class="pi-table-wrapper">
-      <table class="pi-table">
-        <thead>
-          <tr>
-            <th width="8%" style="text-align:center;">No.</th>
-            <th width="12%">Image</th>
-            <th width="45%" data-en="Description & Model" data-zh="品名与型号" data-ms="Penerangan">品名与型号</th>
-            <th width="10%" style="text-align:center;">Qty</th>
-            <th width="12%" style="text-align:right;">U.Price</th>
-            <th width="13%" style="text-align:right;">Amount</th>
-          </tr>
-        </thead>
-        <tbody id="pi-tbody">
-          <!-- JS 动态填入 -->
-        </tbody>
-      </table>
-    </div>
+    <table class="pi-table">
+      <thead>
+        <tr>
+          <th width="12%" style="text-align:center;">NO.</th>
+          <th width="18%" data-en="IMAGE" data-zh="图片" data-ms="IMEJ">图片</th>
+          <th width="55%" data-en="DESCRIPTION" data-zh="品名与型号" data-ms="PENERANGAN">品名与型号</th>
+          <th width="15%" style="text-align:center;" data-en="QTY" data-zh="数量" data-ms="KUANTITI">数量</th>
+        </tr>
+      </thead>
+      <tbody id="pi-tbody">
+        <!-- JS 动态填入 -->
+      </tbody>
+    </table>
     
     <div class="pi-summary-box">
       <div class="pi-terms">
@@ -1779,9 +1775,9 @@
         <p><strong>Lead Time:</strong> Check with Sales</p>
       </div>
       <div class="pi-total-section">
-        <div class="pi-qty-total">Total Qty: <strong id="pi-total-count">0</strong> Units</div>
+        <div class="pi-qty-total"><span data-en="Total Qty:" data-zh="总件数:" data-ms="Jumlah:">总件数:</span> <strong id="pi-total-count">0</strong></div>
         <div class="pi-grand-total">
-          Grand Total: <br><strong id="pi-total-price">--</strong>
+          <span data-en="GRAND TOTAL:" data-zh="落地总价:" data-ms="JUMLAH BESAR:">落地总价:</span> <br><strong id="pi-total-price">--</strong>
         </div>
       </div>
     </div>
@@ -1797,14 +1793,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // 【终极隐身术】：JS 再次确保所有包含旧文案的节点消失
-    document.querySelectorAll('a, span, div').forEach(el => {
-        if(el.innerText && (el.innerText.includes('支持 100% 自定义') || el.innerText.includes('自由更换方案内器械'))) {
-            el.style.display = 'none';
-        }
-    });
 
-    // 【神奇定位术】：在 cat-nav (分类导航) 正上方精准插入双按钮
+    // 【恢复】：将外面丢失的绿灰双按钮重新挂载到分类导航上方
     const catNav = document.querySelector('.cat-nav');
     if (catNav && !document.querySelector('.hero-dual-btn-wrap')) {
         const dualBtns = document.createElement('div');
@@ -1822,12 +1812,15 @@ document.addEventListener('DOMContentLoaded', () => {
         catNav.parentNode.insertBefore(dualBtns, catNav);
     }
 
-    // PI 逻辑初始化
     const modal = document.getElementById('pi-modal');
     const tbody = document.getElementById('pi-tbody');
+    
+    // 初始化日期和单号
     const today = new Date();
     document.getElementById('pi-date').innerText = today.toISOString().split('T')[0];
     document.getElementById('pi-no').innerText = 'PL-' + today.getFullYear() + (today.getMonth()+1).toString().padStart(2,'0') + Math.floor(Math.random()*1000).toString().padStart(3,'0');
+    
+    // 抓取页面总价
     const priceMatch = document.body.innerText.match(/(?:RM|USD|¥)\s*[0-9,]+/i);
     const grandTotalPrice = priceMatch ? priceMatch[0] : 'Check via WhatsApp';
 
@@ -1839,35 +1832,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach((item, index) => {
             const imgEl = item.querySelector('img');
-            const titleEl = item.querySelector('h3, h4, .product-title, .title, strong');
             const imgSrc = imgEl ? imgEl.src : '';
-            const clonedTitle = titleEl ? titleEl.cloneNode(true) : document.createElement('span');
-            clonedTitle.style.fontSize = '13px'; clonedTitle.style.margin = '0'; clonedTitle.style.lineHeight = '1.3';
+            
+            // 终极抓取术：直接找带有 data-zh 翻译属性的元素，确保抓取到正确的标题
+            let titleEl = item.querySelector('[data-zh]');
+            if (!titleEl) titleEl = item.querySelector('.product-title, h3, h4, strong, p'); // 兜底
+            
+            // 提取出三种语言的原始文案
+            let nameEn = titleEl && titleEl.getAttribute('data-en') ? titleEl.getAttribute('data-en') : 'Equipment ' + (index+1);
+            let nameZh = titleEl && titleEl.getAttribute('data-zh') ? titleEl.getAttribute('data-zh') : '器材 ' + (index+1);
+            let nameMs = titleEl && titleEl.getAttribute('data-ms') ? titleEl.getAttribute('data-ms') : 'Peralatan ' + (index+1);
+            
+            // 获取当前页面正在显示的文字（完美继承当前语言状态）
+            let currentText = titleEl ? titleEl.innerText : nameEn;
 
             const tr = document.createElement('tr');
             tr.className = 'pi-row';
             tr.innerHTML = `
-                <td style="text-align:center; color:#aaa;">${(index + 1).toString().padStart(2, '0')}</td>
+                <td style="text-align:center; color:#aaa; font-size:12px;">${(index + 1).toString().padStart(2, '0')}</td>
                 <td><div class="pi-img-box"><img src="${imgSrc}"></div></td>
-                <td class="pi-desc-cell"></td>
-                <td style="text-align:center; font-weight:600; color:#c8a44e;">1</td>
-                <td style="text-align:right; color:#666; font-size:11px;">Pkg</td>
-                <td style="text-align:right; color:#666; font-size:11px;">Pkg</td>
+                <td class="pi-desc-cell">
+                    <div class="pi-item-name" data-en="${nameEn}" data-zh="${nameZh}" data-ms="${nameMs}">${currentText}</div>
+                </td>
+                <td style="text-align:center; font-weight:700; color:#c8a44e; font-size:14px;">1</td>
             `;
-            tr.querySelector('.pi-desc-cell').appendChild(clonedTitle);
 
+            // 点击预览事件
             tr.addEventListener('click', () => {
                 if(imgSrc) {
                     document.getElementById('pi-ql-img').src = imgSrc;
-                    document.getElementById('pi-ql-title').innerText = clonedTitle.innerText;
+                    document.getElementById('pi-ql-title').innerText = tr.querySelector('.pi-item-name').innerText;
                     document.getElementById('pi-quicklook').classList.add('active');
                 }
             });
             tbody.appendChild(tr);
         });
+        
+        // 尝试调用系统的全局翻译函数（如果有的话），确保动态内容被接管
+        if(typeof updateLanguage === 'function') updateLanguage();
     };
 
-    // 绑定事件 (使用事件委托防止找不到动态元素)
+    // 绑定事件
     document.body.addEventListener('click', (e) => {
         const btn = e.target.closest('#btn-open-pi');
         if(btn && modal) {
@@ -1880,12 +1885,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pi-close').addEventListener('click', () => { modal.classList.remove('active'); document.body.style.overflow = ''; });
     document.getElementById('pi-quicklook').addEventListener('click', function(e) { if(e.target === this) this.classList.remove('active'); });
 
+    // 导出包含动态语言的数据
     document.getElementById('btn-export-csv').addEventListener('click', () => {
-        let csv = '\uFEFFNo.,Description,Qty,Unit Price,Amount\n';
-        document.querySelectorAll('.grid-item').forEach((item, i) => {
-            const titleEl = item.querySelector('h3, h4, .product-title, .title, strong');
-            let name = titleEl ? titleEl.innerText.replace(/,/g, '，').replace(/\n/g, ' ') : ('Equipment ' + (i+1));
-            csv += `${i + 1},${name},1,Package,Package\n`;
+        let csv = '\uFEFFNo.,Description,Qty\n';
+        document.querySelectorAll('#pi-tbody .pi-row').forEach((row, i) => {
+            let nameEl = row.querySelector('.pi-item-name');
+            let name = nameEl ? nameEl.innerText.replace(/,/g, '，').replace(/\n/g, ' ') : ('Equipment ' + (i+1));
+            csv += `${i + 1},${name},1\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); 
