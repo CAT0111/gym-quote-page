@@ -374,7 +374,7 @@ a{color:inherit;text-decoration:none}
 .custom-banner-wrapper, .custom-banner, .custom-banner-elegant { display: none !important; height: 0 !important; width: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; pointer-events: none !important; opacity: 0 !important; }
 
 /* ═══ DUAL ACTION BAR (原生绿 WhatsApp + 深灰 PI) ═══ */
-.hero-dual-btn-wrap { display: flex; gap: 12px; justify-content: center; margin: 32px 16px 24px; position: relative; z-index: 10; }
+.hero-dual-btn-wrap { display: flex; gap: 12px; justify-content: center; margin: 16px 16px 24px; position: relative; z-index: 10; }
 .btn-wa-custom, .btn-pi-view { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 14px 8px; border-radius: 12px; font-size: 13.5px; font-weight: 600; text-decoration: none; flex: 1; transition: transform 0.2s, background 0.2s; white-space: nowrap; cursor: pointer; }
 .btn-wa-custom { background: #25D366; color: #ffffff; box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25); }
 .btn-wa-custom:active { transform: scale(0.97); background: #20BA56; }
