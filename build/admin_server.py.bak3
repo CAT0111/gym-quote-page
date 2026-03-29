@@ -111,12 +111,7 @@ def _ensure_cache(force=False):
 #  页面路由
 # ============================================================
 @app.route("/")
-def portal():
-    return render_template("portal.html")
-
-
-@app.route("/admin")
-def admin_page():
+def index():
     return render_template("admin.html")
 
 
@@ -149,8 +144,7 @@ def api_plans():
                 if prec:
                     fob_total += _num(prec["fields"].get("售价FOB-USD", 0))
                     c = _num(prec["fields"].get("采购价RMB", 0))
-                    m_raw = prec["fields"].get("利润率")
-                    m = _num(m_raw, default=0.4) if m_raw is not None and m_raw != "" else 0.4
+                    m = _num(prec["fields"].get("利润率", 0)) or 0.4
                     sell_total_rmb += round(c * (1 + m), 2) if c else 0
 
             # 按分类统计
@@ -235,8 +229,7 @@ def api_products():
 
             cat_def = CATEGORY_DEFS.get(category, {})
             cost_rmb = _num(f.get("采购价RMB", 0))
-            margin_raw = f.get("利润率")
-            margin = _num(margin_raw, default=0.4) if margin_raw is not None and margin_raw != "" else 0.4
+            margin = _num(f.get("利润率", 0)) or 0.4
             sell_rmb = round(cost_rmb * (1 + margin), 2) if cost_rmb else 0
             video_url = _extract_url(f.get("默认视频", ""))
             dimensions = f.get("尺寸mm", "")
@@ -466,7 +459,7 @@ def api_update_plan_info(record_id):
             except (TypeError, ValueError):
                 return jsonify({"ok": False, "error": "面积必须为数字"})
 
-        # 精准运费（字段名历史遗留叫 USD，实际存的是 RMB）
+        # 精准运费
         if "override_freight_usd" in data:
             raw_val = data["override_freight_usd"]
             if raw_val is None or str(raw_val).strip() == "":
@@ -479,12 +472,6 @@ def api_update_plan_info(record_id):
                     cache_updates["精准运费USD"] = val
                 except (TypeError, ValueError):
                     return jsonify({"ok": False, "error": "运费必须为数字"})
-
-        # 预计交期
-        if "override_delivery_date" in data:
-            val = (data["override_delivery_date"] or "").strip()
-            update_fields["预计交期"] = val
-            cache_updates["预计交期"] = val
 
         if not update_fields:
             return jsonify({"ok": True, "msg": "无需更新"})
@@ -573,8 +560,7 @@ def api_client_plan_detail(record_id):
             cat_counts[label_zh] = cat_counts.get(label_zh, 0) + 1
 
             cost_rmb = _num(pf.get("采购价RMB", 0))
-            margin_raw = pf.get("利润率")
-            margin = _num(margin_raw, default=0.4) if margin_raw is not None and margin_raw != "" else 0.4
+            margin = _num(pf.get("利润率", 0)) or 0.4
             sell_rmb = round(cost_rmb * (1 + margin), 2) if cost_rmb else 0
             sell_total_rmb += sell_rmb
             products.append({
@@ -595,26 +581,7 @@ def api_client_plan_detail(record_id):
                 "weight_stack": _num(pf.get("配重kg", 0)),
                 "area_m2": _num(pf.get("占地面积m²", 0)),
                 "muscles": pf.get("主训练肌群", []) if isinstance(pf.get("主训练肌群"), list) else [],
-                "lead_time": pf.get("交期", ""),
             })
-
-        # 交期：自动取最长产品交期（解析"XX天"格式）
-        import re as _re
-        max_days = 0
-        for _p in products:
-            _lt = _p.get("lead_time", "")
-            _m = _re.search(r"(\d+)", str(_lt))
-            if _m:
-                _d = int(_m.group(1))
-                if _d > max_days:
-                    max_days = _d
-        import datetime as _dt
-        auto_delivery = ""
-        if max_days > 0:
-            auto_date = _dt.date.today() + _dt.timedelta(days=max_days)
-            auto_delivery = auto_date.strftime("%Y-%m-%d")
-
-        override_delivery = f.get("预计交期", "") or ""
 
         return jsonify({
             "ok": True,
@@ -631,8 +598,6 @@ def api_client_plan_detail(record_id):
             "cat_counts": cat_counts,
             "n_products": len(products),
             "products": products,
-            "auto_delivery_date": auto_delivery,
-            "override_delivery_date": override_delivery,
         })
     except Exception as e:
         traceback.print_exc()
@@ -769,15 +734,12 @@ def api_exchange_rates():
     """返回 CNY 为基准的汇率"""
     try:
         rates = _get_fx_rates()
-        import datetime
-        today = datetime.date.today().strftime("%m月%d日")
         return jsonify({
             "ok": True,
             "base": "CNY",
             "rates": rates,
             "symbols": CURRENCY_SYMBOLS,
             "market_currency": MARKET_TO_CURRENCY,
-            "date_label": today,
         })
     except Exception as e:
         traceback.print_exc()

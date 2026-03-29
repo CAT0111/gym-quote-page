@@ -246,10 +246,11 @@ def build_data(raw, plan_id=None, client_id=None):
 
     # ------ 6. 计算 DDP ------
     fob_total = sum(_num(p.get("price_fob_usd")) for p in pkg_products_raw)
-    override_freight = _num(target_pkg.get("override_freight_usd"), default=None)
+    # 精准运费字段名历史遗留叫 override_freight_usd，实际存的是 RMB
+    override_freight_rmb = _num(target_pkg.get("override_freight_usd"), default=None)
 
-    if override_freight:
-        ddp_freight = override_freight
+    if override_freight_rmb:
+        ddp_freight = override_freight_rmb / USD_TO_CNY  # RMB → USD
         ddp_is_estimate = False
     elif logistics_for_market:
         m1 = _num(logistics_for_market.get("module_1"))

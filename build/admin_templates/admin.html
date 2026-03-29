@@ -474,7 +474,7 @@ let STATE = {
   filterOptions: { categories: [], muscles: [] },
   activeCategory: '',
   activeMuscle: '',
-  fx: { rates: {MYR:0.5786,AUD:0.2101,NZD:0.2521,CAD:0.2002,USD:0.1445}, symbols: {MYR:'RM',AUD:'A$',NZD:'NZ$',CAD:'C$',USD:'$'}, marketCurrency: {'MY':'MYR','AU':'AUD','NZ':'NZD','CA':'CAD','':'USD'} },
+  fx: { rates: {MYR:0.5786,AUD:0.2101,NZD:0.2521,CAD:0.2002,USD:0.1445}, symbols: {MYR:'RM',AUD:'A$',NZD:'NZ$',CAD:'C$',USD:'$'}, marketCurrency: {'MY':'MYR','AU':'AUD','NZ':'NZD','CA':'CAD','':'USD'}, dateLabel: '' },
 };
 
 // 汇率加载
@@ -486,6 +486,7 @@ async function loadFxRates() {
       STATE.fx.rates = d.rates;
       STATE.fx.symbols = d.symbols;
       STATE.fx.marketCurrency = d.market_currency;
+      STATE.fx.dateLabel = d.date_label || '';
     }
   } catch(e) {}
 }
@@ -693,13 +694,17 @@ function exitEditMode() {
 function renderEditView(d) {
   document.getElementById('editTitle').textContent = d.plan_id;
 
-  // 摘要
+  // 摘要（双币 + 交期）
   const _cur = getCurrency();
   const _sellLocalTotal = Math.round((d.sell_total_rmb||0) * _cur.rate);
+  const _rmbTotal = Math.round(d.sell_total_rmb||0);
+  const _deliveryDate = d.override_delivery_date || d.auto_delivery_date || '';
+  const _deliveryLabel = _deliveryDate ? _deliveryDate.replace(/^\d{4}-/, '').replace('-', '月') + '日' : '待定';
+  const _deliveryAuto = !d.override_delivery_date && d.auto_delivery_date;
   document.getElementById('editSummary').innerHTML = `
     <div class="summary-item"><div class="s-val">${d.n_products}</div><div class="s-label">台器材</div></div>
-    <div class="summary-item"><div class="s-val">${_cur.symbol}${_sellLocalTotal.toLocaleString()}</div><div class="s-label">售价 ${_cur.code}</div></div>
-    <div class="summary-item"><div class="s-val">${d.area_m2||'—'}m²</div><div class="s-label">适用面积</div></div>
+    <div class="summary-item"><div class="s-val">¥${_rmbTotal.toLocaleString()}</div><div class="s-label" style="font-size:.6rem;line-height:1.3">${_cur.symbol}${_sellLocalTotal.toLocaleString()} ${_cur.code}</div></div>
+    <div class="summary-item"><div class="s-val" style="font-size:${_deliveryLabel.length > 6 ? '.875rem' : '1.125rem'}">${_deliveryLabel}</div><div class="s-label">${_deliveryAuto ? '预估交期' : '交期'}</div></div>
   `;
 
   // ── 方案信息：折叠式卡片 ──
@@ -715,7 +720,9 @@ function renderEditView(d) {
 
   const MARKET_LABELS = {'MY':'马来西亚','AU':'澳洲','NZ':'新西兰','CA':'加拿大'};
   const marketLabel = MARKET_LABELS[d.market] || d.market || '未指定';
-  const freightLabel = d.override_freight_usd ? ('$' + d.override_freight_usd) : '系统预估';
+  const _freightRmb = d.override_freight_usd || 0;
+  const _freightCur = getCurrency();
+  const freightLabel = _freightRmb ? ('¥' + _freightRmb.toLocaleString() + ' / ' + _freightCur.symbol + Math.round(_freightRmb * _freightCur.rate).toLocaleString()) : '系统预估';
 
   const MARKET_OPTIONS = [
     {v:'', label:'未指定'},
@@ -733,7 +740,7 @@ function renderEditView(d) {
     <div id="infoCardHeader" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
       <div style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em">方案信息</div>
       <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:.75rem;color:var(--text3)">${marketLabel} · ${d.area_m2||'—'}m² · 运费${freightLabel}</span>
+        <span style="font-size:.75rem;color:var(--text3)">${d.area_m2||'—'}m² · 运费${freightLabel}</span>
         <span id="infoCardArrow" style="font-size:.75rem;color:var(--text3);transition:transform .2s">▼</span>
       </div>
     </div>
@@ -752,10 +759,30 @@ function renderEditView(d) {
         </div>
       </div>
       <div style="margin-bottom:8px">
-        <label style="font-size:.6875rem;color:var(--text2);display:block;margin-bottom:3px">精准运费 USD（留空则使用系统预估）</label>
-        <input type="number" id="editFreight" value="${freightVal}" placeholder="向货代确认后填入"
-          style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:.8125rem">
+        <label style="font-size:.6875rem;color:var(--text2);display:block;margin-bottom:3px">精准运费（货代报价，留空则系统预估）</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="position:relative">
+            <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:.8125rem;color:var(--text2)">¥</span>
+            <input type="number" id="editFreight" value="${freightVal}" placeholder="人民币金额"
+              style="width:100%;padding:8px 8px 8px 22px;border:1.5px solid var(--border);border-radius:6px;font-size:.8125rem"
+              oninput="updateFreightPreview()">
+          </div>
+          <div id="freightLocalPreview" style="padding:8px;border-radius:6px;font-size:.8125rem;background:#f8fafc;color:var(--primary);font-weight:600;display:flex;align-items:center;justify-content:center">
+            —
+          </div>
+        </div>
       </div>
+      <div style="margin-bottom:8px">
+        <label style="font-size:.6875rem;color:var(--text2);display:block;margin-bottom:3px">预计交期（留空则自动取最长产品交期）</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input type="date" id="editDeliveryDate" value="${d.override_delivery_date||''}" 
+            style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:.8125rem">
+          <div style="padding:8px;border-radius:6px;font-size:.75rem;background:#f8fafc;color:var(--text2);display:flex;align-items:center;justify-content:center">
+            ${d.auto_delivery_date ? ('自动: ' + d.auto_delivery_date) : '无产品交期数据'}
+          </div>
+        </div>
+      </div>
+      <div id="fxRateDisplay" style="padding:8px 0;font-size:.75rem;color:var(--text2);text-align:center;border-top:1px solid var(--border);margin-bottom:8px"></div>
       <button class="btn btn-outline" id="btnSaveInfo" style="width:100%;padding:8px;font-size:.8125rem">
         保存方案信息
       </button>
@@ -775,6 +802,16 @@ function renderEditView(d) {
     }
   });
   document.getElementById('btnSaveInfo').addEventListener('click', () => savePlanInfo(d.record_id));
+  updateFreightPreview();
+
+  // 渲染实时汇率
+  const _fxEl = document.getElementById('fxRateDisplay');
+  if (_fxEl) {
+    const _fc = getCurrency();
+    const _dateLabel = STATE.fx.dateLabel || '';
+    const _rateDisplay = (typeof _fc.rate === 'number') ? _fc.rate.toFixed(4) : _fc.rate;
+    _fxEl.textContent = _dateLabel ? (_dateLabel + ' 汇率：1 CNY = ' + _rateDisplay + ' ' + _fc.code) : ('当日汇率：1 CNY = ' + _rateDisplay + ' ' + _fc.code);
+  }
 
   // ── 按分类分组的器材清单 ──
   const groups = {};
@@ -785,21 +822,23 @@ function renderEditView(d) {
   });
 
   let _catIdx = 0;
-  let html = '<div class="card-title">当前器材清单 · ' + (d.products||[]).length + '台</div>';
+  const _totalCount = (d.products||[]).length;
+  const _autoExpand = _totalCount <= 20;
+  let html = '<div class="card-title">当前器材清单 · ' + _totalCount + '台</div>';
   for (const [cat, prods] of Object.entries(groups)) {
     const cid = 'catGroup' + (_catIdx++);
     html += `<div class="cat-group">
       <div class="cat-group-title" onclick="toggleCatGroup('${cid}')" style="cursor:pointer;user-select:none">
-        <span class="cat-arrow" id="${cid}Arrow">▶</span> ${cat} <span class="cat-count">${prods.length}</span>
+        <span class="cat-arrow" id="${cid}Arrow">${_autoExpand ? '▼' : '▶'}</span> ${cat} <span class="cat-count">${prods.length}</span>
       </div>
-      <div id="${cid}" style="display:none">`;
+      <div id="${cid}" style="display:${_autoExpand ? 'block' : 'none'}">`;
     prods.forEach(p => {
       html += `<div class="prod-row" onclick="openDetail('${p.record_id}')" style="cursor:pointer">
         <img class="prod-thumb" src="${p.image_url||''}" alt="" onerror="this.style.background='#e2e8f0'">
         <div class="prod-info">
           <div class="p-sku">${p.sku}</div>
           <div class="p-name">${p.name_zh || p.name}</div>
-          <div class="p-price">${fmtLocal(p.sell_rmb||0)}</div>
+          <div class="p-price">¥${(p.sell_rmb||0).toLocaleString()} · ${fmtLocal(p.sell_rmb||0)}</div>
         </div>
         <button class="btn-remove" onclick="event.stopPropagation();removeSku('${p.record_id}','${p.sku}')" title="移除">✕</button>
       </div>`;
@@ -819,6 +858,7 @@ async function savePlanInfo(recordId) {
     market: document.getElementById('editMarket').value,
     area_m2: document.getElementById('editArea').value.trim() || null,
     override_freight_usd: document.getElementById('editFreight').value.trim() || null,
+    override_delivery_date: document.getElementById('editDeliveryDate').value.trim() || null,
   };
 
   try {
@@ -834,18 +874,24 @@ async function savePlanInfo(recordId) {
       if (STATE.editingDetail) STATE.editingDetail.plan_id = d.plan_id;
     }
     const newArea = document.getElementById('editArea').value.trim();
+    const newDelivery = document.getElementById('editDeliveryDate').value.trim();
     if (STATE.editingDetail) {
       STATE.editingDetail.market = body.market;
       STATE.editingDetail.area_m2 = newArea;
+      STATE.editingDetail.override_delivery_date = newDelivery || '';
     }
     const summaryEl = document.getElementById('editSummary');
     if (summaryEl && STATE.editingDetail) {
       const dd = STATE.editingDetail;
       const _sc2 = getCurrency();
+      const _rmbT2 = Math.round(dd.sell_total_rmb||0);
+      const _dd2 = dd.override_delivery_date || dd.auto_delivery_date || '';
+      const _dl2 = _dd2 ? _dd2.replace(/^\d{4}-/, '').replace('-', '月') + '日' : '待定';
+      const _da2 = !dd.override_delivery_date && dd.auto_delivery_date;
       summaryEl.innerHTML = `
         <div class="summary-item"><div class="s-val">${dd.n_products}</div><div class="s-label">台器材</div></div>
-        <div class="summary-item"><div class="s-val">${_sc2.symbol}${Math.round((dd.sell_total_rmb||0)*_sc2.rate).toLocaleString()}</div><div class="s-label">售价 ${_sc2.code}</div></div>
-        <div class="summary-item"><div class="s-val">${newArea||'—'}m²</div><div class="s-label">适用面积</div></div>
+        <div class="summary-item"><div class="s-val">¥${_rmbT2.toLocaleString()}</div><div class="s-label" style="font-size:.6rem;line-height:1.3">${_sc2.symbol}${Math.round(_rmbT2*_sc2.rate).toLocaleString()} ${_sc2.code}</div></div>
+        <div class="summary-item"><div class="s-val" style="font-size:${_dl2.length > 6 ? '.875rem' : '1.125rem'}">${_dl2}</div><div class="s-label">${_da2 ? '预估交期' : '交期'}</div></div>
       `;
     }
 
@@ -855,9 +901,11 @@ async function savePlanInfo(recordId) {
     const savedFreight = document.getElementById('editFreight').value.trim();
     const ML = {'MY':'马来西亚','AU':'澳洲','NZ':'新西兰','CA':'加拿大'};
     const mktTxt = ML[savedMarket] || savedMarket || '未指定';
-    const frtTxt = savedFreight ? ('$' + savedFreight) : '系统预估';
+    const _frtRmb = savedFreight ? Number(savedFreight) : 0;
+    const _frtCur = getCurrency();
+    const frtTxt = _frtRmb ? ('¥' + _frtRmb.toLocaleString() + ' / ' + _frtCur.symbol + Math.round(_frtRmb * _frtCur.rate).toLocaleString()) : '系统预估';
     const headerRight = document.querySelector('#infoCardHeader > div:last-child > span:first-child');
-    if (headerRight) headerRight.textContent = mktTxt + ' · ' + (savedArea||'—') + 'm² · 运费' + frtTxt;
+    if (headerRight) headerRight.textContent = (savedArea||'—') + 'm² · 运费' + frtTxt;
 
     if (STATE.editingDetail) {
       STATE.editingDetail.override_freight_usd = savedFreight ? parseFloat(savedFreight) : 0;
@@ -885,7 +933,7 @@ async function removeSku(productRid, sku) {
   if (STATE.editingDetail) {
     STATE.editingDetail.products = (STATE.editingDetail.products||[]).filter(p => p.record_id !== productRid);
     STATE.editingDetail.n_products = STATE.editingDetail.products.length;
-    STATE.editingDetail.fob_total_usd = STATE.editingDetail.products.reduce((s,p) => s + (p.price_fob_usd||0), 0);
+    STATE.editingDetail.sell_total_rmb = STATE.editingDetail.products.reduce((s,p) => s + (p.sell_rmb||0), 0);
     // 重算品类分布
     const cc = {};
     STATE.editingDetail.products.forEach(p => { const c = p.category_zh||'其他'; cc[c]=(cc[c]||0)+1; });
@@ -930,15 +978,24 @@ async function addSku(productRid, sku) {
       name_zh: prod.name_zh,
       category: prod.category,
       category_zh: prod.category_zh,
+      cost_rmb: prod.cost_rmb || 0,
+      margin: prod.margin || 0,
+      sell_rmb: prod.sell_rmb || 0,
       price_fob_usd: prod.price_fob_usd,
       image_url: prod.image_url,
+      video_url: prod.video_url || '',
+      dimensions: prod.dimensions || '',
+      net_weight: prod.net_weight || 0,
+      weight_stack: prod.weight_stack || 0,
+      area_m2: prod.area_m2 || 0,
       muscles: prod.muscles || [],
     });
     STATE.editingDetail.n_products = STATE.editingDetail.products.length;
-    STATE.editingDetail.fob_total_usd = STATE.editingDetail.products.reduce((s,p) => s + (p.price_fob_usd||0), 0);
+    STATE.editingDetail.sell_total_rmb = STATE.editingDetail.products.reduce((s,p) => s + (p.sell_rmb||0), 0);
     const cc = {};
     STATE.editingDetail.products.forEach(p => { const c = p.category_zh||'其他'; cc[c]=(cc[c]||0)+1; });
     STATE.editingDetail.cat_counts = cc;
+    renderEditView(STATE.editingDetail);
   }
   renderProductGrid();
   showToast(`已添加 ${sku}`);
@@ -1244,7 +1301,7 @@ function openDetail(recordId) {
   if (p.weight_stack) specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">配重</span><span class="detail-spec-val">${p.weight_stack} kg</span></div>`;
   if (p.area_m2) specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">占地</span><span class="detail-spec-val">${p.area_m2} m²</span></div>`;
   specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">分类</span><span class="detail-spec-val">${p.category_zh||p.category||''}</span></div>`;
-  specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">利润率</span><span class="detail-spec-val">${Math.round((p.margin||0.4)*100)}%</span></div>`;
+  specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">利润率</span><span class="detail-spec-val">${Math.round((p.margin)*100)}%</span></div>`;
   specsHtml += '</div>';
 
   const html = `
@@ -1261,7 +1318,7 @@ function openDetail(recordId) {
         <div class="dp-val">${cur.symbol}${sellLocal.toLocaleString()}</div>
       </div>
     </div>
-    <div class="detail-price-sub">售价 RMB ¥${(p.sell_rmb||0).toLocaleString()} · 利润率 ${Math.round((p.margin||0.4)*100)}%</div>
+    <div class="detail-price-sub">售价 RMB ¥${(p.sell_rmb||0).toLocaleString()} · 利润率 ${Math.round((p.margin)*100)}%</div>
     ${muscleHtml}
     ${specsHtml}
   `;
@@ -1280,6 +1337,17 @@ function closeDetail() {
     const v = overlay.querySelector('video');
     if (v) { v.pause(); v.currentTime = 0; }
   }, 300);
+}
+
+function updateFreightPreview() {
+  const input = document.getElementById('editFreight');
+  const preview = document.getElementById('freightLocalPreview');
+  if (!input || !preview) return;
+  const val = parseFloat(input.value);
+  if (!val || isNaN(val)) { preview.textContent = '—'; return; }
+  const cur = getCurrency();
+  const local = Math.round(val * cur.rate);
+  preview.textContent = cur.symbol + local.toLocaleString() + ' ' + cur.code;
 }
 
 function showToast(msg){

@@ -1,4 +1,4 @@
-# 项目结构快照 (自动生成于 2026-03-29 20:32)
+# 项目结构快照 (自动生成于 2026-03-29 22:28)
 
 ## 本地文件结构
 ```
@@ -6,7 +6,7 @@
 .gitignore  (16行, 03-29 10:57)
 DEV.md  (307行, 03-26 16:05)
 PRD.md  (79行, 03-25 14:51)
-PROJECT_MAP.md  (293行, 03-29 20:30)
+PROJECT_MAP.md  (159行, 03-29 22:02)
 check-social-preview.sh  (78行, 03-29 20:15)
 gym_layout_400sqm.png  (232KB, 03-26 14:44)
 index.html  (5行, 03-29 18:15)
@@ -19,9 +19,10 @@ preview-models.html.bak-v2  (261行, 03-26 12:06)
   settings.local.json  (26行, 03-29 18:26)
 build/
   .env  (8行, 03-29 19:24)
-  admin_server.py  (1206行, 03-29 19:43)
+  admin_server.py  (1212行, 03-29 22:19)
   admin_server.py.bak  (117行, 03-29 17:23)
   admin_server.py.bak2  (573行, 03-29 17:45)
+  admin_server.py.bak3  (1206行, 03-29 21:50)
   backup_feishu.py  (58行, 03-29 19:16)
   feishu_client.py  (242行, 03-29 19:24)
   generator.py  (126行, 03-29 18:10)
@@ -30,9 +31,9 @@ build/
   project_map.py  (225行, 03-29 20:32)
   setup_media_task_table.py  (133行, 03-29 19:23)
   setup_record_type_field.py  (99行, 03-29 17:20)
-  transform.py  (391行, 03-29 17:21)
+  transform.py  (392行, 03-29 22:19)
   admin_templates/
-    admin.html  (1309行, 03-29 20:08)
+    admin.html  (1358行, 03-29 22:24)
     shoot.html  (958行, 03-29 20:04)
   data/
     __init__.py  (0行, 03-25 14:12)
