@@ -101,6 +101,59 @@ def fetch_all():
     return data
 
 
+
+
+def batch_create_records(table_key, records, batch_size=500):
+    """
+    批量创建记录
+    table_key: "product" | "package" | "qc_media" | "logistics"
+    records: [{"fields": {...}}, ...]
+    返回: 创建成功的 record_id 列表
+    """
+    token = get_token()
+    table_id = TBL[table_key]
+    created_ids = []
+
+    for i in range(0, len(records), batch_size):
+        batch = records[i:i+batch_size]
+        url = (f"{BASE_URL}/bitable/v1/apps/{APP_TOKEN}"
+               f"/tables/{table_id}/records/batch_create")
+        body = json.dumps({"records": batch}).encode()
+        req = urllib.request.Request(url, data=body, method="POST",
+              headers={"Authorization": f"Bearer {token}",
+                       "Content-Type": "application/json"})
+        with urllib.request.urlopen(req) as resp:
+            result = json.loads(resp.read())
+        if result.get("code") != 0:
+            raise RuntimeError(f"飞书批量创建失败: {result}")
+        for r in result["data"].get("records", []):
+            created_ids.append(r["record_id"])
+        print(f"     ✅ 批次 {i//batch_size+1}: 写入 {len(batch)} 条")
+
+    return created_ids
+
+
+def batch_delete_records(table_key, record_ids):
+    """
+    批量删除记录
+    table_key: "product" | "package" | "qc_media" | "logistics"
+    record_ids: ["recXXX", ...]
+    """
+    token = get_token()
+    table_id = TBL[table_key]
+    url = (f"{BASE_URL}/bitable/v1/apps/{APP_TOKEN}"
+           f"/tables/{table_id}/records/batch_delete")
+    body = json.dumps({"records": record_ids}).encode()
+    req = urllib.request.Request(url, data=body, method="POST",
+          headers={"Authorization": f"Bearer {token}",
+                   "Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as resp:
+        result = json.loads(resp.read())
+    if result.get("code") != 0:
+        raise RuntimeError(f"飞书批量删除失败: {result}")
+    print(f"     🗑️  已删除 {len(record_ids)} 条记录")
+
+
 # ====== 单独运行时做连通性测试 ======
 if __name__ == "__main__":
     data = fetch_all()
