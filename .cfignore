@@ -1,0 +1,14 @@
+build/
+.git/
+.gitignore
+backups/
+*.bak
+*.bak-*
+static/models/changguanhuanjing.glb
+static/models/changguanhuanjing-noroof.glb
+static/models/jianshenqic.glb
+static/models/lijiankuanshi.glb
+static/models/modular_gym.glb
+static/models/gym-preview.glb
+static/models/gym-preview.glb.bak
+preview-models.html
