@@ -381,14 +381,20 @@ body{
     <!-- 生成区域 -->
     <div class="card" id="generateCard">
       <div class="card-title">生成客户网页</div>
-      <button class="btn btn-primary" id="btnGenerate" style="width:100%">
-        <span id="btnGenText">生成网页</span>
-      </button>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button class="btn btn-outline" id="btnGenerate" style="flex:1">
+          <span id="btnGenText">生成预览</span>
+        </button>
+        <button class="btn btn-primary" id="btnDeploy" style="flex:1" disabled>
+          <span id="btnDeployText">发给客户</span>
+        </button>
+      </div>
       <div id="genResult" style="display:none">
         <div id="genResultUrl" class="result-url"></div>
         <div class="result-btns">
-          <button class="btn btn-success" id="btnCopyUrl">复制链接</button>
-          <button class="btn btn-outline" id="btnOpenUrl">打开预览</button>
+          <button class="btn btn-outline" id="btnOpenUrl">本地预览</button>
+          <button class="btn btn-success" id="btnCopyUrl" style="display:none">复制客户链接</button>
+          <button class="btn btn-outline" id="btnOpenOnline" style="display:none">打开线上</button>
         </div>
       </div>
       <div id="genLog" class="log-box"></div>
@@ -1168,13 +1174,20 @@ document.getElementById('btnGenerate').addEventListener('click', async () => {
 
     const url = d.preview_url || '';
     const version = d.version || '';
-    document.getElementById('genResultUrl').textContent = url;
+    STATE._lastPreviewUrl = url;
+    STATE._lastVersion = version;
+    // 构建线上链接
+    const pathPart = url.startsWith('/') ? url : '/' + url;
+    STATE._lastOnlineUrl = 'https://www.provenlift.com' + pathPart;
+    
+    document.getElementById('genResultUrl').textContent = '本地预览已生成 ' + version;
     document.getElementById('genResultUrl').className = 'result-url';
     resultBox.style.display = 'block';
-
-    // 存历史（含版本号）
-    saveHistory(STATE.editingDetail.plan_id, STATE.editingDetail.client_name, url, version);
-    showToast('生成成功 ' + version);
+    document.getElementById('btnDeploy').disabled = false;
+    document.getElementById('btnCopyUrl').style.display = 'none';
+    document.getElementById('btnOpenOnline').style.display = 'none';
+    document.getElementById('btnOpenUrl').style.display = '';
+    showToast('预览已生成 ' + version);
   } catch(e) {
     document.getElementById('genResultUrl').textContent = '错误: ' + e.message;
     document.getElementById('genResultUrl').className = 'result-url error';
@@ -1182,21 +1195,20 @@ document.getElementById('btnGenerate').addEventListener('click', async () => {
     showToast('生成失败');
   } finally {
     btn.disabled = false;
-    btnText.textContent = '重新生成';
+    btnText.textContent = '重新生成预览';
   }
 });
 
 document.getElementById('btnCopyUrl').addEventListener('click', () => {
-  const url = document.getElementById('genResultUrl').textContent;
-  if (!url || url.startsWith('错误')) return;
-  navigator.clipboard.writeText(url).then(()=>showToast('链接已复制')).catch(()=>{
+  const url = STATE._lastOnlineUrl;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(()=>showToast('客户链接已复制')).catch(()=>{
     const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);
-    ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('链接已复制');
+    ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('客户链接已复制');
   });
 });
 document.getElementById('btnOpenUrl').addEventListener('click', () => {
-  const url = document.getElementById('genResultUrl').textContent;
-  if (url && !url.startsWith('错误')) window.open(url, '_blank');
+  if (STATE._lastPreviewUrl) window.open(STATE._lastPreviewUrl, '_blank');
 });
 
 /* ══════════════════════════════════════
@@ -1359,6 +1371,42 @@ function showToast(msg){
 /* ══════════════════════════════════════
    初始化
    ══════════════════════════════════════ */
+// "发给客户"按钮：部署到线上
+document.getElementById('btnDeploy').addEventListener('click', async () => {
+  const btn = document.getElementById('btnDeploy');
+  const btnText = document.getElementById('btnDeployText');
+  const logBox = document.getElementById('genLog');
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px"></span> 部署中…';
+  
+  try {
+    const r = await fetch('/api/deploy', { method: 'POST' });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    
+    logBox.textContent = (logBox.textContent || '') + '\n--- 部署输出 ---\n' + (d.output || '');
+    document.getElementById('genResultUrl').textContent = STATE._lastOnlineUrl;
+    document.getElementById('genResultUrl').className = 'result-url';
+    document.getElementById('btnCopyUrl').style.display = '';
+    document.getElementById('btnOpenOnline').style.display = '';
+    
+    // 存历史（线上链接）
+    saveHistory(STATE.editingDetail.plan_id, STATE.editingDetail.client_name, STATE._lastOnlineUrl, STATE._lastVersion);
+    showToast('已部署上线！');
+  } catch(e) {
+    showToast('部署失败: ' + e.message);
+    logBox.textContent = (logBox.textContent || '') + '\n--- 部署失败 ---\n' + e.message;
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = '发给客户';
+  }
+});
+
+// "打开线上"按钮
+document.getElementById('btnOpenOnline').addEventListener('click', () => {
+  if (STATE._lastOnlineUrl) window.open(STATE._lastOnlineUrl, '_blank');
+});
+
 loadFxRates();
 loadPlans();
 renderHistory();

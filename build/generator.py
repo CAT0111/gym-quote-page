@@ -81,7 +81,7 @@ def generate_package_page(package, categories, products):
     compat_path = OUTPUT_DIR / "pkg" / (pkg_id + ".html")
     compat_path.write_text(html, encoding="utf-8")
 
-    print(f"  Preview:   http://localhost:8080/pkg/{pkg_id}/latest.html")
+    print(f"  Preview:   /pkg/{pkg_id}/latest.html")
     print(f"  Version:   v{next_ver}")
 
 
@@ -119,7 +119,7 @@ def main():
     generate_package_page(PACKAGE, CATEGORIES, PRODUCTS)
     generate_index_redirect()
     print()
-    print(f"Done! -> http://localhost:8080/pkg/{PACKAGE['id'].lower().replace('-','').replace('pkg','')}.html")
+    print(f"Done! -> https://www.provenlift.com/pkg/{PACKAGE['id'].lower().replace('-','').replace('pkg','')}.html")
 
 
 if __name__ == "__main__":

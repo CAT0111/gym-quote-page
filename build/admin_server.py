@@ -24,6 +24,12 @@ app = Flask(__name__,
             template_folder=str(BUILD_DIR / "admin_templates"),
             static_folder=str(PROJECT_ROOT / "static"))
 
+# 伺服 pkg/ 目录（生成的客户页面）
+from flask import send_from_directory
+@app.route("/pkg/<path:filepath>")
+def serve_pkg(filepath):
+    return send_from_directory(str(PROJECT_ROOT / "pkg"), filepath)
+
 # ============================================================
 #  内存缓存：避免每次接口都拉飞书（可手动刷新）
 # ============================================================
@@ -797,6 +803,37 @@ def api_refresh_cache():
         traceback.print_exc()
         return jsonify({"ok": False, "error": str(e)})
 
+
+
+
+# ============================================================
+#  API: 部署到 Cloudflare Pages（发给客户）
+# ============================================================
+@app.route("/api/deploy", methods=["POST"])
+def api_deploy():
+    """执行 wrangler pages deploy，将本地文件部署到线上"""
+    try:
+        import os
+        env = os.environ.copy()
+        env["CLOUDFLARE_API_TOKEN"] = "cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72"
+        
+        cmd = [
+            "wrangler", "pages", "deploy", str(PROJECT_ROOT),
+            "--project-name=provenlift", "--branch=main", "--commit-dirty=true"
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120, env=env)
+        
+        if result.returncode != 0:
+            return jsonify({"ok": False, "error": result.stderr or result.stdout})
+        
+        return jsonify({
+            "ok": True,
+            "output": result.stdout,
+            "msg": "部署成功，线上已更新",
+        })
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e)})
 
 # ============================================================
 #  API: 生成客户页面（保留原逻辑）

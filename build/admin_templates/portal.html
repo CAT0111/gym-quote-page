@@ -6,73 +6,581 @@
 <title>ProvenLift 工作台</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#f5f7fa 0%,#e4e9f0 100%);min-height:100vh;padding:24px 16px}
-.header{text-align:center;padding:48px 0 36px}
-.header h1{font-size:28px;font-weight:700;color:#1a1a2e;letter-spacing:-0.5px}
-.header p{font-size:15px;color:#8b92a5;margin-top:10px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:880px;auto}
-@media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}}
-@media(max-width:480px){.grid{grid-template-columns:1fr;gap:12px}}
-.card{background:#fff;border-radius:16px;padding:28px 24px;cursor:pointer;text-decoration:none;color:inherit;transition:all .25s ease;border:1px solid rgba(0,0,0,.06);box-shadow:0 1px 3px rgba(0,0,0,.04);display:flex;flex-direction:column;align-items:flex-start}
-.card:hover{box-shadow:0 8px 30px rgba(0,0,0,.1);transform:translateY(-3px);border-color:rgba(0,0,0,.08)}
-.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f5f7fa;min-height:100vh;color:#1a1a2e}
+.header{background:#fff;border-bottom:1px solid #e2e8f0;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header h1{font-size:20px;font-weight:700}
+.header-links{display:flex;gap:10px}
+.header-links a{font-size:13px;color:#fff;background:#4f46e5;padding:7px 16px;border-radius:8px;text-decoration:none;font-weight:500;transition:background .2s}
+.header-links a:hover{background:#4338ca}
+.header-links a.secondary{background:#f1f5f9;color:#475569}
+.header-links a.secondary:hover{background:#e2e8f0}
+.main{display:flex;max-width:1280px;margin:0 auto;min-height:calc(100vh - 65px)}
+@media(max-width:960px){.main{flex-direction:column}}
+.left{width:280px;flex-shrink:0;padding:20px;border-right:1px solid #e2e8f0;background:#fff}
+@media(max-width:960px){.left{width:100%;border-right:none;border-bottom:1px solid #e2e8f0}}
+.left h2{font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;text-decoration:none;color:inherit;transition:all .2s;border:1px solid transparent;margin-bottom:6px}
+.card:hover{background:#f8fafc;border-color:#e2e8f0}
+.card-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .icon-sales{background:#eef2ff;color:#4f46e5}
 .icon-media{background:#fef3c7;color:#d97706}
 .icon-entry{background:#ecfdf5;color:#059669}
 .icon-qc{background:#fce7f3;color:#db2777}
 .icon-freight{background:#e0f2fe;color:#0284c7}
 .icon-preview{background:#f3e8ff;color:#7c3aed}
-.card-title{font-size:16px;font-weight:600;color:#1a1a2e;margin-bottom:6px}
-.card-desc{font-size:13px;color:#8b92a5;line-height:1.6;flex:1}
-.card-badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:6px;margin-top:14px}
+.card-text{flex:1;min-width:0}
+.card-title{font-size:14px;font-weight:600}
+.card-desc{font-size:11px;color:#94a3b8;margin-top:2px}
+.card-badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;flex-shrink:0}
 .badge-live{background:#ecfdf5;color:#059669}
 .badge-ext{background:#eef2ff;color:#4f46e5}
-.footer{text-align:center;padding:48px 0 24px;font-size:12px;color:#b0b7c3}
+.right{flex:1;padding:24px 28px;overflow-y:auto}
+@media(max-width:960px){.right{padding:20px 16px}}
+
+/* 架构图 */
+.arch{background:#fff;border-radius:14px;padding:24px;margin-bottom:24px;border:1px solid #e2e8f0}
+.arch-title{font-size:16px;font-weight:700;margin-bottom:16px}
+.arch-flow{display:flex;align-items:stretch;gap:0}
+@media(max-width:700px){.arch-flow{flex-direction:column}}
+.arch-node{flex:1;border-radius:12px;padding:16px;position:relative}
+.arch-node.dev{background:#eef2ff;border:1px solid #c7d2fe}
+.arch-node.server{background:#fef3c7;border:1px solid #fde68a}
+.arch-node.cloud{background:#ecfdf5;border:1px solid #a7f3d0}
+.arch-node h3{font-size:14px;font-weight:700;margin-bottom:6px}
+.arch-node p{font-size:12px;color:#475569;line-height:1.7;margin:0}
+.arch-node .url{font-family:SF Mono,Menlo,monospace;font-size:11px;background:rgba(255,255,255,.7);padding:1px 6px;border-radius:4px;color:#4f46e5}
+.arch-connector{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 6px;color:#94a3b8;font-size:11px;text-align:center;min-width:60px}
+@media(max-width:700px){.arch-connector{flex-direction:row;padding:8px 0;min-width:auto;gap:6px}.arch-connector .arrow{transform:rotate(90deg)}}
+.arch-connector .arrow{font-size:20px;line-height:1}
+.arch-connector .label{font-size:10px;color:#64748b;line-height:1.3}
+
+/* 通用区块 */
+.panel{background:#fff;border-radius:14px;padding:24px;margin-bottom:24px;border:1px solid #e2e8f0}
+.panel h3{font-size:16px;font-weight:700;margin-bottom:14px}
+.panel>p.subtitle{font-size:13px;color:#64748b;margin-top:-8px;margin-bottom:18px}
+
+/* 预览服务对比 */
+.preview-compare{display:flex;gap:14px;margin-bottom:10px}
+@media(max-width:600px){.preview-compare{flex-direction:column}}
+.preview-box{flex:1;border-radius:10px;padding:16px;font-size:13px;line-height:1.8}
+.preview-box.box-8080{background:#eef2ff;border:1px solid #c7d2fe}
+.preview-box.box-5050{background:#fef3c7;border:1px solid #fde68a}
+.preview-box strong{display:block;font-size:14px;margin-bottom:4px}
+.preview-box code{font-family:SF Mono,Menlo,monospace;font-size:11px;background:rgba(255,255,255,.6);padding:1px 6px;border-radius:4px}
+
+/* 文件表 */
+.file-table{width:100%;border-collapse:collapse;font-size:13px}
+.file-table th{text-align:left;padding:8px 12px;background:#f8fafc;color:#64748b;font-weight:600;font-size:12px;border-bottom:1px solid #e2e8f0}
+.file-table td{padding:8px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top;line-height:1.7}
+.file-table tr:last-child td{border-bottom:none}
+.file-table code{font-family:SF Mono,Menlo,monospace;font-size:11.5px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.where-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;display:inline-block}
+.where-dev{background:#eef2ff;color:#4f46e5}
+.where-mini{background:#fef3c7;color:#d97706}
+.where-cloud{background:#ecfdf5;color:#059669}
+.cn-note{color:#64748b;font-size:12px}
+
+/* 工作流 */
+.wf-group{margin-bottom:28px}
+.wf-group:last-child{margin-bottom:0}
+.wf-group-title{font-size:14px;font-weight:700;color:#4f46e5;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #eef2ff}
+.wf-step{display:flex;gap:14px;margin-bottom:16px}
+.wf-step:last-child{margin-bottom:0}
+.wf-timeline{display:flex;flex-direction:column;align-items:center;width:28px;flex-shrink:0}
+.wf-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.wf-dot.dev{background:#4f46e5}
+.wf-dot.mini{background:#d97706}
+.wf-dot.cloud{background:#059669}
+.wf-dot.done{background:#10b981}
+.wf-line{width:2px;flex:1;min-height:12px}
+.wf-line.dev{background:#c7d2fe}
+.wf-line.mini{background:#fde68a}
+.wf-line.cloud{background:#a7f3d0}
+.wf-content{flex:1;padding-bottom:4px}
+.wf-content h4{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wf-content p{font-size:13px;color:#475569;line-height:1.7;margin-bottom:4px}
+.device-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px}
+.device-dev{background:#eef2ff;color:#4f46e5}
+.device-mini{background:#fef3c7;color:#d97706}
+.device-cloud{background:#ecfdf5;color:#059669}
+
+.cmd{font-family:SF Mono,Menlo,monospace;font-size:11.5px;background:#1e293b;color:#e2e8f0;padding:8px 12px;border-radius:8px;margin:6px 0;display:block;line-height:1.6;cursor:pointer;position:relative;word-break:break-all;transition:background .2s}
+.cmd:hover{background:#334155}
+.cmd::after{content:'点击复制';position:absolute;right:8px;top:8px;font-size:10px;color:#64748b;font-family:-apple-system,sans-serif}
+.cmd:hover::after{color:#94a3b8}
+
+.note{font-size:12px;color:#64748b;background:#f8fafc;padding:10px 12px;border-radius:8px;border-left:3px solid #cbd5e1;margin:8px 0;line-height:1.7}
+.note.warn{border-left-color:#f59e0b;background:#fffbeb;color:#92400e}
+.note.ok{border-left-color:#10b981;background:#ecfdf5;color:#065f46}
+.note.info{border-left-color:#4f46e5;background:#eef2ff;color:#3730a3}
+
+/* 自动刷新vs生成 */
+.refresh-vs{display:flex;gap:14px;margin:10px 0}
+@media(max-width:600px){.refresh-vs{flex-direction:column}}
+.refresh-box{flex:1;border-radius:10px;padding:14px;font-size:12px;line-height:1.8}
+.refresh-box.auto{background:#ecfdf5;border:1px solid #a7f3d0}
+.refresh-box.manual{background:#fef3c7;border:1px solid #fde68a}
+.refresh-box strong{display:block;font-size:13px;margin-bottom:4px}
+
+/* 终端 */
+.term-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:13px}
+.term-row:last-child{border-bottom:none}
+.term-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.term-on{background:#10b981}
+.term-off{background:#e2e8f0}
+.term-optional{background:#fbbf24}
+.term-name{font-weight:600;min-width:160px}
+.term-desc{color:#64748b;flex:1}
+.term-action{font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px}
+.term-action.closeable{background:#ecfdf5;color:#059669}
+.term-action.not-needed{background:#f1f5f9;color:#94a3b8}
+.term-action.keep{background:#fef3c7;color:#d97706}
+
+/* 排障 */
+.trouble-item{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #f1f5f9}
+.trouble-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.trouble-q{font-size:14px;font-weight:600;margin-bottom:6px}
+.trouble-a{font-size:13px;color:#475569;line-height:1.7}
+.trouble-a p{margin-bottom:6px}
+
+.copied-toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#059669;color:#fff;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+.copied-toast.show{opacity:1}
+.footer{text-align:center;padding:24px;font-size:12px;color:#b0b7c3}
 </style>
 </head>
 <body>
+
 <div class="header">
   <h1>ProvenLift 工作台</h1>
-  <p>选择你要进入的模块</p>
+  <div class="header-links">
+    <a href="/admin">进入业务员后台</a>
+    <a href="/shoot" class="secondary">拍摄任务</a>
+  </div>
 </div>
-<div class="grid">
-  <a class="card" href="/admin" data-role="sales">
-    <div class="card-icon icon-sales">🏢</div>
-    <div class="card-title">业务员后台</div>
-    <div class="card-desc">方案管理 · 产品选品 · 一键生成客户报价页</div>
-    <span class="card-badge badge-live">已上线</span>
-  </a>
-  <a class="card" href="/shoot" data-role="media">
-    <div class="card-icon icon-media">📸</div>
-    <div class="card-title">拍摄任务管理</div>
-    <div class="card-desc">素材拍摄分配 · 进度跟踪 · 审核回写</div>
-    <span class="card-badge badge-live">已上线</span>
-  </a>
-  <a class="card" href="https://c00mufyoyl.feishu.cn/share/base/form/shrcnr5kEbzA4qotyvpUw2ELuMg" target="_blank" data-role="entry">
-    <div class="card-icon icon-entry">📝</div>
-    <div class="card-title">文员录入产品</div>
-    <div class="card-desc">通过飞书表单录入新产品信息</div>
-    <span class="card-badge badge-ext">飞书表单</span>
-  </a>
-  <a class="card" href="https://c00mufyoyl.feishu.cn/share/base/form/shrcnigfwAMXW9neIXnnCBRecHy" target="_blank" data-role="qc">
-    <div class="card-icon icon-qc">🎬</div>
-    <div class="card-title">工厂上传试机视频</div>
-    <div class="card-desc">选择客户和 SKU，粘贴视频链接</div>
-    <span class="card-badge badge-ext">飞书表单</span>
-  </a>
-  <a class="card" href="https://c00mufyoyl.feishu.cn/share/base/form/shrcn9IESxIJUP1asii9OzPHgfd" target="_blank" data-role="freight">
-    <div class="card-icon icon-freight">🚢</div>
-    <div class="card-title">货代更新物流费率</div>
-    <div class="card-desc">按国家和柜型维护 6 大模块基准价</div>
-    <span class="card-badge badge-ext">飞书表单</span>
-  </a>
-  <a class="card" href="https://www.provenlift.com" target="_blank" data-role="preview">
-    <div class="card-icon icon-preview">🌐</div>
-    <div class="card-title">客户页面预览</div>
-    <div class="card-desc">查看线上客户报价页面效果</div>
-    <span class="card-badge badge-live">已上线</span>
-  </a>
+
+<div class="main">
+  <!-- 左栏 -->
+  <div class="left">
+    <h2>功能入口</h2>
+    <a class="card" href="/admin">
+      <div class="card-icon icon-sales">🏢</div>
+      <div class="card-text"><div class="card-title">业务员后台</div><div class="card-desc">方案管理 · 选品 · 生成页面</div></div>
+      <span class="card-badge badge-live">在线</span>
+    </a>
+    <a class="card" href="/shoot">
+      <div class="card-icon icon-media">📸</div>
+      <div class="card-text"><div class="card-title">拍摄任务</div><div class="card-desc">素材拍摄 · 审核回写</div></div>
+      <span class="card-badge badge-live">在线</span>
+    </a>
+    <a class="card" href="https://c00mufyoyl.feishu.cn/share/base/form/shrcnr5kEbzA4qotyvpUw2ELuMg" target="_blank">
+      <div class="card-icon icon-entry">📝</div>
+      <div class="card-text"><div class="card-title">文员录入</div><div class="card-desc">飞书表单录新产品</div></div>
+      <span class="card-badge badge-ext">飞书</span>
+    </a>
+    <a class="card" href="https://c00mufyoyl.feishu.cn/share/base/form/shrcnigfwAMXW9neIXnnCBRecHy" target="_blank">
+      <div class="card-icon icon-qc">🎬</div>
+      <div class="card-text"><div class="card-title">工厂上传视频</div><div class="card-desc">试机视频粘贴链接</div></div>
+      <span class="card-badge badge-ext">飞书</span>
+    </a>
+    <a class="card" href="https://c00mufyoyl.feishu.cn/share/base/form/shrcn9IESxIJUP1asii9OzPHgfd" target="_blank">
+      <div class="card-icon icon-freight">🚢</div>
+      <div class="card-text"><div class="card-title">货代费率</div><div class="card-desc">6模块物流费率</div></div>
+      <span class="card-badge badge-ext">飞书</span>
+    </a>
+    <a class="card" href="https://www.provenlift.com" target="_blank">
+      <div class="card-icon icon-preview">🌐</div>
+      <div class="card-text"><div class="card-title">客户页面</div><div class="card-desc">线上报价页预览</div></div>
+      <span class="card-badge badge-live">在线</span>
+    </a>
+
+    <h2 style="margin-top:24px">关键网址</h2>
+    <div style="font-size:12px;line-height:2.4;padding:0 12px;color:#475569">
+      <strong>客户看到的网站（云端托管）</strong><br>
+      <code style="font-size:11px;background:#ecfdf5;padding:2px 6px;border-radius:4px;color:#059669">www.provenlift.com</code><br>
+      <strong>业务员后台（Mac mini 上）</strong><br>
+      <code style="font-size:11px;background:#fef3c7;padding:2px 6px;border-radius:4px;color:#d97706">crm.provenlift.com</code><br>
+      <strong>本地调试客户页面</strong><br>
+      <code style="font-size:11px;background:#eef2ff;padding:2px 6px;border-radius:4px;color:#4f46e5">localhost:8080</code><br>
+      <strong>本地调试后台</strong><br>
+      <code style="font-size:11px;background:#eef2ff;padding:2px 6px;border-radius:4px;color:#4f46e5">localhost:5050</code>
+    </div>
+  </div>
+
+  <!-- 右栏 -->
+  <div class="right">
+
+    <!-- 架构图 -->
+    <div class="arch">
+      <div class="arch-title">三台设备之间的关系</div>
+      <div class="arch-flow">
+        <div class="arch-node dev">
+          <h3>💻 MacBook 开发机</h3>
+          <p>你在这里写代码、改样式、生成客户页面。<br><strong>所有文件的源头在这里。</strong></p>
+        </div>
+        <div class="arch-connector">
+          <span class="label">git push →<br>推代码</span>
+          <span class="arrow">→</span>
+          <span class="label">← git pull<br>拉代码</span>
+        </div>
+        <div class="arch-node server">
+          <h3>🖥 Mac mini 服务器</h3>
+          <p>7×24 运行业务员后台。<br>开机自动启动，不用手动管。</p>
+          <p style="margin-top:4px"><span class="url">crm.provenlift.com</span></p>
+        </div>
+      </div>
+      <div class="arch-flow" style="margin-top:12px">
+        <div class="arch-node dev" style="background:transparent;border:1px dashed #c7d2fe;text-align:center">
+          <p style="font-size:12px;color:#64748b">MacBook 执行 wrangler deploy ↓</p>
+        </div>
+        <div class="arch-connector">
+          <span class="arrow">→</span>
+          <span class="label">部署</span>
+        </div>
+        <div class="arch-node cloud">
+          <h3>☁️ Cloudflare 云端</h3>
+          <p>客户看到的网站，不依赖任何电脑。<br>两台电脑都关了客户照样能打开。</p>
+          <p style="margin-top:4px"><span class="url">www.provenlift.com</span></p>
+        </div>
+      </div>
+      <div class="note info" style="margin-top:14px">
+        <strong>一句话总结：</strong>MacBook 是唯一写代码的地方。改完代码后，客户页面用 wrangler 推到云端；后台代码用 git 推到 Mac mini。
+      </div>
+    </div>
+
+    <!-- 两种预览服务 -->
+    <div class="panel">
+      <h3>两种本地预览，别搞混</h3>
+      <p class="subtitle">调不同的东西，要开不同的终端</p>
+      <div class="preview-compare">
+        <div class="preview-box box-8080">
+          <strong>终端 A：live-server（端口 8080）</strong><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#eef2ff;color:#4f46e5;margin-left:4px">MacBook</span>
+          预览<strong>客户看到的报价页面</strong><br>
+          看的是 pkg/ 目录下的 HTML 文件<br>
+          启动命令：<code>live-server --port=8080</code><br>
+          浏览器打开：<code>localhost:8080/pkg/my-jason-400m/latest.html</code><br>
+          <strong>什么时候开：</strong>改样式、改排版、改模板的时候
+        </div>
+        <div class="preview-box box-5050">
+          <strong>终端 B：Flask（端口 5050）</strong><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#eef2ff;color:#4f46e5;margin-left:4px">MacBook</span>
+          预览<strong>业务员后台 / 工作台</strong><br>
+          看的是你现在正在看的这个页面<br>
+          启动命令：<code>python3 build/admin_server.py</code><br>
+          浏览器打开：<code>localhost:5050</code><br>
+          <strong>什么时候开：</strong>改后台功能、改工作台页面的时候
+        </div>
+      </div>
+      <div class="note">两个互不影响。你可以只开一个，也可以同时开两个，取决于你在调什么。</div>
+    </div>
+
+    <!-- 文件说明 -->
+    <div class="panel">
+      <h3>项目里有哪些文件？分别是干嘛的？</h3>
+      <table class="file-table">
+        <tr><th>文件</th><th>中文说明</th><th>改完怎么生效</th></tr>
+        <tr>
+          <td><code>static/style.css</code></td>
+          <td>客户页面的样式<span class="cn-note">（颜色、字体、间距、排版）</span></td>
+          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
+        </tr>
+        <tr>
+          <td><code>static/*.js</code></td>
+          <td>客户页面的交互功能<span class="cn-note">（3D场景、语言切换、产品详情弹窗）</span></td>
+          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
+        </tr>
+        <tr>
+          <td><code>build/templates/base.html</code></td>
+          <td>客户页面的HTML模板<span class="cn-note">（页面骨架结构，产品卡片怎么排列）</span></td>
+          <td>先生成再 <span class="where-tag where-cloud">wrangler 部署</span></td>
+        </tr>
+        <tr>
+          <td><code>build/transform.py</code></td>
+          <td>数据处理脚本<span class="cn-note">（飞书原始数据→网页能用的格式，算价格、算运费）</span></td>
+          <td>先生成再 <span class="where-tag where-cloud">wrangler 部署</span></td>
+        </tr>
+        <tr>
+          <td><code>build/generator.py</code></td>
+          <td>页面生成器<span class="cn-note">（拉飞书数据 + 套模板 = 生成客户HTML页面）</span></td>
+          <td><span class="where-tag where-mini">Mac mini 后台调用</span><br><span class="cn-note">（业务员后台点生成网页触发，链路修复中）</span></td>
+        </tr>
+        <tr>
+          <td><code>build/feishu_client.py</code></td>
+          <td>飞书连接器<span class="cn-note">（负责从飞书多维表格读写数据，后台和生成器都会用到）</span></td>
+          <td><span class="where-tag where-mini">Mac mini 运行</span> <span class="where-tag where-dev">MacBook 也用</span></td>
+        </tr>
+        <tr>
+          <td><code>build/admin_server.py</code></td>
+          <td>业务员后台程序<span class="cn-note">（就是 crm.provenlift.com 背后跑的程序）</span></td>
+          <td><span class="where-tag where-mini">git 推到 Mac mini</span></td>
+        </tr>
+        <tr>
+          <td><code>build/admin_templates/*.html</code></td>
+          <td>后台页面模板<span class="cn-note">（工作台、业务员后台、拍摄管理的页面）</span></td>
+          <td><span class="where-tag where-mini">git 推到 Mac mini</span></td>
+        </tr>
+        <tr>
+          <td><code>pkg/xxx/latest.html</code></td>
+          <td>生成好的客户页面<span class="cn-note">（generator.py 自动输出到这里）</span></td>
+          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
+        </tr>
+        <tr>
+          <td><code>static/og-images/*.jpg</code></td>
+          <td>WhatsApp 分享缩略图<span class="cn-note">（发链接时显示的产品大图）</span></td>
+          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 保存 vs 生成 -->
+    <div class="panel">
+      <h3>保存就能看到效果 vs 需要跑生成命令</h3>
+      <div class="refresh-vs">
+        <div class="refresh-box auto">
+          <strong>✅ 保存后自动刷新（不用跑命令）</strong>
+          改了这些文件，保存后 live-server 自动刷新浏览器：<br>
+          · <code>static/style.css</code>（样式）<br>
+          · <code>static/*.js</code>（交互功能）<br>
+          <em>因为这些文件被客户页面直接引用，改了就是改了。</em>
+        </div>
+        <div class="refresh-box manual">
+          <strong>⚠️ 需要重新生成（跑一次命令）</strong>
+          改了这些文件，需要重新跑生成器才能看到效果：<br>
+          · <code>build/templates/base.html</code>（模板骨架）<br>
+          · <code>build/transform.py</code>（数据处理）<br>
+          · 飞书里的产品数据<br>
+          <em>因为这些内容要先"拼装"成 HTML 才能看到。</em>
+        </div>
+      </div>
+      <div class="note">生成命令：<code>cd ~/Projects/gym-quote-page && python3 build/generator.py</code></div>
+    </div>
+
+    <!-- 工作流 -->
+    <div class="panel">
+      <h3>完整工作流（从开机到关机）</h3>
+      <p class="subtitle">你最常做的三种事情，分别怎么操作</p>
+
+      <!-- 场景 A -->
+      <div class="wf-group">
+        <div class="wf-group-title">🔧 修复客户网页的排版 / 样式 / 数据显示问题</div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot dev">1</span><div class="wf-line dev"></div></div>
+          <div class="wf-content">
+            <h4>开终端，启动本地预览 <span class="device-tag device-dev">MacBook</span></h4>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && live-server --port=8080 --host=0.0.0.0">cd ~/Projects/gym-quote-page && live-server --port=8080</code>
+            <p>浏览器打开 <strong>localhost:8080/pkg/my-jason-400m/latest.html</strong></p>
+            <div class="note info">这个终端在调试期间保持开着。你随时可以在浏览器里看效果。</div>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot dev">2</span><div class="wf-line dev"></div></div>
+          <div class="wf-content">
+            <h4>改文件，看效果 <span class="device-tag device-dev">MacBook</span></h4>
+            <p>用编辑器改对应文件（参考上面的文件说明表）。改样式直接保存看效果；改模板或数据处理则需要跑一次生成命令。</p>
+            <p>反复修改直到本地效果满意为止。</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot cloud">3</span><div class="wf-line cloud"></div></div>
+          <div class="wf-content">
+            <h4>部署到线上，让客户看到 <span class="device-tag device-cloud">→ Cloudflare 云端</span></h4>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72 && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true">cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_... && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true</code>
+            <p>部署完打开 <strong>www.provenlift.com</strong> 验证线上效果和本地一致。</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot dev">4</span><div class="wf-line dev"></div></div>
+          <div class="wf-content">
+            <h4>提交代码存档 <span class="device-tag device-dev">MacBook</span></h4>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && git add . && git commit -m '修复排版问题' && git push">cd ~/Projects/gym-quote-page && git add . && git commit -m '修复排版问题' && git push</code>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot done">✓</span></div>
+          <div class="wf-content">
+            <h4>完成！关掉 live-server 终端，合盖休息</h4>
+            <p>客户网站在云端运行，不需要你的电脑开着。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 场景 B -->
+      <div class="wf-group">
+        <div class="wf-group-title">🏢 修改业务员后台 / 工作台的功能或页面</div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot dev">1</span><div class="wf-line dev"></div></div>
+          <div class="wf-content">
+            <h4>开终端，启动本地后台 <span class="device-tag device-dev">MacBook</span></h4>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && python3 build/admin_server.py">cd ~/Projects/gym-quote-page && python3 build/admin_server.py</code>
+            <p>浏览器打开 <strong>localhost:5050</strong> 调试后台功能</p>
+            <div class="note info">这个终端在调试期间保持开着。改了 Python 代码后需要 Ctrl+C 停掉再重新跑这条命令。</div>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot dev">2</span><div class="wf-line dev"></div></div>
+          <div class="wf-content">
+            <h4>改代码，反复调试 <span class="device-tag device-dev">MacBook</span></h4>
+            <p>在 localhost:5050 上测试功能，确认没问题。</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot dev">3</span><div class="wf-line dev"></div></div>
+          <div class="wf-content">
+            <h4>停掉本地后台，提交代码 <span class="device-tag device-dev">MacBook</span></h4>
+            <p>先在终端按 Ctrl+C 停掉本地 Flask，然后：</p>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && git add . && git commit -m '后台功能优化' && git push">cd ~/Projects/gym-quote-page && git add . && git commit -m '后台功能优化' && git push</code>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot mini">4</span><div class="wf-line mini"></div></div>
+          <div class="wf-content">
+            <h4>同步到 Mac mini 并重启 <span class="device-tag device-mini">Mac mini（ToDesk 远程）</span></h4>
+            <p>用 ToDesk 远程连到 Mac mini，打开终端执行两条命令：</p>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && git pull --rebase">cd ~/Projects/gym-quote-page && git pull --rebase</code>
+            <code class="cmd" data-cmd="launchctl unload ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist">launchctl unload ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist</code>
+            <p>跑完后打开 <strong>crm.provenlift.com</strong> 验证线上后台已更新。</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot done">✓</span></div>
+          <div class="wf-content">
+            <h4>完成！Mac mini 终端可以关了，MacBook 合盖休息</h4>
+            <p>Mac mini 后台服务会自动持续运行，不需要终端开着。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 场景 C -->
+      <div class="wf-group">
+        <div class="wf-group-title">📦 给客户生成新的报价方案</div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot mini">1</span><div class="wf-line mini"></div></div>
+          <div class="wf-content">
+            <h4>在后台建方案 <span class="device-tag device-mini">crm.provenlift.com</span></h4>
+            <p>浏览器打开 crm.provenlift.com → 业务员后台 → 创建方案 → 选产品。</p>
+            <p>这一步用任何设备的浏览器都行，不用开终端。</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot dev">2</span><div class="wf-line dev"></div></div>
+          <div class="wf-content">
+            <h4>生成客户页面 <span class="device-tag device-dev">MacBook 终端</span></h4>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && python3 build/generator.py">cd ~/Projects/gym-quote-page && python3 build/generator.py</code>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot cloud">3</span><div class="wf-line cloud"></div></div>
+          <div class="wf-content">
+            <h4>部署到线上 <span class="device-tag device-cloud">→ Cloudflare 云端</span></h4>
+            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72 && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true">cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_... && wrangler pages deploy ...</code>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-timeline"><span class="wf-dot done">✓</span></div>
+          <div class="wf-content">
+            <h4>把链接发给客户</h4>
+            <p>格式：<strong>www.provenlift.com/pkg/客户slug/latest.html</strong></p>
+            <p>链接永远不变，重新生成后内容自动更新。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 终端开关 -->
+    <div class="panel">
+      <h3>终端什么时候能关？</h3>
+      <div class="note info" style="margin-bottom:14px"><strong>原则：</strong>正在调试 → 保持终端开着。调试完并且代码已部署/同步 → 可以关闭。</div>
+      <div class="term-row">
+        <span class="term-indicator term-optional"></span>
+        <span class="term-name">live-server :8080</span>
+        <span class="term-desc">调客户页面时开着，部署到云端后关掉</span>
+        <span class="term-action closeable">部署后可关</span>
+      </div>
+      <div class="term-row">
+        <span class="term-indicator term-optional"></span>
+        <span class="term-name">Flask :5050（MacBook 本地）</span>
+        <span class="term-desc">调后台功能时开着，代码推到 Mac mini 后关掉</span>
+        <span class="term-action closeable">同步后可关</span>
+      </div>
+      <div class="term-row">
+        <span class="term-indicator term-on"></span>
+        <span class="term-name">Flask（Mac mini 上）</span>
+        <span class="term-desc">系统自动运行，不需要你开终端，不需要你管</span>
+        <span class="term-action keep">自动管理</span>
+      </div>
+      <div class="term-row">
+        <span class="term-indicator term-on"></span>
+        <span class="term-name">cloudflared（Mac mini 上）</span>
+        <span class="term-desc">系统自动运行，让 crm.provenlift.com 能访问</span>
+        <span class="term-action keep">自动管理</span>
+      </div>
+      <div class="term-row">
+        <span class="term-indicator term-off"></span>
+        <span class="term-name">cloudflared（MacBook 上）</span>
+        <span class="term-desc">已停用。不要在 MacBook 上开隧道，会跟 Mac mini 冲突</span>
+        <span class="term-action not-needed">不要开</span>
+      </div>
+    </div>
+
+    <!-- 排障 -->
+    <div class="panel">
+      <h3>常见问题</h3>
+      <div class="trouble-item">
+        <div class="trouble-q">AI 找不到我的网页 / 打开的是乱码旧页面？</div>
+        <div class="trouble-a">
+          <p>你的客户页面路径是：<code>pkg/客户slug/latest.html</code></p>
+          <p>目前已有的客户方案：</p>
+          <p>· <code>pkg/my-jason-400m/latest.html</code> — 最新方案</p>
+          <p>· <code>pkg/cpjason77098/latest.html</code></p>
+          <p>· <code>pkg/plan001/latest.html</code></p>
+          <p><strong>不要打开 <code>pkg/400a.html</code></strong>，那是早期旧版，253KB 的大文件，内容已过时。</p>
+          <p style="margin-top:8px"><strong>告诉 AI 这句话：</strong>"最新客户页面在 pkg/my-jason-400m/latest.html，本地预览用 localhost:8080，线上是 www.provenlift.com。pkg/400a.html 是旧版不要打开。"</p>
+        </div>
+      </div>
+      <div class="trouble-item">
+        <div class="trouble-q">线上效果和本地预览不一致？</div>
+        <div class="trouble-a">
+          <p><strong>最常见原因：</strong>改了文件但忘了部署。跑一遍 wrangler deploy 命令就好。</p>
+          <p><strong>第二常见：</strong>浏览器缓存。按 Ctrl+Shift+R（Mac 上是 Cmd+Shift+R）强制刷新。</p>
+          <p><strong>极少见：</strong>本地改了 CSS/JS 但没保存。检查编辑器里文件是否已保存。</p>
+        </div>
+      </div>
+      <div class="trouble-item">
+        <div class="trouble-q">crm.provenlift.com 打不开？</div>
+        <div class="trouble-a">
+          <p>用 ToDesk 连 Mac mini 检查服务是否在跑：</p>
+          <code class="cmd" data-cmd="pgrep -fl cloudflared && lsof -i :5050">pgrep -fl cloudflared && lsof -i :5050</code>
+          <p>如果没有进程，重新加载服务：</p>
+          <code class="cmd" data-cmd="launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.tunnel.plist">launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.tunnel.plist</code>
+          <p>Mac mini 必须已登录到桌面（不能停在登录界面），服务才会自动运行。</p>
+        </div>
+      </div>
+      <div class="trouble-item">
+        <div class="trouble-q">客户页面内容没更新？</div>
+        <div class="trouble-a">
+          <p>① 如果改了模板/数据 → 先跑 <code>python3 build/generator.py</code> 重新生成</p>
+          <p>② 然后跑 wrangler deploy 部署到线上</p>
+          <p>③ 浏览器 Cmd+Shift+R 强制刷新确认</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
-<div class="footer">ProvenLift 内部工作台</div>
+
+<div class="footer">ProvenLift 内部工作台 · Mac mini 后台服务自动运行中</div>
+
+<div class="copied-toast" id="toast">已复制到剪贴板 ✓</div>
+<script>
+document.querySelectorAll('.cmd').forEach(el => {
+  el.addEventListener('click', () => {
+    const text = el.getAttribute('data-cmd') || el.textContent.trim();
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1500);
+    });
+  });
+});
+</script>
 </body>
 </html>
