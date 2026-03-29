@@ -148,12 +148,12 @@ def api_plans():
             skus = [rid_to_sku.get(rid, rid) for rid in linked_rids]
 
             # 计算总价
-            fob_total = 0
+            # fob_total 已废弃，使用 sell_total_rmb
             sell_total_rmb = 0
             for rid in linked_rids:
                 prec = _cache["rid_to_product"].get(rid)
                 if prec:
-                    fob_total += _num(prec["fields"].get("售价FOB-USD", 0))
+                    pass  # fob_total 已废弃
                     c = _num(prec["fields"].get("采购价RMB", 0))
                     m_raw = prec["fields"].get("利润率")
                     m = _num(m_raw, default=0.4) if m_raw is not None and m_raw != "" else 0.4
@@ -181,7 +181,7 @@ def api_plans():
                 "has_override_freight": bool(pkg.get("override_freight_usd")),
             "override_freight_usd": _num(pkg.get("override_freight_usd", 0)),
                 "record_type": record_type,
-                "fob_total_usd": round(fob_total),
+                "fob_total_usd": 0,  # 已废弃，前端使用 sell_total_rmb
                 "sell_total_rmb": round(sell_total_rmb),
                 "cat_counts": cat_counts,
             }
@@ -224,7 +224,7 @@ def api_products():
             muscles = f.get("主训练肌群", [])
             if not isinstance(muscles, list):
                 muscles = []
-            price = _num(f.get("售价FOB-USD", 0))
+            price = 0  # FOB已废弃
             image_url = _extract_url(f.get("产品主图", ""))
 
             # 分类筛选
@@ -261,7 +261,7 @@ def api_products():
                 "cost_rmb": cost_rmb,
                 "margin": margin,
                 "sell_rmb": sell_rmb,
-                "price_fob_usd": price,
+                "price_fob_usd": 0,  # FOB已废弃，前端使用 sell_rmb
                 "image_url": image_url,
                 "video_url": video_url,
                 "dimensions": dimensions,
@@ -561,7 +561,7 @@ def api_client_plan_detail(record_id):
 
         # 获取每个产品的详细信息
         products = []
-        fob_total = 0
+        # fob_total 已废弃
         sell_total_rmb = 0
         cat_counts = {}
         for rid in linked_rids:
@@ -572,8 +572,8 @@ def api_client_plan_detail(record_id):
             sku = pf.get("我的SKU", "")
             category = pf.get("分类", "")
             cat_def = CATEGORY_DEFS.get(category, {})
-            price = _num(pf.get("售价FOB-USD", 0))
-            fob_total += price
+            price = 0  # FOB已废弃
+            pass  # fob_total 已废弃
 
             label_zh = cat_def.get("label_zh", category)
             cat_counts[label_zh] = cat_counts.get(label_zh, 0) + 1
@@ -593,7 +593,7 @@ def api_client_plan_detail(record_id):
                 "cost_rmb": cost_rmb,
                 "margin": margin,
                 "sell_rmb": sell_rmb,
-                "price_fob_usd": price,
+                "price_fob_usd": 0,  # FOB已废弃，前端使用 sell_rmb
                 "image_url": _extract_url(pf.get("产品主图", "")),
                 "video_url": _extract_url(pf.get("默认视频", "")),
                 "dimensions": pf.get("尺寸mm", ""),
@@ -632,7 +632,7 @@ def api_client_plan_detail(record_id):
             "record_type": f.get("记录类型", ""),
             "has_override_freight": bool(pkg.get("override_freight_usd")),
             "override_freight_usd": _num(pkg.get("override_freight_usd", 0)),
-            "fob_total_usd": round(fob_total),
+            "fob_total_usd": 0,  # 已废弃，前端使用 sell_total_rmb
             "sell_total_rmb": round(sell_total_rmb),
             "cat_counts": cat_counts,
             "n_products": len(products),

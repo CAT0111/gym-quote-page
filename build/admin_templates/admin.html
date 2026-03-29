@@ -987,7 +987,7 @@ async function addSku(productRid, sku) {
       cost_rmb: prod.cost_rmb || 0,
       margin: prod.margin || 0,
       sell_rmb: prod.sell_rmb || 0,
-      price_fob_usd: prod.price_fob_usd,
+      price_fob_usd: 0, // FOB已废弃
       image_url: prod.image_url,
       video_url: prod.video_url || '',
       dimensions: prod.dimensions || '',

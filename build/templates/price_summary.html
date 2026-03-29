@@ -1,8 +1,8 @@
 <div class="price-summary">
   <div class="price-summary-machines"><span data-en="{{ package.total_machines }} MACHINES · FOB {{ package.fob_location | upper }}" data-zh="{{ package.total_machines }} 台器械 · FOB {{ package.fob_location | upper }}" data-ms="{{ package.total_machines }} MESIN · FOB {{ package.fob_location | upper }}">{{ package.total_machines }} MACHINES · FOB {{ package.fob_location | upper }}</span></div>
   <div class="price-summary-total">
-    {%- if package.fob_total_usd is not none -%}
-      ${{ '{:,.0f}'.format(package.fob_total_usd) }}
+    {%- if package.sell_total_usd is not none -%}
+      ${{ '{:,.0f}'.format(package.sell_total_usd) }}
     {%- else -%}
       <span data-en="TBD" data-zh="待定" data-ms="TBD">待定</span>
     {%- endif -%}

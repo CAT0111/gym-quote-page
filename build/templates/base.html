@@ -52,13 +52,15 @@
            data-name="{{ p.name }}"
            data-name-zh="{{ p.name_zh }}"
            data-name-ms="{{ p.name_ms }}"
-           data-price-usd="{% if p.price_fob_usd is not none %}{{ '{:,.0f}'.format(p.price_fob_usd) }}{% endif %}"
-           data-price-cny="{% if p.price_fob_usd is not none %}{{ '{:,.0f}'.format((p.price_fob_usd / 0.145)|round|int) }}{% endif %}"
-           data-price-myr="{% if p.price_fob_usd is not none %}{{ '{:,.0f}'.format((p.price_fob_usd / 0.145 * 0.578)|round|int) }}{% endif %}" 
+           data-price-usd="{% if p.sell_usd %}{{ '{:,.0f}'.format(p.sell_usd) }}{% endif %}"
+           data-price-cny="{% if p.sell_rmb %}{{ '{:,.0f}'.format(p.sell_rmb) }}{% endif %}"
+           data-price-myr="{% if p.sell_myr %}{{ '{:,.0f}'.format(p.sell_myr) }}{% endif %}"
            data-qty="{{ p.qty or 1 }}"
            data-img="{{ p.image_url }}"
            data-video="{{ p.video_url }}"
-           data-specs='{{ p.specs | tojson }}' data-maintenance='{{ p.maintenance | default('{}') | tojson }}'>
+           data-video-en="{{ p.video_url_en }}"
+           data-video-ms="{{ p.video_url_ms }}"
+           data-specs='{{ p.specs | tojson }}' data-maintenance='{{ p.maintenance | default("{}") | tojson }}'>
         <div class="grid-thumb">
           <img src="{{ p.thumb_url }}" loading="lazy" alt="{{ p.name }}">
           {% if p.qty and p.qty > 1 %}
@@ -67,10 +69,10 @@
         </div>
         <div class="grid-item-name" data-en="{{ p.name }}" data-zh="{{ p.name_zh }}" data-ms="{{ p.name_ms }}">{{ p.name }}</div>
         <div class="grid-item-price">
-          {%- if p.price_fob_usd is not none -%}
-            <span data-en="${{ '{:,.0f}'.format(p.price_fob_usd) }}" data-zh="¥{{ '{:,.0f}'.format((p.price_fob_usd / 0.145)|round|int) }}" data-ms="RM{{ '{:,.0f}'.format((p.price_fob_usd / 0.145 * 0.578)|round|int) }}">${{ '{:,.0f}'.format(p.price_fob_usd) }}</span>
+          {%- if p.sell_rmb -%}
+            <span data-en="${{ '{:,.0f}'.format(p.sell_usd) }}" data-zh="¥{{ '{:,.0f}'.format(p.sell_rmb) }}" data-ms="RM{{ '{:,.0f}'.format(p.sell_myr) }}">${{ '{:,.0f}'.format(p.sell_usd) }}</span>
           {%- else -%}
-            <span data-en="Inquire" data-zh="询价" data-ms="Tanya Harga">询价</span>
+            <span data-en="Inquire" data-zh="询价" data-ms="Tanya Harga">Inquire</span>
           {%- endif -%}
         </div>
         <div class="grid-item-sku">{{ p.sku }}</div>
@@ -94,17 +96,15 @@
 <script type="module" src="/static/gym-3d-scene.js"></script>
 
 <script>
-  // 页面滚动监听：滑动到元素时触发入场动画
   document.addEventListener("DOMContentLoaded", function() {
     var observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
-          observer.unobserve(entry.target); // 播放一次后解除监听
+          observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15 }); // 元素露出 15% 时触发
-    
+    }, { threshold: 0.15 });
     document.querySelectorAll('.promise-card').forEach(function(el) {
       observer.observe(el);
     });

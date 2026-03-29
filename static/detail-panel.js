@@ -253,8 +253,11 @@
     }
 
     var name = prodName(gridItem);
-    var videoUrl = gridItem.dataset.video || "";
+    var videoUrl = "";
     var lang = getLang();
+    if (lang === "zh") videoUrl = gridItem.dataset.video || gridItem.dataset.videoEn || "";
+    else if (lang === "ms") videoUrl = gridItem.dataset.videoMs || gridItem.dataset.video || gridItem.dataset.videoEn || "";
+    else videoUrl = gridItem.dataset.videoEn || gridItem.dataset.video || "";
     var priceRaw = "";
     if (lang === "zh" && gridItem.dataset.priceCny) {
       priceRaw = "¥" + gridItem.dataset.priceCny;
@@ -267,7 +270,7 @@
 
     var priceHTML;
     if (priceRaw) {
-      priceHTML = priceRaw + ' <span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400">' + t('fob') + '</span>';
+      priceHTML = priceRaw + ' <span style="font-size:14px;color:rgba(255,255,255,.35);font-weight:400">' + '' + '</span>';
     } else {
       priceHTML = '<span style="font-size:16px">' + t('inquire') + '</span>';
     }

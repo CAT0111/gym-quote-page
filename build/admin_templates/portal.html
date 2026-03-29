@@ -16,8 +16,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .header-links a.secondary:hover{background:#e2e8f0}
 .main{display:flex;max-width:1280px;margin:0 auto;min-height:calc(100vh - 65px)}
 @media(max-width:960px){.main{flex-direction:column}}
-.left{width:280px;flex-shrink:0;padding:20px;border-right:1px solid #e2e8f0;background:#fff}
-@media(max-width:960px){.left{width:100%;border-right:none;border-bottom:1px solid #e2e8f0}}
+.left{width:280px;flex-shrink:0;padding:20px;border-right:1px solid #e2e8f0;background:#fff;position:sticky;top:65px;align-self:flex-start;max-height:calc(100vh - 65px);overflow-y:auto}
+@media(max-width:960px){.left{width:100%;border-right:none;border-bottom:1px solid #e2e8f0;position:static;max-height:none}}
 .left h2{font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
 .card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;text-decoration:none;color:inherit;transition:all .2s;border:1px solid transparent;margin-bottom:6px}
 .card:hover{background:#f8fafc;border-color:#e2e8f0}
@@ -195,10 +195,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 
     <h2 style="margin-top:24px">关键网址</h2>
     <div style="font-size:12px;line-height:2.4;padding:0 12px;color:#475569">
+      <strong>工作台门户（Mac mini 上）</strong><br>
+      <code style="font-size:11px;background:#fef3c7;padding:2px 6px;border-radius:4px;color:#d97706">crm.provenlift.com</code><br>
+      <strong>业务员后台</strong><br>
+      <code style="font-size:11px;background:#fef3c7;padding:2px 6px;border-radius:4px;color:#d97706">crm.provenlift.com/admin</code><br>
+      <strong>拍摄任务管理</strong><br>
+      <code style="font-size:11px;background:#fef3c7;padding:2px 6px;border-radius:4px;color:#d97706">crm.provenlift.com/shoot</code><br>
       <strong>客户看到的网站（云端托管）</strong><br>
       <code style="font-size:11px;background:#ecfdf5;padding:2px 6px;border-radius:4px;color:#059669">www.provenlift.com</code><br>
-      <strong>业务员后台（Mac mini 上）</strong><br>
-      <code style="font-size:11px;background:#fef3c7;padding:2px 6px;border-radius:4px;color:#d97706">crm.provenlift.com</code><br>
       <strong>本地调试客户页面</strong><br>
       <code style="font-size:11px;background:#eef2ff;padding:2px 6px;border-radius:4px;color:#4f46e5">localhost:8080</code><br>
       <strong>本地调试后台</strong><br>
@@ -215,7 +219,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
       <div class="arch-flow">
         <div class="arch-node dev">
           <h3>💻 MacBook 开发机</h3>
-          <p>你在这里写代码、改样式、生成客户页面。<br><strong>所有文件的源头在这里。</strong></p>
+          <p>你在这里写代码、改样式、生成网站广告页面。<br><strong>所有文件的修改从这里开始。</strong></p>
         </div>
         <div class="arch-connector">
           <span class="label">git push →<br>推代码</span>
@@ -224,13 +228,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         </div>
         <div class="arch-node server">
           <h3>🖥 Mac mini 服务器</h3>
-          <p>7×24 运行业务员后台。<br>开机自动启动，不用手动管。</p>
+          <p>7×24 运行，开机自动启动，不用手动管。<br>上面跑着：<br>· 业务员后台（建方案、选产品、调价格）<br>· 拍摄任务管理（跟踪素材拍摄进度）<br>· 货代物流费率更新<br>· 页面生成器（生成客户报价方案页面）<br>· 飞书连接器（实时读写飞书数据）</p>
           <p style="margin-top:4px"><span class="url">crm.provenlift.com</span></p>
         </div>
       </div>
       <div class="arch-flow" style="margin-top:12px">
-        <div class="arch-node dev" style="background:transparent;border:1px dashed #c7d2fe;text-align:center">
-          <p style="font-size:12px;color:#64748b">MacBook 执行 wrangler deploy ↓</p>
+        <div class="arch-node dev" style="background:#eef2ff;border:1px solid #c7d2fe">
+          <h3 style="font-size:13px">① 部署到云端 <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#ecfdf5;color:#059669;margin-left:4px">MacBook</span></h3>
+          <p style="font-size:12px;margin-bottom:6px">把改好的页面和样式推到线上，客户立刻看到最新效果</p>
+          <code class="cmd" style="font-size:10.5px;padding:6px 10px;margin:0" data-cmd="cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72 && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true">wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true</code>
+          <div style="border-top:1px solid #c7d2fe;margin:10px 0 8px"></div>
+          <h3 style="font-size:13px">② 代码存档 <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#ecfdf5;color:#059669;margin-left:4px">MacBook</span></h3>
+          <p style="font-size:12px;margin-bottom:6px">把这次的改动存到 GitHub，防止丢失，也方便同步到 Mac mini</p>
+          <code class="cmd" style="font-size:10.5px;padding:6px 10px;margin:0" data-cmd="cd ~/Projects/gym-quote-page && git add . && git commit -m '更新说明' && git push">git add . && git commit -m '更新说明' && git push</code>
         </div>
         <div class="arch-connector">
           <span class="arrow">→</span>
@@ -274,294 +284,73 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 
     <!-- 文件说明 -->
     <div class="panel">
-      <h3>项目里有哪些文件？分别是干嘛的？</h3>
-      <table class="file-table">
-        <tr><th>文件</th><th>中文说明</th><th>改完怎么生效</th></tr>
-        <tr>
-          <td><code>static/style.css</code></td>
-          <td>客户页面的样式<span class="cn-note">（颜色、字体、间距、排版）</span></td>
-          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
-        </tr>
-        <tr>
-          <td><code>static/*.js</code></td>
-          <td>客户页面的交互功能<span class="cn-note">（3D场景、语言切换、产品详情弹窗）</span></td>
-          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
-        </tr>
-        <tr>
-          <td><code>build/templates/base.html</code></td>
-          <td>客户页面的HTML模板<span class="cn-note">（页面骨架结构，产品卡片怎么排列）</span></td>
-          <td>先生成再 <span class="where-tag where-cloud">wrangler 部署</span></td>
-        </tr>
-        <tr>
-          <td><code>build/transform.py</code></td>
-          <td>数据处理脚本<span class="cn-note">（飞书原始数据→网页能用的格式，算价格、算运费）</span></td>
-          <td>先生成再 <span class="where-tag where-cloud">wrangler 部署</span></td>
-        </tr>
-        <tr>
-          <td><code>build/generator.py</code></td>
-          <td>页面生成器<span class="cn-note">（拉飞书数据 + 套模板 = 生成客户HTML页面）</span></td>
-          <td><span class="where-tag where-mini">Mac mini 后台调用</span><br><span class="cn-note">（业务员后台点生成网页触发，链路修复中）</span></td>
-        </tr>
-        <tr>
-          <td><code>build/feishu_client.py</code></td>
-          <td>飞书连接器<span class="cn-note">（负责从飞书多维表格读写数据，后台和生成器都会用到）</span></td>
-          <td><span class="where-tag where-mini">Mac mini 运行</span> <span class="where-tag where-dev">MacBook 也用</span></td>
-        </tr>
-        <tr>
-          <td><code>build/admin_server.py</code></td>
-          <td>业务员后台程序<span class="cn-note">（就是 crm.provenlift.com 背后跑的程序）</span></td>
-          <td><span class="where-tag where-mini">git 推到 Mac mini</span></td>
-        </tr>
-        <tr>
-          <td><code>build/admin_templates/*.html</code></td>
-          <td>后台页面模板<span class="cn-note">（工作台、业务员后台、拍摄管理的页面）</span></td>
-          <td><span class="where-tag where-mini">git 推到 Mac mini</span></td>
-        </tr>
-        <tr>
-          <td><code>pkg/xxx/latest.html</code></td>
-          <td>生成好的客户页面<span class="cn-note">（generator.py 自动输出到这里）</span></td>
-          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
-        </tr>
-        <tr>
-          <td><code>static/og-images/*.jpg</code></td>
-          <td>WhatsApp 分享缩略图<span class="cn-note">（发链接时显示的产品大图）</span></td>
-          <td><span class="where-tag where-cloud">wrangler 部署</span></td>
-        </tr>
-      </table>
-    </div>
-
-    <!-- 保存 vs 生成 -->
-    <div class="panel">
-      <h3>保存就能看到效果 vs 需要跑生成命令</h3>
-      <div class="refresh-vs">
-        <div class="refresh-box auto">
-          <strong>✅ 保存后自动刷新（不用跑命令）</strong>
-          改了这些文件，保存后 live-server 自动刷新浏览器：<br>
-          · <code>static/style.css</code>（样式）<br>
-          · <code>static/*.js</code>（交互功能）<br>
-          <em>因为这些文件被客户页面直接引用，改了就是改了。</em>
+      <h3>改完文件后的完整操作流程</h3>
+      <p class="subtitle">两种情况，看你改的是什么文件</p>
+      <div style="display:flex;gap:14px">
+        <div style="flex:1;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;padding:16px;font-size:13px;line-height:2">
+          <strong style="font-size:14px">✅ 改样式 / 改交互（不用跑生成命令）</strong>
+          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#eef2ff;color:#4f46e5;margin-left:6px">MacBook</span><br>
+          <em style="color:#065f46">改了这些文件，保存后浏览器自动刷新：</em><br>
+          · <code>static/style.css</code>（样式：颜色、字体、间距）<br>
+          · <code>static/*.js</code>（交互：3D场景、详情弹窗、语言切换）<br>
+          <div style="border-top:1px solid #a7f3d0;margin:12px 0"></div>
+          <strong>完整操作步骤：</strong><br>
+          <strong>第 1 步</strong> 开终端，启动本地预览<br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px" data-cmd="cd ~/Projects/gym-quote-page && live-server --port=8080 --host=0.0.0.0">cd ~/Projects/gym-quote-page && live-server --port=8080 --host=0.0.0.0</code>
+          <strong>第 2 步</strong> 浏览器打开预览页面<br>
+          <code style="font-size:11px;background:rgba(0,0,0,.05);padding:4px 8px;border-radius:4px;display:block;margin:4px 0 8px">localhost:8080/pkg/my-jason-400m/latest.html</code>
+          <strong>第 3 步</strong> 用编辑器改 CSS 或 JS，保存后浏览器自动刷新看效果，反复调到满意<br><br>
+          <strong>第 4 步</strong> 满意后，部署到云端让客户看到<br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px;word-break:break-all" data-cmd="cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72 && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true">cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72 && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true</code>
+          <strong>第 5 步</strong> 代码存档到 GitHub<br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px" data-cmd="cd ~/Projects/gym-quote-page && git add . && git commit -m '样式调整' && git push">cd ~/Projects/gym-quote-page && git add . && git commit -m '样式调整' && git push</code>
+          <strong>第 6 步</strong> 关掉 live-server 终端，完成。<strong style="color:#059669">不需要碰 Mac mini。</strong>
         </div>
-        <div class="refresh-box manual">
-          <strong>⚠️ 需要重新生成（跑一次命令）</strong>
-          改了这些文件，需要重新跑生成器才能看到效果：<br>
+        <div style="flex:1;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;padding:16px;font-size:13px;line-height:2">
+          <strong style="font-size:14px">⚠️ 改模板骨架 / 数据逻辑（需要重新生成）</strong>
+          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#eef2ff;color:#4f46e5;margin-left:6px">MacBook + Mac mini</span><br>
+          <em style="color:#92400e">改了这些文件，需要跑生成命令才能看到效果：</em><br>
           · <code>build/templates/base.html</code>（模板骨架）<br>
-          · <code>build/transform.py</code>（数据处理）<br>
+          · <code>build/transform.py</code>（数据处理逻辑）<br>
           · 飞书里的产品数据<br>
-          <em>因为这些内容要先"拼装"成 HTML 才能看到。</em>
+          <div style="border-top:1px solid #fde68a;margin:12px 0"></div>
+          <strong>完整操作步骤：</strong><br>
+          <strong>第 1 步</strong> 开终端，启动本地预览
+          <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:#eef2ff;color:#4f46e5">MacBook</span><br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px" data-cmd="cd ~/Projects/gym-quote-page && live-server --port=8080 --host=0.0.0.0">cd ~/Projects/gym-quote-page && live-server --port=8080 --host=0.0.0.0</code>
+          <strong>第 2 步</strong> 用编辑器改模板或数据处理文件
+          <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:#eef2ff;color:#4f46e5">MacBook</span><br><br>
+          <strong>第 3 步</strong> 每次改完跑一次生成命令
+          <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:#eef2ff;color:#4f46e5">MacBook</span><br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px" data-cmd="cd ~/Projects/gym-quote-page && python3 build/generator.py">cd ~/Projects/gym-quote-page && python3 build/generator.py</code>
+          浏览器刷新 <code>localhost:8080/pkg/my-jason-400m/latest.html</code> 看效果，反复调到满意<br><br>
+          <strong>第 4 步</strong> 满意后推代码到 GitHub
+          <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:#eef2ff;color:#4f46e5">MacBook</span><br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px" data-cmd="cd ~/Projects/gym-quote-page && git add . && git commit -m '模板结构调整' && git push">cd ~/Projects/gym-quote-page && git add . && git commit -m '模板结构调整' && git push</code>
+          <strong>第 5 步</strong> ToDesk 连 Mac mini，拉最新代码
+          <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:#fef3c7;color:#d97706">Mac mini</span><br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px" data-cmd="cd ~/Projects/gym-quote-page && git pull --rebase">cd ~/Projects/gym-quote-page && git pull --rebase</code>
+          <strong>第 6 步</strong> 重启 Mac mini 后台服务
+          <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:#fef3c7;color:#d97706">Mac mini</span><br>
+          <code class="cmd" style="font-size:11px;padding:6px 10px;margin:4px 0 8px;word-break:break-all" data-cmd="launchctl unload ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist">launchctl unload ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist</code>
+          <strong>第 7 步</strong> 打开业务员后台，重新生成并部署
+          <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:#fef3c7;color:#d97706">crm.provenlift.com</span><br>
+          业务员后台 → 选中客户方案 → 点「生成预览」→ 确认效果 → 点「发给客户」部署上线<br>
+          每个需要更新的客户方案都要重新生成一次<br><br>
+          <strong>第 8 步</strong> 关掉 live-server，Mac mini 终端也可以关，完成。<br>
+          <div style="border-top:1px solid #fde68a;margin:12px 0"></div>
+          <strong style="color:#92400e">💡 如果你改的是后台程序或后台页面：</strong><br>
+          即 <code>build/admin_server.py</code> 或 <code>build/admin_templates/*</code><br>
+          只需要做第 4、5、6 步（推代码 → Mac mini 拉代码 → 重启服务），<strong>不需要做第 7 步的重新生成</strong>。<br>
+          因为后台页面不是生成出来的，重启 Flask 就直接生效了。
         </div>
       </div>
-      <div class="note">生成命令：<code>cd ~/Projects/gym-quote-page && python3 build/generator.py</code></div>
-    </div>
-
-    <!-- 工作流 -->
-    <div class="panel">
-      <h3>完整工作流（从开机到关机）</h3>
-      <p class="subtitle">你最常做的三种事情，分别怎么操作</p>
-
-      <!-- 场景 A -->
-      <div class="wf-group">
-        <div class="wf-group-title">🔧 修复客户网页的排版 / 样式 / 数据显示问题</div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot dev">1</span><div class="wf-line dev"></div></div>
-          <div class="wf-content">
-            <h4>开终端，启动本地预览 <span class="device-tag device-dev">MacBook</span></h4>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && live-server --port=8080 --host=0.0.0.0">cd ~/Projects/gym-quote-page && live-server --port=8080</code>
-            <p>浏览器打开 <strong>localhost:8080/pkg/my-jason-400m/latest.html</strong></p>
-            <div class="note info">这个终端在调试期间保持开着。你随时可以在浏览器里看效果。</div>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot dev">2</span><div class="wf-line dev"></div></div>
-          <div class="wf-content">
-            <h4>改文件，看效果 <span class="device-tag device-dev">MacBook</span></h4>
-            <p>用编辑器改对应文件（参考上面的文件说明表）。改样式直接保存看效果；改模板或数据处理则需要跑一次生成命令。</p>
-            <p>反复修改直到本地效果满意为止。</p>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot cloud">3</span><div class="wf-line cloud"></div></div>
-          <div class="wf-content">
-            <h4>部署到线上，让客户看到 <span class="device-tag device-cloud">→ Cloudflare 云端</span></h4>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72 && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true">cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_... && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true</code>
-            <p>部署完打开 <strong>www.provenlift.com</strong> 验证线上效果和本地一致。</p>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot dev">4</span><div class="wf-line dev"></div></div>
-          <div class="wf-content">
-            <h4>提交代码存档 <span class="device-tag device-dev">MacBook</span></h4>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && git add . && git commit -m '修复排版问题' && git push">cd ~/Projects/gym-quote-page && git add . && git commit -m '修复排版问题' && git push</code>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot done">✓</span></div>
-          <div class="wf-content">
-            <h4>完成！关掉 live-server 终端，合盖休息</h4>
-            <p>客户网站在云端运行，不需要你的电脑开着。</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 场景 B -->
-      <div class="wf-group">
-        <div class="wf-group-title">🏢 修改业务员后台 / 工作台的功能或页面</div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot dev">1</span><div class="wf-line dev"></div></div>
-          <div class="wf-content">
-            <h4>开终端，启动本地后台 <span class="device-tag device-dev">MacBook</span></h4>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && python3 build/admin_server.py">cd ~/Projects/gym-quote-page && python3 build/admin_server.py</code>
-            <p>浏览器打开 <strong>localhost:5050</strong> 调试后台功能</p>
-            <div class="note info">这个终端在调试期间保持开着。改了 Python 代码后需要 Ctrl+C 停掉再重新跑这条命令。</div>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot dev">2</span><div class="wf-line dev"></div></div>
-          <div class="wf-content">
-            <h4>改代码，反复调试 <span class="device-tag device-dev">MacBook</span></h4>
-            <p>在 localhost:5050 上测试功能，确认没问题。</p>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot dev">3</span><div class="wf-line dev"></div></div>
-          <div class="wf-content">
-            <h4>停掉本地后台，提交代码 <span class="device-tag device-dev">MacBook</span></h4>
-            <p>先在终端按 Ctrl+C 停掉本地 Flask，然后：</p>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && git add . && git commit -m '后台功能优化' && git push">cd ~/Projects/gym-quote-page && git add . && git commit -m '后台功能优化' && git push</code>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot mini">4</span><div class="wf-line mini"></div></div>
-          <div class="wf-content">
-            <h4>同步到 Mac mini 并重启 <span class="device-tag device-mini">Mac mini（ToDesk 远程）</span></h4>
-            <p>用 ToDesk 远程连到 Mac mini，打开终端执行两条命令：</p>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && git pull --rebase">cd ~/Projects/gym-quote-page && git pull --rebase</code>
-            <code class="cmd" data-cmd="launchctl unload ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist">launchctl unload ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist</code>
-            <p>跑完后打开 <strong>crm.provenlift.com</strong> 验证线上后台已更新。</p>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot done">✓</span></div>
-          <div class="wf-content">
-            <h4>完成！Mac mini 终端可以关了，MacBook 合盖休息</h4>
-            <p>Mac mini 后台服务会自动持续运行，不需要终端开着。</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 场景 C -->
-      <div class="wf-group">
-        <div class="wf-group-title">📦 给客户生成新的报价方案</div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot mini">1</span><div class="wf-line mini"></div></div>
-          <div class="wf-content">
-            <h4>在后台建方案 <span class="device-tag device-mini">crm.provenlift.com</span></h4>
-            <p>浏览器打开 crm.provenlift.com → 业务员后台 → 创建方案 → 选产品。</p>
-            <p>这一步用任何设备的浏览器都行，不用开终端。</p>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot dev">2</span><div class="wf-line dev"></div></div>
-          <div class="wf-content">
-            <h4>生成客户页面 <span class="device-tag device-dev">MacBook 终端</span></h4>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && python3 build/generator.py">cd ~/Projects/gym-quote-page && python3 build/generator.py</code>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot cloud">3</span><div class="wf-line cloud"></div></div>
-          <div class="wf-content">
-            <h4>部署到线上 <span class="device-tag device-cloud">→ Cloudflare 云端</span></h4>
-            <code class="cmd" data-cmd="cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_Je7kKN20exJ18UIWmpysZYjm016MSllBuR7qhTemc91a9b72 && wrangler pages deploy . --project-name=provenlift --branch=main --commit-dirty=true">cd ~/Projects/gym-quote-page && export CLOUDFLARE_API_TOKEN=cfut_... && wrangler pages deploy ...</code>
-          </div>
-        </div>
-        <div class="wf-step">
-          <div class="wf-timeline"><span class="wf-dot done">✓</span></div>
-          <div class="wf-content">
-            <h4>把链接发给客户</h4>
-            <p>格式：<strong>www.provenlift.com/pkg/客户slug/latest.html</strong></p>
-            <p>链接永远不变，重新生成后内容自动更新。</p>
-          </div>
-        </div>
+      <div class="note info" style="margin-top:12px">
+        <strong>怎么判断走哪条路？</strong>看你改的是 static/ 目录下的文件还是 build/ 目录下的文件。改 static/ 走左边（简单），改 build/ 走右边（多几步）。如果两边都改了，先走右边把模板同步到 Mac mini，再走左边部署到云端。
       </div>
     </div>
 
-    <!-- 终端开关 -->
-    <div class="panel">
-      <h3>终端什么时候能关？</h3>
-      <div class="note info" style="margin-bottom:14px"><strong>原则：</strong>正在调试 → 保持终端开着。调试完并且代码已部署/同步 → 可以关闭。</div>
-      <div class="term-row">
-        <span class="term-indicator term-optional"></span>
-        <span class="term-name">live-server :8080</span>
-        <span class="term-desc">调客户页面时开着，部署到云端后关掉</span>
-        <span class="term-action closeable">部署后可关</span>
-      </div>
-      <div class="term-row">
-        <span class="term-indicator term-optional"></span>
-        <span class="term-name">Flask :5050（MacBook 本地）</span>
-        <span class="term-desc">调后台功能时开着，代码推到 Mac mini 后关掉</span>
-        <span class="term-action closeable">同步后可关</span>
-      </div>
-      <div class="term-row">
-        <span class="term-indicator term-on"></span>
-        <span class="term-name">Flask（Mac mini 上）</span>
-        <span class="term-desc">系统自动运行，不需要你开终端，不需要你管</span>
-        <span class="term-action keep">自动管理</span>
-      </div>
-      <div class="term-row">
-        <span class="term-indicator term-on"></span>
-        <span class="term-name">cloudflared（Mac mini 上）</span>
-        <span class="term-desc">系统自动运行，让 crm.provenlift.com 能访问</span>
-        <span class="term-action keep">自动管理</span>
-      </div>
-      <div class="term-row">
-        <span class="term-indicator term-off"></span>
-        <span class="term-name">cloudflared（MacBook 上）</span>
-        <span class="term-desc">已停用。不要在 MacBook 上开隧道，会跟 Mac mini 冲突</span>
-        <span class="term-action not-needed">不要开</span>
-      </div>
-    </div>
-
-    <!-- 排障 -->
-    <div class="panel">
-      <h3>常见问题</h3>
-      <div class="trouble-item">
-        <div class="trouble-q">AI 找不到我的网页 / 打开的是乱码旧页面？</div>
-        <div class="trouble-a">
-          <p>你的客户页面路径是：<code>pkg/客户slug/latest.html</code></p>
-          <p>目前已有的客户方案：</p>
-          <p>· <code>pkg/my-jason-400m/latest.html</code> — 最新方案</p>
-          <p>· <code>pkg/cpjason77098/latest.html</code></p>
-          <p>· <code>pkg/plan001/latest.html</code></p>
-          <p><strong>不要打开 <code>pkg/400a.html</code></strong>，那是早期旧版，253KB 的大文件，内容已过时。</p>
-          <p style="margin-top:8px"><strong>告诉 AI 这句话：</strong>"最新客户页面在 pkg/my-jason-400m/latest.html，本地预览用 localhost:8080，线上是 www.provenlift.com。pkg/400a.html 是旧版不要打开。"</p>
-        </div>
-      </div>
-      <div class="trouble-item">
-        <div class="trouble-q">线上效果和本地预览不一致？</div>
-        <div class="trouble-a">
-          <p><strong>最常见原因：</strong>改了文件但忘了部署。跑一遍 wrangler deploy 命令就好。</p>
-          <p><strong>第二常见：</strong>浏览器缓存。按 Ctrl+Shift+R（Mac 上是 Cmd+Shift+R）强制刷新。</p>
-          <p><strong>极少见：</strong>本地改了 CSS/JS 但没保存。检查编辑器里文件是否已保存。</p>
-        </div>
-      </div>
-      <div class="trouble-item">
-        <div class="trouble-q">crm.provenlift.com 打不开？</div>
-        <div class="trouble-a">
-          <p>用 ToDesk 连 Mac mini 检查服务是否在跑：</p>
-          <code class="cmd" data-cmd="pgrep -fl cloudflared && lsof -i :5050">pgrep -fl cloudflared && lsof -i :5050</code>
-          <p>如果没有进程，重新加载服务：</p>
-          <code class="cmd" data-cmd="launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.tunnel.plist">launchctl load ~/Library/LaunchAgents/com.provenlift.flask.plist && launchctl load ~/Library/LaunchAgents/com.provenlift.tunnel.plist</code>
-          <p>Mac mini 必须已登录到桌面（不能停在登录界面），服务才会自动运行。</p>
-        </div>
-      </div>
-      <div class="trouble-item">
-        <div class="trouble-q">客户页面内容没更新？</div>
-        <div class="trouble-a">
-          <p>① 如果改了模板/数据 → 先跑 <code>python3 build/generator.py</code> 重新生成</p>
-          <p>② 然后跑 wrangler deploy 部署到线上</p>
-          <p>③ 浏览器 Cmd+Shift+R 强制刷新确认</p>
-        </div>
-      </div>
-    </div>
+    
 
   </div>
 </div>
