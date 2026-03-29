@@ -698,3 +698,64 @@ a{color:inherit;text-decoration:none}
     display: block;
     margin-top: 4px;
 }
+
+
+/* ========================================================= */
+/* 🚀 终极防回退修复：使用顶级权重屏蔽外部干扰，锁定 PI 布局 */
+/* ========================================================= */
+
+/* 1. Header 修复：强制上下区块排列，防止左右挤压换行 */
+#pi-modal .pi-header {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+#pi-modal .pi-header-top {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+}
+#pi-modal .pi-header-top h2 {
+    white-space: nowrap !important; /* 强制标题文本不乱折叠 */
+}
+#pi-modal .pi-meta-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+}
+
+/* 2. Table 修复：强制固定列宽 (Fixed Layout) 防止单元格溢出重叠 */
+#pi-modal .pi-table {
+    table-layout: fixed !important; 
+    width: 100% !important;
+    min-width: 680px !important;
+}
+/* 严格分配这 5 列的宽度 */
+#pi-modal .pi-table th:nth-child(1), #pi-modal .pi-table td:nth-child(1) { width: 45px !important; }
+#pi-modal .pi-table th:nth-child(2), #pi-modal .pi-table td:nth-child(2) { width: 65px !important; }
+#pi-modal .pi-table th:nth-child(3), #pi-modal .pi-table td:nth-child(3) { width: 240px !important; padding-right: 16px !important; }
+#pi-modal .pi-table th:nth-child(4), #pi-modal .pi-table td:nth-child(4) { width: 180px !important; }
+#pi-modal .pi-table th:nth-child(5), #pi-modal .pi-table td:nth-child(5) { width: 120px !important; }
+
+/* 将合并后的信息死死限制在第三列内 */
+#pi-modal .pi-item-calc {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* 3. Footer 修复：强制横向弹性盒，确保总价在右下角 */
+#pi-modal .pi-summary {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+#pi-modal .pi-total-price {
+    text-align: right !important;
+    margin-left: auto !important; /* 终极靠右推力 */
+}
