@@ -9,7 +9,24 @@ TEMPLATE_DIR = BUILD_DIR / "templates"
 OUTPUT_DIR = PROJECT_ROOT
 
 sys.path.insert(0, str(BUILD_DIR))
-from data.test_data import PACKAGE, CATEGORIES, PRODUCTS
+
+# ====== Phase 1: 飞书直连（替换 test_data.py）======
+try:
+    from feishu_client import fetch_all
+    from transform import build_data
+    _USE_FEISHU = True
+except Exception as e:
+    print(f"  ⚠️  飞书连接失败，回退到本地测试数据: {e}")
+    _USE_FEISHU = False
+
+if _USE_FEISHU:
+    # 可通过命令行指定: python3 generator.py PLAN002 CLIENT002
+    _plan_id = sys.argv[1] if len(sys.argv) > 1 else None
+    _client_id = sys.argv[2] if len(sys.argv) > 2 else None
+    raw = fetch_all()
+    PACKAGE, CATEGORIES, PRODUCTS = build_data(raw, plan_id=_plan_id, client_id=_client_id)
+else:
+    from data.test_data import PACKAGE, CATEGORIES, PRODUCTS
 
 
 def group_products_by_category(products, categories):
@@ -35,7 +52,7 @@ def generate_package_page(package, categories, products):
 
 
 def generate_index_redirect():
-    pkg_id = "400a"
+    pkg_id = PACKAGE["id"].lower().replace("-", "").replace("pkg", "")
     lines = [
         "<!DOCTYPE html>",
         "<html><head><meta charset=utf-8>",
@@ -49,14 +66,18 @@ def generate_index_redirect():
 
 def main():
     print("=" * 50)
-    print("ProvenLift Quote Page Generator v1")
+    print("ProvenLift Quote Page Generator v2 (Feishu)")
     print("=" * 50)
     print(f"  Package: {PACKAGE['id']} ({len(PRODUCTS)} machines)")
+    if PACKAGE.get('client_name'):
+        print(f"  Client:  {PACKAGE['client_name']}")
+    print(f"  Market:  {PACKAGE.get('market', 'N/A')}")
+    print(f"  Source:  {'飞书 API' if _USE_FEISHU else '本地 test_data.py'}")
     print()
     generate_package_page(PACKAGE, CATEGORIES, PRODUCTS)
     generate_index_redirect()
     print()
-    print("Done! -> http://localhost:8080/pkg/400a.html")
+    print(f"Done! -> http://localhost:8080/pkg/{PACKAGE['id'].lower().replace('-','').replace('pkg','')}.html")
 
 
 if __name__ == "__main__":
