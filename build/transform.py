@@ -55,6 +55,18 @@ FIELD_MAP_LOGISTICS = {
 }
 
 # ================================================================
+# 肌群中文→英文映射（飞书存中文方便文员核对，输出给前端用英文供 JS 翻译）
+# ================================================================
+MUSCLE_ZH_TO_EN = {
+    "胸部": "Chest",
+    "背部": "Back",
+    "腿部": "Legs",
+    "臂部": "Arms",
+    "肩部": "Shoulders",
+    "核心": "Core",
+}
+
+# ================================================================
 # 分类代码 → 完整 category 字典（含多语言）
 # 飞书 T_Product 的"分类"字段存的是这些代码
 # ================================================================
@@ -328,7 +340,8 @@ def build_data(raw, plan_id=None, client_id=None):
         if p.get("area_m2"):
             specs["Floor Area"] = f"{p['area_m2']} m²"
         if p.get("muscle_group"):
-            specs["Target"] = " / ".join(p["muscle_group"])
+            en_muscles = [MUSCLE_ZH_TO_EN.get(m, m) for m in p["muscle_group"]]
+            specs["Target"] = " / ".join(en_muscles)
 
         product = {
             "sku": p.get("sku", ""),
