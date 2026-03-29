@@ -210,7 +210,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
   .task-card:active{transform:none;}
 }
 
+
+/* ── 强化素材类型标签 ── */
+.media-tag{
+  display:inline-block;padding:3px 8px;border-radius:6px;font-size:0.75rem;font-weight:700;
+  margin-left:6px;vertical-align:middle;
+}
+.media-产品主图{background:#e0e7ff;color:#3730a3;}
+.media-试机视频{background:#f3e8ff;color:#86198f;}
+.media-细节特写{background:#ffedd5;color:#9a3412;}
+.media-场景图{background:#dcfce7;color:#166534;}
+
+/* ── 拍摄指南卡片 ── */
+.guide-box{
+  background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-top:12px;
+}
+.gb-title{font-size:0.8125rem;font-weight:700;color:#1e293b;margin-bottom:6px;display:flex;align-items:center;gap:4px;}
+.gb-cat{font-size:0.75rem;color:#0369a1;background:#e0f2fe;padding:6px 8px;border-radius:6px;margin-bottom:8px;font-weight:600;line-height:1.4;}
+.gb-list{list-style:none;padding:0;margin:0;}
+.gb-list li{font-size:0.75rem;color:#475569;margin-bottom:4px;padding-left:12px;position:relative;line-height:1.4;}
+.gb-list li::before{content:"•";position:absolute;left:0;color:#94a3b8;font-weight:bold;}
 </style>
+
 </head>
 <body>
 
@@ -478,8 +499,11 @@ function renderTaskList(containerId, tasks, mode) {
       <div class="task-main" onclick="toggleTaskDetail('${t.record_id}')">
         <img class="task-thumb" src="${t.product_image||''}" alt="" onerror="this.style.background='#e2e8f0'">
         <div class="task-info">
-          <div class="t-sku">${t.sku} · ${t.media_type}</div>
-          <div class="t-name">${t.product_name_zh || t.product_name || t.sku}</div>
+          <div class="t-sku">${t.sku}</div>
+          <div class="t-name" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+            ${t.product_name_zh || t.product_name || t.sku}
+            <span class="media-tag media-${t.media_type}">${t.media_type}</span>
+          </div>
           <div class="t-meta">
             <span class="badge badge-${t.status}">${t.status}</span>
             ${t.shooter ? '<span>📷 '+t.shooter+'</span>' : ''}
@@ -521,10 +545,42 @@ function renderTaskDetail(t, mode) {
     <input type="text" value="${t.note||''}" id="note-${t.record_id}" placeholder="输入备注">
   </div>`;
 
+  // 注入按分类查询的拍摄指南
+  const CATEGORY_TIPS = {
+    'SC': '【固定力量/SC系列】重点展现配重罩壳的质感、运动轨迹的顺滑，以及调节座椅的便捷性。',
+    'PL': '【挂片式/PL系列】⚠️必须挂上几片杠铃片拍摄！空载会显得单薄。重点拍摄挂片杆的粗度、承重感。',
+    'FM': '【力量架/功能训练】展示框架的厚重感（管材厚度），重点拍摄J钩、保护杠等配件细节和调节孔位。',
+    'BENCH': '【训练凳】展示不同角度的调节档位，拍摄皮革的厚实度和移动滚轮。',
+    'CARDIO': '【有氧器械】⚠️必须通电拍摄！展示屏幕点亮后的界面，拍摄跑带/踏板的运转状态。',
+    'FREE': '【自由重量】哑铃/杠铃片需按重量排列整齐拍摄，展现包胶质感和数字标识。',
+    'DEFAULT': '【通用器材】保持器材擦拭干净（无指纹/灰尘），光线明亮，突出管材的粗壮与烤漆的质感。'
+  };
+  const MEDIA_TIPS = {
+    '产品主图': ['斜侧45度角拍摄，展现器械立体感与深度，器材需占画面70%以上','确保主座垫/靠背和配重区光线充足，避免死亡阴影','背景必须干净，避免杂乱背景入镜'],
+    '试机视频': ['先环绕展示器材全貌（3-5秒）','由模特/教练进行标准动作演示，展现运动轨迹','重点拍摄配重片升降、滑轮转动等机械结构工作状态'],
+    '细节特写': ['拉近拍摄PU皮座垫纹理、双缝线工艺','拍摄框架焊接处的平整度、烤漆光泽度','拍摄调节插销、铝合金滑轮、把手防滑纹理'],
+    '场景图': ['利用健身房纵深感作为背景，开启大光圈虚化背景','利用轮廓光打出器械的高级金属质感']
+  };
+
+  let catTip = CATEGORY_TIPS['DEFAULT'];
+  const skuStr = (t.sku || '').toUpperCase();
+  const nameStr = t.product_name_zh || t.product_name || '';
+  if (skuStr.startsWith('SC') || nameStr.includes('固定力量')) catTip = CATEGORY_TIPS['SC'];
+  else if (skuStr.startsWith('PL') || nameStr.includes('挂片')) catTip = CATEGORY_TIPS['PL'];
+  else if (skuStr.startsWith('FM') || nameStr.includes('架') || nameStr.includes('功能')) catTip = CATEGORY_TIPS['FM'];
+  else if (nameStr.includes('凳') || nameStr.includes('椅')) catTip = CATEGORY_TIPS['BENCH'];
+  else if (nameStr.includes('跑步机') || nameStr.includes('椭圆机') || nameStr.includes('单车') || nameStr.includes('有氧')) catTip = CATEGORY_TIPS['CARDIO'];
+  else if (nameStr.includes('哑铃') || nameStr.includes('杠铃') || nameStr.includes('片') || nameStr.includes('自由重量')) catTip = CATEGORY_TIPS['FREE'];
+
+  const mTips = MEDIA_TIPS[t.media_type] || ['保持清晰，突出质感'];
+  
   if (mode === 'shoot' || mode === 'all') {
-    html += `<div class="detail-row">
-      <label>拍摄人</label>
-      <input type="text" value="${t.shooter||''}" id="shooter-${t.record_id}" placeholder="拍摄人">
+    html += `<div class="guide-box">
+      <div class="gb-title">📸 ${t.media_type} - 拍摄指南</div>
+      <div class="gb-cat">${catTip}</div>
+      <ul class="gb-list">
+        ${mTips.map(tip => `<li>${tip}</li>`).join('')}
+      </ul>
     </div>`;
   }
 
