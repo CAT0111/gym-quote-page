@@ -8,48 +8,50 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f2f2f7; --card:#ffffff;
-  --ios-blue:#007aff; --ios-blue-bg:rgba(0,122,255,0.1);
-  --ios-green:#34c759; --ios-orange:#ff9500; --ios-red:#ff3b30; --ios-purple:#af52de;
-  --text:#1c1c1e; --text2:#8e8e93; --text3:#aeaeb2;
-  --border:rgba(60,60,67,0.12);
+  --bg:#f5f7fa; --card:#ffffff;
+  --primary:#2563eb; --primary-hover:#1d4ed8; --primary-light:#eff6ff;
+  --success:#16a34a; --success-light:#f0fdf4;
+  --warn:#f59e0b; --warn-light:#fffbeb;
+  --danger:#dc2626; --danger-light:#fef2f2;
+  --purple:#7c3aed; --purple-light:#f5f3ff;
+  --text:#1e293b; --text2:#64748b; --text3:#94a3b8;
+  --border:#e2e8f0; --radius:16px;
 }
 html{font-size:16px;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100dvh;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100dvh;}
 
-/* ── 头部：毛玻璃极简风 ── */
+/* ── 头部：恢复原本的经典品牌蓝 ── */
 .app-header{
-  background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  color:var(--text);padding:0 16px;height:52px;
+  background:var(--primary);color:#fff;padding:0 16px;height:52px;
   position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:0.5px solid var(--border);
+  box-shadow:0 2px 8px rgba(37,99,235,0.3);
 }
-.app-header h1{font-size:1.0625rem;font-weight:600;letter-spacing:-0.4px;}
+.app-header h1{font-size:1rem;font-weight:600;}
 .header-actions{display:flex;align-items:center;gap:8px;}
 .btn-icon{
-  background:transparent;border:none;color:var(--ios-blue);
-  width:32px;height:32px;border-radius:50%;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:500;
+  background:rgba(255,255,255,0.2);border:none;color:#fff;
+  width:32px;height:32px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:background 0.2s;
 }
-.btn-icon:active{opacity:0.5;}
+.btn-icon:active{background:rgba(255,255,255,0.35);}
 
-/* ── iOS 胶囊分段控制器 (替代传统 Tab) ── */
+/* ── iOS骨架的胶囊分段控制器 + 原版色彩 ── */
 .view-tabs{
-  display:flex;background:#e3e3e8;border-radius:8px;margin:12px 16px;padding:2px;
+  display:flex;background:#e2e8f0;border-radius:8px;margin:12px 16px;padding:3px;
   position:sticky;top:calc(52px + 12px);z-index:90;
 }
 .view-tabs::-webkit-scrollbar{display:none;}
 .vtab{
-  flex:1;padding:6px 0;text-align:center;font-size:0.8125rem;font-weight:500;
-  color:var(--text);border:none;background:transparent;border-radius:6px;
+  flex:1;padding:6px 0;text-align:center;font-size:0.8125rem;font-weight:600;
+  color:var(--text2);border:none;background:transparent;border-radius:6px;
   cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:4px;
 }
-.vtab.active{background:#fff;box-shadow:0 3px 1px -2px rgba(0,0,0,0.04),0 1px 3px rgba(0,0,0,0.12);}
+.vtab.active{background:#fff;color:var(--primary);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
 .vtab-count{
   background:rgba(0,0,0,0.06);color:var(--text2);font-size:0.6875rem;
   padding:1px 6px;border-radius:10px;font-weight:600;
 }
-.vtab.active .vtab-count{background:var(--ios-blue-bg);color:var(--ios-blue);}
+.vtab.active .vtab-count{background:var(--primary-light);color:var(--primary);}
 
 .content{padding:0 16px 80px;max-width:600px;margin:0 auto;}
 .view-panel{display:none;}
@@ -58,152 +60,152 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Robot
 /* ── 融合式统计面板 ── */
 .stats-bar{
   background:var(--card);border-radius:12px;display:flex;
-  margin-bottom:16px;border:0.5px solid var(--border);
+  margin-bottom:16px;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.02);
 }
 .stat-item{
-  flex:1;padding:12px 0;text-align:center;border-right:0.5px solid var(--border);
+  flex:1;padding:12px 0;text-align:center;border-right:1px solid var(--border);
 }
 .stat-item:last-child{border-right:none;}
-.stat-item .s-val{font-size:1.25rem;font-weight:600;color:var(--text);}
+.stat-item .s-val{font-size:1.25rem;font-weight:700;color:var(--text);}
 .stat-item .s-label{font-size:0.6875rem;color:var(--text2);margin-top:2px;}
 
-/* ── 批次筛选 ── */
+/* ── 批次筛选：恢复原版品牌蓝 ── */
 .batch-bar{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
 .batch-bar::-webkit-scrollbar{display:none;}
 .batch-chip{
   padding:6px 14px;border-radius:16px;font-size:0.8125rem;font-weight:500;
-  border:none;background:#e5e5ea;color:var(--text);cursor:pointer;white-space:nowrap;transition:all 0.2s;
+  border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all 0.2s;
 }
-.batch-chip.active{background:var(--text);color:#fff;}
+.batch-chip.active{background:var(--primary);color:#fff;border-color:var(--primary);}
 
-/* ── 无边框感轻盈卡片 ── */
+/* ── 轻盈卡片 ── */
 .task-card{
-  background:var(--card);border-radius:16px;margin-bottom:12px;
-  border:0.5px solid var(--border);overflow:hidden;transition:all 0.2s;
+  background:var(--card);border-radius:12px;margin-bottom:10px;
+  border:1px solid var(--border);overflow:hidden;transition:all 0.2s;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
 }
-.task-card:active{background:#fafafa;transform:scale(0.985);}
+.task-card:active{transform:scale(0.985);}
 .task-main{display:flex;align-items:center;gap:12px;padding:14px;}
 .task-thumb{
-  width:52px;height:52px;border-radius:10px;object-fit:cover;
-  background:#f2f2f7;flex-shrink:0;border:0.5px solid rgba(0,0,0,0.05);
+  width:52px;height:52px;border-radius:8px;object-fit:cover;
+  background:#f1f5f9;flex-shrink:0;border:1px solid rgba(0,0,0,0.03);
 }
 .task-info{flex:1;min-width:0;}
-.task-info .t-sku{font-size:0.6875rem;color:var(--text2);margin-bottom:2px;}
+.task-info .t-sku{font-size:0.6875rem;color:var(--text3);margin-bottom:2px;}
 .task-info .t-name{font-size:0.9375rem;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .task-info .t-meta{font-size:0.6875rem;color:var(--text2);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 
-/* ── 清爽的 iOS 色彩徽章 ── */
-.badge{padding:3px 8px;border-radius:6px;font-size:0.6875rem;font-weight:500;white-space:nowrap;}
-.badge-待拍{background:rgba(255,149,0,0.1);color:var(--ios-orange);}
-.badge-已拍{background:rgba(0,122,255,0.1);color:var(--ios-blue);}
-.badge-剪辑中{background:rgba(175,82,222,0.1);color:var(--ios-purple);}
-.badge-待审核{background:rgba(255,149,0,0.1);color:var(--ios-orange);}
-.badge-已完成{background:rgba(52,199,89,0.1);color:var(--ios-green);}
-.badge-需补拍{background:rgba(255,59,48,0.1);color:var(--ios-red);}
+/* ── 原版高辨识度徽章色彩 ── */
+.badge{padding:3px 8px;border-radius:6px;font-size:0.6875rem;font-weight:600;white-space:nowrap;}
+.badge-待拍{background:#fef3c7;color:#92400e;}
+.badge-已拍{background:#dbeafe;color:#1e40af;}
+.badge-剪辑中{background:var(--purple-light);color:var(--purple);}
+.badge-待审核{background:#ffedd5;color:#c2410c;}
+.badge-已完成{background:var(--success-light);color:var(--success);}
+.badge-需补拍{background:var(--danger-light);color:var(--danger);}
 
-/* ── 核心修复：细腻的打卡圆圈 ── */
+/* ── 核心保留：细巧精致的打卡圆圈 (26px) ── */
 .quick-action{
-  width:26px;height:26px;border-radius:50%;border:1.5px solid #c7c7cc;
+  width:26px;height:26px;border-radius:50%;border:1.5px solid #cbd5e1;
   background:transparent;display:flex;align-items:center;justify-content:center;
   font-size:0;transition:all 0.2s;flex-shrink:0;color:transparent;cursor:pointer;
 }
-.quick-action:active{background:#e5e5ea;transform:scale(0.9);}
-.quick-action.check{border-color:var(--ios-blue);color:var(--ios-blue);font-size:1rem;}
+.quick-action:active{background:#f1f5f9;transform:scale(0.9);}
+.quick-action.check{border-color:var(--primary);color:var(--primary);font-size:1rem;}
 .task-card.completed .quick-action{
-  background:var(--ios-green);border-color:var(--ios-green);color:#fff;
+  background:var(--success);border-color:var(--success);color:#fff;
   font-size:0.875rem;font-weight:bold;
 }
 .task-card.sliding-out{transform:translateX(100%);opacity:0;transition:all 0.4s ease-in;max-height:100px;}
 .task-card.collapsed{max-height:0;margin:0;padding:0;border:none;overflow:hidden;transition:all 0.3s ease;}
 
 /* ── 展开详情域 ── */
-.task-detail{display:none;padding:0 14px 14px;background:#fff;}
+.task-detail{display:none;padding:0 14px 14px;border-top:1px solid var(--border);}
 .task-detail.open{display:block;}
-.detail-row{display:flex;align-items:center;gap:12px;margin-top:12px;}
-.detail-row label{font-size:0.8125rem;color:var(--text);width:52px;flex-shrink:0;font-weight:500;}
+.detail-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.detail-row label{font-size:0.75rem;color:var(--text2);width:52px;flex-shrink:0;}
 .detail-row input,.detail-row select{
-  flex:1;padding:8px 12px;border:none;border-radius:8px;
-  font-size:0.875rem;background:#f2f2f7;color:var(--text);
+  flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;
+  font-size:0.875rem;background:var(--card);color:var(--text);
 }
-.detail-row input:focus,.detail-row select:focus{outline:none;background:#e5e5ea;}
-.detail-btns{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;}
+.detail-row input:focus,.detail-row select:focus{outline:none;border-color:var(--primary);}
+.detail-btns{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;}
 
 /* ── 通用按钮 ── */
 .btn{
-  padding:8px 16px;border:none;border-radius:8px;font-size:0.875rem;font-weight:600;
+  padding:8px 14px;border:none;border-radius:8px;font-size:0.875rem;font-weight:600;
   cursor:pointer;transition:all 0.2s;white-space:nowrap;
 }
-.btn:active{opacity:0.8;}
-.btn-primary{background:var(--ios-blue);color:#fff;}
-.btn-primary:disabled{background:var(--text3);cursor:not-allowed;}
-.btn-success{background:var(--ios-green);color:#fff;}
-.btn-warn{background:var(--ios-orange);color:#fff;}
-.btn-danger{background:var(--ios-red);color:#fff;}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:disabled{background:#94a3b8;cursor:not-allowed;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-warn{background:var(--warn);color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
 .btn-sm{padding:6px 12px;font-size:0.8125rem;}
 
 /* ── 新建批次表单 & 产品选择器 ── */
-.create-section{background:var(--card);border-radius:16px;padding:20px;border:0.5px solid var(--border);margin-bottom:16px;}
-.create-section h3{font-size:1.0625rem;font-weight:600;margin-bottom:16px;}
-.form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:0.8125rem;color:var(--text2);margin-bottom:6px;}
+.create-section{background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.create-section h3{font-size:1rem;font-weight:600;margin-bottom:12px;}
+.form-group{margin-bottom:12px;}
+.form-group label{display:block;font-size:0.75rem;color:var(--text2);margin-bottom:4px;font-weight:600;}
 .form-group input[type="text"],.form-group select{
-  width:100%;padding:10px 12px;border:none;border-radius:10px;
-  font-size:0.9375rem;background:#f2f2f7;color:var(--text);
+  width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;
+  font-size:0.9375rem;background:var(--card);color:var(--text);
 }
-.form-group input:focus{outline:none;background:#e5e5ea;}
-.picker-search{width:100%;padding:10px 12px;border:none;border-radius:10px;font-size:0.9375rem;background:#f2f2f7;margin-bottom:12px;}
-.picker-grid{max-height:300px;overflow-y:auto;border-radius:12px;border:0.5px solid var(--border);background:var(--card);}
-.picker-item{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:0.5px solid var(--border);cursor:pointer;}
+.form-group input:focus{outline:none;border-color:var(--primary);}
+.picker-search{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9375rem;background:var(--card);margin-bottom:8px;}
+.picker-grid{max-height:300px;overflow-y:auto;border-radius:8px;border:1px solid var(--border);background:var(--card);}
+.picker-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid #f1f5f9;cursor:pointer;}
 .picker-item:last-child{border-bottom:none;}
-.picker-item.selected{background:var(--ios-blue-bg);}
-.picker-item .pi-thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;}
+.picker-item.selected{background:var(--primary-light);}
+.picker-item .pi-thumb{width:40px;height:40px;border-radius:6px;object-fit:cover;background:#f1f5f9;}
 .picker-item .pi-info{flex:1;min-width:0;}
-.picker-item .pi-sku{font-size:0.6875rem;color:var(--text2);}
-.picker-item .pi-name{font-size:0.875rem;font-weight:500;}
+.picker-item .pi-sku{font-size:0.6875rem;color:var(--text3);}
+.picker-item .pi-name{font-size:0.8125rem;font-weight:500;}
 .picker-item .pi-check{
-  width:22px;height:22px;border-radius:50%;border:1.5px solid #c7c7cc;
+  width:22px;height:22px;border-radius:50%;border:1.5px solid #cbd5e1;
   display:flex;align-items:center;justify-content:center;color:transparent;font-size:0.8rem;
 }
-.picker-item.selected .pi-check{background:var(--ios-blue);border-color:var(--ios-blue);color:#fff;}
-.picker-count{font-size:0.8125rem;color:var(--ios-blue);font-weight:600;margin:12px 0 8px;}
+.picker-item.selected .pi-check{background:var(--primary);border-color:var(--primary);color:#fff;}
+.picker-count{font-size:0.8125rem;color:var(--primary);font-weight:600;margin:8px 0;}
 
 /* ── 底部撤回条 ── */
 .undo-bar{
-  position:fixed;bottom:32px;left:50%;transform:translateX(-50%);
-  background:rgba(44,44,46,0.9);color:#fff;padding:10px 16px;border-radius:24px;
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:#1e293b;color:#fff;padding:10px 20px;border-radius:24px;
   font-size:0.875rem;font-weight:500;z-index:999;display:flex;align-items:center;gap:16px;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  box-shadow:0 8px 24px rgba(0,0,0,0.15);animation:slideUp 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+  box-shadow:0 4px 20px rgba(0,0,0,0.25);animation:slideUp 0.25s ease;
 }
 .undo-bar button{
-  background:rgba(255,255,255,0.15);border:none;color:var(--ios-blue);
+  background:rgba(255,255,255,0.2);border:none;color:#fff;
   padding:4px 12px;border-radius:12px;font-size:0.8125rem;font-weight:600;cursor:pointer;
 }
-@keyframes slideUp{from{transform:translateX(-50%) translateY(40px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+@keyframes slideUp{from{transform:translateX(-50%) translateY(20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
 
 /* ── 其他 ── */
-.empty-state{text-align:center;padding:48px 16px;color:var(--text2);font-size:0.875rem;}
-.loading{text-align:center;padding:40px;color:var(--text2);font-size:0.875rem;}
+.empty-state{text-align:center;padding:32px 16px;color:var(--text3);font-size:0.875rem;}
+.loading{text-align:center;padding:40px;color:var(--text3);font-size:0.875rem;}
 .spinner{
-  width:20px;height:20px;border:2px solid rgba(0,0,0,0.1);
-  border-top-color:var(--ios-blue);border-radius:50%;
-  animation:spin 0.8s linear infinite;display:inline-block;vertical-align:-4px;margin-right:8px;
+  width:20px;height:20px;border:2.5px solid rgba(37,99,235,0.2);
+  border-top-color:var(--primary);border-radius:50%;
+  animation:spin 0.6s linear infinite;display:inline-block;vertical-align:-4px;margin-right:6px;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.25s ease;}
 .toast{
-  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:rgba(0,0,0,0.8);color:#fff;padding:10px 20px;border-radius:20px;
-  font-size:0.875rem;opacity:0;transition:all 0.3s;z-index:1000;
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1e293b;color:#fff;padding:10px 24px;border-radius:20px;
+  font-size:0.8125rem;font-weight:500;opacity:0;transition:all 0.3s;z-index:1000;white-space:nowrap;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.review-preview{margin-top:12px;border-radius:8px;overflow:hidden;border:0.5px solid var(--border);}
-.review-preview img,.review-preview video{width:100%;display:block;max-height:240px;object-fit:cover;}
-.review-link{font-size:0.75rem;color:var(--ios-blue);word-break:break-all;padding:8px 12px;background:#f2f2f7;font-weight:500;}
+.review-preview{margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.review-preview img,.review-preview video{width:100%;display:block;max-height:200px;object-fit:cover;}
+.review-link{font-size:0.6875rem;color:var(--primary);word-break:break-all;padding:6px 10px;background:#f8fafc;}
 
 @media(min-width:768px){
-  .content{max-width:800px;padding:16px 24px;}
+  .content{max-width:800px;}
   .task-card{cursor:default;}
   .task-card:active{transform:none;}
 }
