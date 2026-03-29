@@ -111,7 +111,12 @@ def _ensure_cache(force=False):
 #  页面路由
 # ============================================================
 @app.route("/")
-def index():
+def portal():
+    return render_template("portal.html")
+
+
+@app.route("/admin")
+def admin_page():
     return render_template("admin.html")
 
 
