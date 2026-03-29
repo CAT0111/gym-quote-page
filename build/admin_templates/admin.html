@@ -110,9 +110,10 @@ body{
 .cat-group{margin-bottom:12px}
 .cat-group-title{
   font-size:.75rem;font-weight:600;color:var(--text2);
-  padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px;
+  padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:6px;
   display:flex;align-items:center;gap:6px;
 }
+.cat-arrow{font-size:.625rem;color:var(--text3);transition:transform .2s;display:inline-block;width:12px}
 .cat-group-title .cat-count{
   background:var(--primary-light);color:var(--primary);
   font-size:.625rem;padding:2px 6px;border-radius:4px;
@@ -280,6 +281,61 @@ body{
 .result-url.error{background:var(--danger-light);border-color:#fca5a5;color:var(--danger)}
 .result-btns{display:flex;gap:8px}
 .result-btns .btn{flex:1;padding:8px 12px;font-size:.8125rem}
+
+/* ── Detail Sheet ── */
+.detail-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+}
+.detail-overlay.active{display:block}
+.detail-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.detail-sheet{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--card);border-radius:16px 16px 0 0;
+  max-height:85vh;display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .3s ease;
+}
+.detail-overlay.active .detail-sheet{transform:translateY(0)}
+.detail-handle{width:36px;height:4px;background:#d1d5db;border-radius:2px;margin:8px auto}
+.detail-scroll{flex:1;overflow-y:auto;padding:0 16px 24px;-webkit-overflow-scrolling:touch}
+.detail-media{position:relative;border-radius:10px;overflow:hidden;margin-bottom:12px;background:#f1f5f9}
+.detail-media img,.detail-media video{width:100%;display:block;max-height:240px;object-fit:cover}
+.detail-video-badge{
+  position:absolute;top:8px;left:8px;background:rgba(0,0,0,.6);color:#fbbf24;
+  font-size:.6875rem;font-weight:600;padding:3px 8px;border-radius:4px;
+}
+.detail-name{font-size:1rem;font-weight:600;margin-bottom:2px}
+.detail-sku{font-size:.75rem;color:var(--text3);margin-bottom:10px}
+.detail-prices{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;
+}
+.detail-price-box{
+  padding:10px;border-radius:8px;text-align:center;
+}
+.detail-price-box.cost{background:#fef3c7;border:1px solid #fde68a}
+.detail-price-box.sell{background:var(--primary-light);border:1px solid #bfdbfe}
+.detail-price-box .dp-label{font-size:.625rem;color:var(--text2);margin-bottom:2px}
+.detail-price-box .dp-val{font-size:1.125rem;font-weight:700}
+.detail-price-box.cost .dp-val{color:#b45309}
+.detail-price-box.sell .dp-val{color:var(--primary)}
+.detail-price-sub{font-size:.6875rem;color:var(--text3);text-align:center;margin:-6px 0 12px}
+.detail-specs{margin-bottom:12px}
+.detail-spec-row{
+  display:flex;justify-content:space-between;padding:8px 0;
+  border-bottom:1px solid #f1f5f9;font-size:.8125rem;
+}
+.detail-spec-row:last-child{border-bottom:none}
+.detail-spec-key{color:var(--text2)}
+.detail-spec-val{font-weight:500;text-align:right}
+.detail-muscles{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.detail-muscle-tag{
+  padding:3px 8px;border-radius:12px;font-size:.6875rem;
+  background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;
+}
+.detail-close{
+  position:absolute;top:12px;right:16px;width:32px;height:32px;
+  border-radius:50%;border:none;background:#f1f5f9;
+  font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
 </style>
 </head>
 <body>
@@ -380,6 +436,20 @@ body{
     <h3>新建客户方案</h3>
     <div style="font-size:.8125rem;color:var(--text2);margin-bottom:10px" id="modalTplName"></div>
     <input type="text" id="inputClientName" placeholder="输入客户名称（如 ProGym KL）">
+    <div style="margin-bottom:12px">
+      <label style="font-size:.75rem;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">目标市场</label>
+      <select id="inputMarket" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9375rem;background:var(--card);color:var(--text);appearance:auto">
+        <option value="">未指定</option>
+        <option value="MY">马来西亚 MY</option>
+        <option value="AU">澳洲 AU</option>
+        <option value="NZ">新西兰 NZ</option>
+        <option value="CA">加拿大 CA</option>
+      </select>
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:.75rem;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">适用面积 (m²)</label>
+      <input type="number" id="inputArea" placeholder="如 400" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9375rem">
+    </div>
     <div class="modal-btns">
       <button class="btn btn-outline" onclick="closeModal()">取消</button>
       <button class="btn btn-primary" id="btnConfirmCreate">创建</button>
@@ -397,14 +467,45 @@ body{
 let STATE = {
   templates: [],
   clientPlans: [],
-  editingPlan: null,       // 当前编辑的客户方案 record_id
-  editingDetail: null,     // 当前方案详情
-  editingSkuSet: new Set(),// 当前方案包含的产品 record_id 集合
+  editingPlan: null,
+  editingDetail: null,
+  editingSkuSet: new Set(),
   allProducts: [],
   filterOptions: { categories: [], muscles: [] },
   activeCategory: '',
   activeMuscle: '',
+  fx: { rates: {MYR:0.5786,AUD:0.2101,NZD:0.2521,CAD:0.2002,USD:0.1445}, symbols: {MYR:'RM',AUD:'A$',NZD:'NZ$',CAD:'C$',USD:'$'}, marketCurrency: {'MY':'MYR','AU':'AUD','NZ':'NZD','CA':'CAD','':'USD'} },
 };
+
+// 汇率加载
+async function loadFxRates() {
+  try {
+    const r = await fetch('/api/exchange-rates');
+    const d = await r.json();
+    if (d.ok) {
+      STATE.fx.rates = d.rates;
+      STATE.fx.symbols = d.symbols;
+      STATE.fx.marketCurrency = d.market_currency;
+    }
+  } catch(e) {}
+}
+// 根据当前编辑方案的市场返回货币信息
+function getCurrency() {
+  const market = (STATE.editingDetail && STATE.editingDetail.market) || '';
+  const code = STATE.fx.marketCurrency[market] || 'USD';
+  const symbol = STATE.fx.symbols[code] || '$';
+  const rate = STATE.fx.rates[code] || 0.1445;
+  return { code, symbol, rate };
+}
+// RMB → 当地货币
+function toLocal(rmb) {
+  const { rate } = getCurrency();
+  return Math.round(rmb * rate);
+}
+function fmtLocal(rmb) {
+  const { symbol } = getCurrency();
+  return symbol + toLocal(rmb).toLocaleString();
+}
 
 /* ══════════════════════════════════════
    Tab 切换
@@ -438,17 +539,37 @@ document.querySelectorAll('.sub-tab').forEach(btn => {
 /* ══════════════════════════════════════
    数据加载
    ══════════════════════════════════════ */
-async function loadPlans() {
+async function loadPlans(silent) {
+  // 非静默模式：先尝试渲染 localStorage 缓存
+  if (!silent) {
+    try {
+      const cached = localStorage.getItem('admin_plans_cache');
+      if (cached) {
+        const c = JSON.parse(cached);
+        STATE.templates = c.templates || [];
+        STATE.clientPlans = c.client_plans || [];
+        renderTemplates();
+        renderClientPlans();
+      }
+    } catch(e) {}
+  }
+
+  // 后台拉取最新数据
   try {
     const r = await fetch('/api/plans');
     const d = await r.json();
     if (!d.ok) throw new Error(d.error);
     STATE.templates = d.templates || [];
     STATE.clientPlans = d.client_plans || [];
+    // 写入缓存
+    try { localStorage.setItem('admin_plans_cache', JSON.stringify(d)); } catch(e) {}
     renderTemplates();
     renderClientPlans();
   } catch(e) {
-    document.getElementById('subTemplates').innerHTML = `<div class="empty-state">加载失败: ${e.message}</div>`;
+    // 如果已有缓存渲染，静默失败；否则显示错误
+    if (!STATE.templates.length && !STATE.clientPlans.length) {
+      document.getElementById('subTemplates').innerHTML = `<div class="empty-state">加载失败: ${e.message}</div>`;
+    }
   }
 }
 
@@ -461,10 +582,10 @@ function renderTemplates() {
       <div class="plan-name">${t.plan_id} · ${t.client_name}</div>
       <div class="plan-meta">
         <span>${t.n_products}台</span><span>${t.area_m2||'—'}m²</span>
-        <span>${t.market||'—'}</span><span>FOB $${(t.fob_total_usd||0).toLocaleString()}</span>
+        <span>${t.market||'—'}</span><span>¥${(t.sell_total_rmb||0).toLocaleString()}</span>
       </div>
       ${cats ? `<div class="plan-cats">${cats}</div>` : ''}
-      <button class="plan-action" onclick="openCreateModal('${t.record_id}','${t.plan_id} · ${t.client_name}')">＋ 以此创建客户方案</button>
+      <button class="plan-action" onclick="openCreateModal('${t.record_id}','${t.plan_id} · ${t.client_name}','${t.market}','${t.area_m2}')">＋ 以此创建客户方案</button>
     </div>`;
   }).join('');
 }
@@ -478,7 +599,7 @@ function renderClientPlans() {
       <div class="plan-name">${p.client_name}</div>
       <div class="plan-meta">
         <span>${p.plan_id}</span><span>${p.n_products}台</span>
-        <span>${p.market||'—'}</span><span>FOB $${(p.fob_total_usd||0).toLocaleString()}</span>
+        <span>${p.market||'—'}</span><span>¥${(p.sell_total_rmb||0).toLocaleString()}</span>
       </div>
       ${cats ? `<div class="plan-cats">${cats}</div>` : ''}
     </div>`;
@@ -490,10 +611,12 @@ function renderClientPlans() {
    ══════════════════════════════════════ */
 let _createTplRid = '';
 
-function openCreateModal(tplRid, tplName) {
+function openCreateModal(tplRid, tplName, tplMarket, tplArea) {
   _createTplRid = tplRid;
   document.getElementById('modalTplName').textContent = '基于模板: ' + tplName;
   document.getElementById('inputClientName').value = '';
+  document.getElementById('inputMarket').value = (tplMarket || '').trim();
+  document.getElementById('inputArea').value = (tplArea || '').trim();
   document.getElementById('modalCreate').classList.add('active');
   setTimeout(() => document.getElementById('inputClientName').focus(), 100);
 }
@@ -504,20 +627,25 @@ function closeModal() {
 document.getElementById('btnConfirmCreate').addEventListener('click', async () => {
   const name = document.getElementById('inputClientName').value.trim();
   if (!name) { showToast('请输入客户名称'); return; }
+  const market = document.getElementById('inputMarket').value;
+  const areaVal = document.getElementById('inputArea').value.trim();
   const btn = document.getElementById('btnConfirmCreate');
   btn.disabled = true; btn.textContent = '创建中…';
-  // ── 乐观更新：立刻关闭弹窗并跳转 ──
   closeModal();
   showToast('正在创建方案…');
 
   try {
+    const body = { template_record_id: _createTplRid, client_name: name };
+    if (market) body.market = market;
+    if (areaVal) body.area_m2 = parseFloat(areaVal);
+
     const r = await fetch('/api/client-plan/create', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ template_record_id: _createTplRid, client_name: name })
+      body: JSON.stringify(body)
     });
     const d = await r.json();
     if (!d.ok) throw new Error(d.error);
-    showToast(`已创建: ${d.plan_id}`);
+    showToast('已创建: ' + d.plan_id);
     await loadPlans();
     document.querySelectorAll('.sub-tab')[1].click();
     setTimeout(() => enterEditMode(d.record_id), 100);
@@ -566,13 +694,89 @@ function renderEditView(d) {
   document.getElementById('editTitle').textContent = d.plan_id;
 
   // 摘要
+  const _cur = getCurrency();
+  const _sellLocalTotal = Math.round((d.sell_total_rmb||0) * _cur.rate);
   document.getElementById('editSummary').innerHTML = `
     <div class="summary-item"><div class="s-val">${d.n_products}</div><div class="s-label">台器材</div></div>
-    <div class="summary-item"><div class="s-val">$${(d.fob_total_usd||0).toLocaleString()}</div><div class="s-label">FOB 总价</div></div>
+    <div class="summary-item"><div class="s-val">${_cur.symbol}${_sellLocalTotal.toLocaleString()}</div><div class="s-label">售价 ${_cur.code}</div></div>
     <div class="summary-item"><div class="s-val">${d.area_m2||'—'}m²</div><div class="s-label">适用面积</div></div>
   `;
 
-  // 按分类分组
+  // ── 方案信息：折叠式卡片 ──
+  let infoCard = document.getElementById('editInfoCard');
+  if (!infoCard) {
+    infoCard = document.createElement('div');
+    infoCard.id = 'editInfoCard';
+    infoCard.className = 'card';
+    infoCard.style.cssText = 'padding:0;overflow:hidden';
+    const prodList = document.getElementById('editProductList');
+    prodList.parentNode.insertBefore(infoCard, prodList);
+  }
+
+  const MARKET_LABELS = {'MY':'马来西亚','AU':'澳洲','NZ':'新西兰','CA':'加拿大'};
+  const marketLabel = MARKET_LABELS[d.market] || d.market || '未指定';
+  const freightLabel = d.override_freight_usd ? ('$' + d.override_freight_usd) : '系统预估';
+
+  const MARKET_OPTIONS = [
+    {v:'', label:'未指定'},
+    {v:'MY', label:'马来西亚 MY'},
+    {v:'AU', label:'澳洲 AU'},
+    {v:'NZ', label:'新西兰 NZ'},
+    {v:'CA', label:'加拿大 CA'},
+  ];
+  const marketOpts = MARKET_OPTIONS.map(o =>
+    `<option value="${o.v}" ${(d.market||'')===o.v?'selected':''}>${o.label}</option>`
+  ).join('');
+  const freightVal = d.override_freight_usd ? d.override_freight_usd : '';
+
+  infoCard.innerHTML = `
+    <div id="infoCardHeader" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+      <div style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em">方案信息</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:.75rem;color:var(--text3)">${marketLabel} · ${d.area_m2||'—'}m² · 运费${freightLabel}</span>
+        <span id="infoCardArrow" style="font-size:.75rem;color:var(--text3);transition:transform .2s">▼</span>
+      </div>
+    </div>
+    <div id="infoCardBody" style="display:none;padding:0 16px 16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div>
+          <label style="font-size:.6875rem;color:var(--text2);display:block;margin-bottom:3px">目标市场</label>
+          <select id="editMarket" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:.8125rem;background:var(--card)">
+            ${marketOpts}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.6875rem;color:var(--text2);display:block;margin-bottom:3px">面积 m²</label>
+          <input type="number" id="editArea" value="${d.area_m2||''}" placeholder="如 400"
+            style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:.8125rem">
+        </div>
+      </div>
+      <div style="margin-bottom:8px">
+        <label style="font-size:.6875rem;color:var(--text2);display:block;margin-bottom:3px">精准运费 USD（留空则使用系统预估）</label>
+        <input type="number" id="editFreight" value="${freightVal}" placeholder="向货代确认后填入"
+          style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:.8125rem">
+      </div>
+      <button class="btn btn-outline" id="btnSaveInfo" style="width:100%;padding:8px;font-size:.8125rem">
+        保存方案信息
+      </button>
+      <div id="saveInfoMsg" style="font-size:.75rem;color:var(--success);text-align:center;margin-top:6px;display:none"></div>
+    </div>
+  `;
+
+  document.getElementById('infoCardHeader').addEventListener('click', () => {
+    const body = document.getElementById('infoCardBody');
+    const arrow = document.getElementById('infoCardArrow');
+    if (body.style.display === 'none') {
+      body.style.display = 'block';
+      arrow.style.transform = 'rotate(180deg)';
+    } else {
+      body.style.display = 'none';
+      arrow.style.transform = '';
+    }
+  });
+  document.getElementById('btnSaveInfo').addEventListener('click', () => savePlanInfo(d.record_id));
+
+  // ── 按分类分组的器材清单 ──
   const groups = {};
   (d.products||[]).forEach(p => {
     const cat = p.category_zh || p.category || '其他';
@@ -580,29 +784,99 @@ function renderEditView(d) {
     groups[cat].push(p);
   });
 
-  let html = '<div class="card-title">当前器材清单</div>';
+  let _catIdx = 0;
+  let html = '<div class="card-title">当前器材清单 · ' + (d.products||[]).length + '台</div>';
   for (const [cat, prods] of Object.entries(groups)) {
+    const cid = 'catGroup' + (_catIdx++);
     html += `<div class="cat-group">
-      <div class="cat-group-title">${cat} <span class="cat-count">${prods.length}</span></div>`;
+      <div class="cat-group-title" onclick="toggleCatGroup('${cid}')" style="cursor:pointer;user-select:none">
+        <span class="cat-arrow" id="${cid}Arrow">▶</span> ${cat} <span class="cat-count">${prods.length}</span>
+      </div>
+      <div id="${cid}" style="display:none">`;
     prods.forEach(p => {
-      html += `<div class="prod-row">
+      html += `<div class="prod-row" onclick="openDetail('${p.record_id}')" style="cursor:pointer">
         <img class="prod-thumb" src="${p.image_url||''}" alt="" onerror="this.style.background='#e2e8f0'">
         <div class="prod-info">
           <div class="p-sku">${p.sku}</div>
           <div class="p-name">${p.name_zh || p.name}</div>
-          <div class="p-price">$${p.price_fob_usd}</div>
+          <div class="p-price">${fmtLocal(p.sell_rmb||0)}</div>
         </div>
-        <button class="btn-remove" onclick="removeSku('${p.record_id}','${p.sku}')" title="移除">✕</button>
+        <button class="btn-remove" onclick="event.stopPropagation();removeSku('${p.record_id}','${p.sku}')" title="移除">✕</button>
       </div>`;
     });
-    html += '</div>';
+    html += '</div></div>';
   }
   document.getElementById('editProductList').innerHTML = html;
 }
 
-/* ══════════════════════════════════════
-   SKU 增删操作
-   ══════════════════════════════════════ */
+async function savePlanInfo(recordId) {
+  const btn = document.getElementById('btnSaveInfo');
+  const msgEl = document.getElementById('saveInfoMsg');
+  btn.disabled = true; btn.textContent = '保存中…';
+  msgEl.style.display = 'none';
+
+  const body = {
+    market: document.getElementById('editMarket').value,
+    area_m2: document.getElementById('editArea').value.trim() || null,
+    override_freight_usd: document.getElementById('editFreight').value.trim() || null,
+  };
+
+  try {
+    const r = await fetch('/api/client-plan/' + recordId + '/update-info', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+
+    if (d.plan_id) {
+      document.getElementById('editTitle').textContent = d.plan_id;
+      if (STATE.editingDetail) STATE.editingDetail.plan_id = d.plan_id;
+    }
+    const newArea = document.getElementById('editArea').value.trim();
+    if (STATE.editingDetail) {
+      STATE.editingDetail.market = body.market;
+      STATE.editingDetail.area_m2 = newArea;
+    }
+    const summaryEl = document.getElementById('editSummary');
+    if (summaryEl && STATE.editingDetail) {
+      const dd = STATE.editingDetail;
+      const _sc2 = getCurrency();
+      summaryEl.innerHTML = `
+        <div class="summary-item"><div class="s-val">${dd.n_products}</div><div class="s-label">台器材</div></div>
+        <div class="summary-item"><div class="s-val">${_sc2.symbol}${Math.round((dd.sell_total_rmb||0)*_sc2.rate).toLocaleString()}</div><div class="s-label">售价 ${_sc2.code}</div></div>
+        <div class="summary-item"><div class="s-val">${newArea||'—'}m²</div><div class="s-label">适用面积</div></div>
+      `;
+    }
+
+    // 刷新折叠摘要行
+    const savedMarket = document.getElementById('editMarket').value;
+    const savedArea = document.getElementById('editArea').value.trim();
+    const savedFreight = document.getElementById('editFreight').value.trim();
+    const ML = {'MY':'马来西亚','AU':'澳洲','NZ':'新西兰','CA':'加拿大'};
+    const mktTxt = ML[savedMarket] || savedMarket || '未指定';
+    const frtTxt = savedFreight ? ('$' + savedFreight) : '系统预估';
+    const headerRight = document.querySelector('#infoCardHeader > div:last-child > span:first-child');
+    if (headerRight) headerRight.textContent = mktTxt + ' · ' + (savedArea||'—') + 'm² · 运费' + frtTxt;
+
+    if (STATE.editingDetail) {
+      STATE.editingDetail.override_freight_usd = savedFreight ? parseFloat(savedFreight) : 0;
+    }
+
+    msgEl.textContent = '已保存';
+    msgEl.style.color = 'var(--success)';
+    msgEl.style.display = 'block';
+    showToast('方案信息已更新');
+  } catch(e) {
+    msgEl.textContent = '保存失败: ' + e.message;
+    msgEl.style.color = 'var(--danger)';
+    msgEl.style.display = 'block';
+    showToast('保存失败');
+  } finally {
+    btn.disabled = false; btn.textContent = '保存方案信息';
+  }
+}
+
 async function removeSku(productRid, sku) {
   if (!STATE.editingPlan) return;
 
@@ -745,6 +1019,17 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 });
 
 async function loadProducts() {
+  // 首次无数据时先渲染缓存
+  if (!STATE.allProducts.length) {
+    try {
+      const cached = localStorage.getItem('admin_products_cache');
+      if (cached) {
+        const c = JSON.parse(cached);
+        STATE.allProducts = c.products || [];
+        renderProductGrid();
+      }
+    } catch(e) {}
+  }
   const keyword = document.getElementById('searchInput').value.trim();
   const params = new URLSearchParams();
   if (STATE.activeCategory) params.set('category', STATE.activeCategory);
@@ -756,6 +1041,7 @@ async function loadProducts() {
     const d = await r.json();
     if (!d.ok) throw new Error(d.error);
     STATE.allProducts = d.products || [];
+    try { localStorage.setItem('admin_products_cache', JSON.stringify({products: d.products, ts: Date.now()})); } catch(ex) {}
     renderProductGrid();
   } catch(e) {
     document.getElementById('productGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">加载失败: ${e.message}</div>`;
@@ -771,7 +1057,7 @@ function renderProductGrid() {
   grid.innerHTML = STATE.allProducts.map(p => {
     const inPlan = STATE.editingSkuSet.has(p.record_id);
     return `<div class="product-card">
-      <img class="pc-img" src="${p.image_url||''}" alt="${p.sku}" onerror="this.style.background='#e2e8f0'" loading="lazy">
+      <img class="pc-img" src="${p.image_url||''}" alt="${p.sku}" onerror="this.style.background='#e2e8f0'" loading="lazy" onclick="event.stopPropagation();openDetail('${p.record_id}')">
       <button class="pc-action ${inPlan?'added':'add'}"
         onclick="event.stopPropagation();${inPlan ? `removeSku('${p.record_id}','${p.sku}')` : `addSku('${p.record_id}','${p.sku}')`}">
         ${inPlan?'✓':'+'}
@@ -779,7 +1065,7 @@ function renderProductGrid() {
       <div class="pc-body">
         <div class="pc-sku">${p.sku} · ${p.category_zh||''}</div>
         <div class="pc-name">${p.name_zh || p.name}</div>
-        <div class="pc-price">FOB $${p.price_fob_usd}</div>
+        <div class="pc-price">¥${(p.sell_rmb||0).toLocaleString()}</div>
       </div>
     </div>`;
   }).join('');
@@ -899,6 +1185,7 @@ document.getElementById('historyList').addEventListener('click', e => {
    ══════════════════════════════════════ */
 async function refreshCache() {
   showToast('正在刷新数据…');
+  try { localStorage.removeItem('admin_plans_cache'); localStorage.removeItem('admin_products_cache'); } catch(e) {}
   try {
     await fetch('/api/refresh-cache', {method:'POST'});
     await loadPlans();
@@ -906,6 +1193,93 @@ async function refreshCache() {
     if (STATE.editingPlan) await enterEditMode(STATE.editingPlan);
     showToast('数据已刷新');
   } catch(e) { showToast('刷新失败'); }
+}
+
+/* ══════════════════════════════════════
+   产品详情浮层
+   ══════════════════════════════════════ */
+function toggleCatGroup(cid) {
+  const body = document.getElementById(cid);
+  const arrow = document.getElementById(cid + 'Arrow');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.textContent = '▼';
+  } else {
+    body.style.display = 'none';
+    arrow.textContent = '▶';
+  }
+}
+
+function openDetail(recordId) {
+  // 从 allProducts 或 editingDetail.products 中找
+  let p = STATE.allProducts.find(x => x.record_id === recordId);
+  if (!p && STATE.editingDetail) {
+    p = (STATE.editingDetail.products||[]).find(x => x.record_id === recordId);
+  }
+  if (!p) { showToast('未找到产品信息'); return; }
+
+  const cur = getCurrency();
+  const sellLocal = Math.round((p.sell_rmb||0) * cur.rate);
+
+  let mediaHtml = '';
+  if (p.video_url) {
+    mediaHtml = `<div class="detail-media">
+      <video src="${p.video_url}" controls playsinline preload="metadata" style="width:100%;max-height:240px"></video>
+      <div class="detail-video-badge">试机视频</div>
+    </div>`;
+  } else if (p.image_url) {
+    mediaHtml = `<div class="detail-media">
+      <img src="${p.image_url}" alt="${p.sku}" onerror="this.style.background='#e2e8f0'">
+    </div>`;
+  }
+
+  let muscleHtml = '';
+  if (p.muscles && p.muscles.length) {
+    muscleHtml = '<div class="detail-muscles">' + p.muscles.map(m => `<span class="detail-muscle-tag">${m}</span>`).join('') + '</div>';
+  }
+
+  let specsHtml = '<div class="detail-specs">';
+  if (p.dimensions) specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">尺寸</span><span class="detail-spec-val">${p.dimensions}</span></div>`;
+  if (p.net_weight) specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">净重</span><span class="detail-spec-val">${p.net_weight} kg</span></div>`;
+  if (p.weight_stack) specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">配重</span><span class="detail-spec-val">${p.weight_stack} kg</span></div>`;
+  if (p.area_m2) specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">占地</span><span class="detail-spec-val">${p.area_m2} m²</span></div>`;
+  specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">分类</span><span class="detail-spec-val">${p.category_zh||p.category||''}</span></div>`;
+  specsHtml += `<div class="detail-spec-row"><span class="detail-spec-key">利润率</span><span class="detail-spec-val">${Math.round((p.margin||0.4)*100)}%</span></div>`;
+  specsHtml += '</div>';
+
+  const html = `
+    ${mediaHtml}
+    <div class="detail-name">${p.name_zh || p.name}</div>
+    <div class="detail-sku">${p.sku} · ${p.name || ''}</div>
+    <div class="detail-prices">
+      <div class="detail-price-box cost">
+        <div class="dp-label">采购价</div>
+        <div class="dp-val">¥${(p.cost_rmb||0).toLocaleString()}</div>
+      </div>
+      <div class="detail-price-box sell">
+        <div class="dp-label">售价 ${cur.code}</div>
+        <div class="dp-val">${cur.symbol}${sellLocal.toLocaleString()}</div>
+      </div>
+    </div>
+    <div class="detail-price-sub">售价 RMB ¥${(p.sell_rmb||0).toLocaleString()} · 利润率 ${Math.round((p.margin||0.4)*100)}%</div>
+    ${muscleHtml}
+    ${specsHtml}
+  `;
+
+  document.getElementById('detailContent').innerHTML = html;
+  document.getElementById('detailOverlay').classList.add('active');
+}
+
+function closeDetail() {
+  const overlay = document.getElementById('detailOverlay');
+  overlay.querySelector('.detail-sheet').style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    overlay.classList.remove('active');
+    overlay.querySelector('.detail-sheet').style.transform = '';
+    // 暂停视频
+    const v = overlay.querySelector('video');
+    if (v) { v.pause(); v.currentTime = 0; }
+  }, 300);
 }
 
 function showToast(msg){
@@ -917,8 +1291,19 @@ function showToast(msg){
 /* ══════════════════════════════════════
    初始化
    ══════════════════════════════════════ */
+loadFxRates();
 loadPlans();
 renderHistory();
 </script>
+
+<!-- ══════ Detail Sheet ══════ -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-backdrop" onclick="closeDetail()"></div>
+  <div class="detail-sheet">
+    <div class="detail-handle"></div>
+    <button class="detail-close" onclick="closeDetail()">&times;</button>
+    <div class="detail-scroll" id="detailContent"></div>
+  </div>
+</div>
 </body>
 </html>

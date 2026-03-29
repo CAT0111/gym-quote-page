@@ -33,6 +33,7 @@ TBL = {
     "package":   os.environ["FEISHU_TBL_PACKAGE"],
     "qc_media":  os.environ["FEISHU_TBL_QC_MEDIA"],
     "logistics": os.environ["FEISHU_TBL_LOGISTICS"],
+    "media_task": os.environ["FEISHU_TBL_MEDIA_TASK"],
 }
 
 _token_cache = {"token": None}
