@@ -162,3 +162,80 @@ if __name__ == "__main__":
         print(f"  {key} — {len(records)} 条")
         if records:
             print(f"  首条字段: {list(records[0]['fields'].keys())}")
+
+
+def update_record(table_key, record_id, fields):
+    """
+    更新单条记录的指定字段
+    table_key: "product" | "package" | "qc_media" | "logistics"
+    record_id: "recXXX"
+    fields: {"字段名": 值, ...}  — 使用飞书中文字段名
+    返回: 更新后的 record
+    """
+    token = get_token()
+    table_id = TBL[table_key]
+    url = (f"{BASE_URL}/bitable/v1/apps/{APP_TOKEN}"
+           f"/tables/{table_id}/records/{record_id}")
+    body = json.dumps({"fields": fields}).encode()
+    req = urllib.request.Request(url, data=body, method="PUT",
+          headers={"Authorization": f"Bearer {token}",
+                   "Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as resp:
+        result = json.loads(resp.read())
+    if result.get("code") != 0:
+        raise RuntimeError(f"飞书更新记录失败: {result}")
+    print(f"     ✏️  已更新 {table_key} 记录 {record_id}")
+    return result["data"]["record"]
+
+
+def create_record(table_key, fields):
+    """
+    创建单条记录
+    table_key: "product" | "package" | "qc_media" | "logistics"
+    fields: {"字段名": 值, ...}  — 使用飞书中文字段名
+    返回: 新记录的 record_id
+    """
+    token = get_token()
+    table_id = TBL[table_key]
+    url = (f"{BASE_URL}/bitable/v1/apps/{APP_TOKEN}"
+           f"/tables/{table_id}/records")
+    body = json.dumps({"fields": fields}).encode()
+    req = urllib.request.Request(url, data=body, method="POST",
+          headers={"Authorization": f"Bearer {token}",
+                   "Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as resp:
+        result = json.loads(resp.read())
+    if result.get("code") != 0:
+        raise RuntimeError(f"飞书创建记录失败: {result}")
+    new_id = result["data"]["record"]["record_id"]
+    print(f"     ➕ 已创建 {table_key} 记录 {new_id}")
+    return new_id
+
+
+def add_field(table_key, field_name, field_type, property_config=None):
+    """
+    在指定表中新增字段
+    table_key: "product" | "package" | "qc_media" | "logistics"
+    field_name: 字段名（中文）
+    field_type: 飞书字段类型编号（1=多行文本, 2=数字, 3=单选, 4=多选, ...）
+    property_config: 可选的字段属性（如单选的options列表）
+    返回: 新字段的 field_id
+    """
+    token = get_token()
+    table_id = TBL[table_key]
+    url = (f"{BASE_URL}/bitable/v1/apps/{APP_TOKEN}"
+           f"/tables/{table_id}/fields")
+    payload = {"field_name": field_name, "type": field_type}
+    if property_config:
+        payload["property"] = property_config
+    body = json.dumps(payload).encode()
+    req = urllib.request.Request(url, data=body, method="POST",
+          headers={"Authorization": f"Bearer {token}",
+                   "Content-Type": "application/json; charset=utf-8"})
+    with urllib.request.urlopen(req) as resp:
+        result = json.loads(resp.read())
+    if result.get("code") != 0:
+        raise RuntimeError(f"飞书新增字段失败: {result}")
+    field_id = result["data"]["field"]["field_id"]
+    print(f"     🆕 已在 {table_key} 新增字段「{field_name}」field_id={field_id}")
+    return field_id

@@ -3,52 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>业务员管理后台</title>
+<title>ProvenLift 业务员中台</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f5f7fa;--card:#fff;--primary:#2563eb;--primary-hover:#1d4ed8;
-  --success:#16a34a;--danger:#dc2626;--text:#1e293b;--text2:#64748b;
+  --bg:#f5f7fa;--card:#fff;--primary:#2563eb;--primary-hover:#1d4ed8;--primary-light:#eff6ff;
+  --success:#16a34a;--success-light:#f0fdf4;--danger:#dc2626;--danger-light:#fef2f2;
+  --text:#1e293b;--text2:#64748b;--text3:#94a3b8;
   --border:#e2e8f0;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08);
+  --tab-h:56px;--header-h:52px;
 }
 html{font-size:16px;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.6;min-height:100dvh}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5;
+  min-height:100dvh;padding-bottom:var(--tab-h);
+}
+
+/* ── Header ── */
 .app-header{
-  background:var(--primary);color:#fff;padding:16px 20px;
+  background:var(--primary);color:#fff;padding:0 16px;height:var(--header-h);
   position:sticky;top:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
   box-shadow:0 2px 8px rgba(37,99,235,.3);
 }
-.app-header h1{font-size:1.125rem;font-weight:600}
-.status-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-block;margin-right:6px}
-.app-body{padding:16px;max-width:600px;margin:0 auto}
+.app-header h1{font-size:1rem;font-weight:600}
+.header-actions{display:flex;align-items:center;gap:10px}
+.btn-refresh{
+  background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:32px;height:32px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+}
+.btn-refresh:active{background:rgba(255,255,255,.3)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-block}
+
+/* ── Bottom Tabs ── */
+.tab-bar{
+  position:fixed;bottom:0;left:0;right:0;height:var(--tab-h);
+  background:#fff;border-top:1px solid var(--border);
+  display:flex;z-index:100;
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:none;background:none;color:var(--text3);font-size:.625rem;
+  font-weight:500;cursor:pointer;gap:2px;transition:color .2s;
+}
+.tab-btn.active{color:var(--primary)}
+.tab-icon{font-size:1.25rem}
+
+/* ── Views ── */
+.view{display:none;padding:12px;max-width:600px;margin:0 auto}
+.view.active{display:block}
+
+/* ── Cards ── */
 .card{
-  background:var(--card);border-radius:var(--radius);padding:20px;
-  margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);
+  background:var(--card);border-radius:var(--radius);padding:16px;
+  margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);
 }
-.card-title{font-size:.8125rem;font-weight:600;color:var(--text2);
-  text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:.875rem;font-weight:500;margin-bottom:6px}
-select{
-  width:100%;padding:12px 14px;border:1.5px solid var(--border);
-  border-radius:8px;font-size:1rem;background:var(--card);color:var(--text);
-  appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11.5l-5-5h10l-5 5z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;
+.card-title{font-size:.75rem;font-weight:600;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+
+/* ── Sub Tabs (模板/客户方案切换) ── */
+.sub-tabs{display:flex;gap:0;margin-bottom:12px;background:var(--card);border-radius:10px;padding:3px;border:1px solid var(--border)}
+.sub-tab{
+  flex:1;padding:8px 0;text-align:center;border-radius:8px;
+  font-size:.8125rem;font-weight:600;cursor:pointer;
+  border:none;background:none;color:var(--text2);transition:all .2s;
 }
-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
-.plan-info{display:none;animation:fadeIn .3s ease}
-.plan-info.active{display:block}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
-.info-item{padding:8px 0;border-bottom:1px solid var(--border)}
-.info-item .label{font-size:.75rem;color:var(--text2);margin-bottom:2px}
-.info-item .value{font-size:.9375rem;font-weight:600}
+.sub-tab.active{background:var(--primary);color:#fff}
+
+/* ── Plan Item (列表中的方案卡片) ── */
+.plan-item{
+  padding:12px;border-radius:10px;border:1px solid var(--border);
+  margin-bottom:8px;cursor:pointer;transition:all .15s;
+}
+.plan-item:active{background:#f8fafc;transform:scale(.98)}
+.plan-item .plan-name{font-size:.9375rem;font-weight:600;margin-bottom:4px}
+.plan-item .plan-meta{font-size:.75rem;color:var(--text2);display:flex;gap:12px;flex-wrap:wrap}
+.plan-item .plan-cats{font-size:.6875rem;color:var(--text3);margin-top:6px}
+.plan-item .plan-action{
+  display:inline-flex;align-items:center;gap:4px;
+  margin-top:8px;padding:6px 12px;border-radius:6px;
+  background:var(--primary-light);color:var(--primary);
+  font-size:.75rem;font-weight:600;border:none;cursor:pointer;
+}
+.plan-item .plan-action:active{background:#dbeafe}
+
+/* ── Edit View (方案编辑态) ── */
+.edit-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
+}
+.btn-back{
+  width:36px;height:36px;border-radius:8px;border:1px solid var(--border);
+  background:var(--card);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1.125rem;flex-shrink:0;
+}
+.edit-title{font-size:1rem;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.summary-item{text-align:center;padding:10px 4px;background:#f8fafc;border-radius:8px}
+.summary-item .s-val{font-size:1.125rem;font-weight:700;color:var(--text)}
+.summary-item .s-label{font-size:.625rem;color:var(--text2);margin-top:2px}
+
+/* ── Product List (方案内器材) ── */
+.cat-group{margin-bottom:12px}
+.cat-group-title{
+  font-size:.75rem;font-weight:600;color:var(--text2);
+  padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.cat-group-title .cat-count{
+  background:var(--primary-light);color:var(--primary);
+  font-size:.625rem;padding:2px 6px;border-radius:4px;
+}
+.prod-row{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid #f1f5f9;
+}
+.prod-row:last-child{border-bottom:none}
+.prod-thumb{
+  width:52px;height:52px;border-radius:8px;object-fit:cover;
+  background:#f1f5f9;flex-shrink:0;
+}
+.prod-info{flex:1;min-width:0}
+.prod-info .p-sku{font-size:.6875rem;color:var(--text3)}
+.prod-info .p-name{font-size:.8125rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prod-info .p-price{font-size:.75rem;color:var(--primary);font-weight:600}
+.btn-remove{
+  width:32px;height:32px;border-radius:8px;border:none;
+  background:var(--danger-light);color:var(--danger);
+  font-size:1rem;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.btn-remove:active{background:#fecaca}
+
+/* ── Bottom Action Bar (固定底栏) ── */
+.action-bar{
+  position:fixed;bottom:var(--tab-h);left:0;right:0;
+  background:#fff;border-top:1px solid var(--border);
+  padding:8px 12px;display:none;z-index:90;
+  max-width:600px;margin:0 auto;
+}
+.action-bar.active{display:flex;gap:8px;align-items:center}
+.action-bar .action-info{flex:1;font-size:.75rem;color:var(--text2)}
+.action-bar .action-info strong{color:var(--text);font-size:.875rem}
 .btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:14px 20px;border:none;border-radius:8px;
-  font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 16px;border:none;border-radius:8px;
+  font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;
 }
 .btn:active{transform:scale(.97)}
 .btn-primary{background:var(--primary);color:#fff}
@@ -56,35 +159,55 @@ select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(
 .btn-primary:disabled{background:#94a3b8;cursor:not-allowed;transform:none}
 .btn-success{background:var(--success);color:#fff}
 .btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
-.result-area{display:none;animation:fadeIn .3s ease;margin-top:14px}
-.result-area.active{display:block}
-.result-url{
-  background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;
-  padding:14px;font-size:.875rem;word-break:break-all;color:var(--text);margin-bottom:12px;
+
+/* ── Product Grid (产品总库) ── */
+.filter-bar{
+  position:sticky;top:var(--header-h);z-index:50;
+  background:var(--bg);padding:8px 0 4px;
 }
-.result-url.error{background:#fef2f2;border-color:#fca5a5;color:var(--danger)}
-.btn-row{display:flex;gap:10px}
-.btn-row .btn{flex:1}
-.log-box{
-  background:#1e293b;color:#e2e8f0;border-radius:8px;padding:14px;
-  font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.75rem;
-  max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;
-  display:none;margin-top:12px;
+.search-box{
+  width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;
+  font-size:.9375rem;background:var(--card);margin-bottom:8px;
 }
-.log-box.active{display:block}
-.spinner{
-  width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);
-  border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;
+.search-box:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.filter-row{display:flex;gap:6px;margin-bottom:6px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.filter-row::-webkit-scrollbar{display:none}
+.chip{
+  padding:6px 12px;border-radius:16px;font-size:.75rem;font-weight:500;
+  border:1.5px solid var(--border);background:var(--card);color:var(--text2);
+  cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.toast{
-  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:#1e293b;color:#fff;padding:10px 24px;border-radius:20px;
-  font-size:.875rem;font-weight:500;opacity:0;transition:all .3s;
-  z-index:999;pointer-events:none;white-space:nowrap;
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.editing-banner{
+  background:var(--primary-light);color:var(--primary);
+  padding:8px 12px;border-radius:8px;font-size:.8125rem;font-weight:500;
+  margin-bottom:8px;text-align:center;
 }
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.editing-banner.warn{background:#fffbeb;color:#b45309}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.product-card{
+  background:var(--card);border-radius:10px;overflow:hidden;
+  border:1px solid var(--border);position:relative;
+  transition:all .15s;
+}
+.product-card:active{transform:scale(.97)}
+.product-card .pc-img{
+  width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#f1f5f9;
+}
+.product-card .pc-body{padding:8px}
+.product-card .pc-sku{font-size:.625rem;color:var(--text3)}
+.product-card .pc-name{font-size:.75rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.product-card .pc-price{font-size:.75rem;color:var(--primary);font-weight:600;margin-top:2px}
+.pc-action{
+  position:absolute;top:6px;right:6px;width:30px;height:30px;
+  border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.875rem;font-weight:700;transition:all .15s;
+}
+.pc-action.add{background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(37,99,235,.4)}
+.pc-action.added{background:var(--success);color:#fff;box-shadow:0 2px 6px rgba(22,163,74,.4)}
+
+/* ── History ── */
 .history-item{
   display:flex;align-items:center;justify-content:space-between;
   padding:12px 0;border-bottom:1px solid var(--border);gap:10px;
@@ -93,165 +216,709 @@ select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(
 .history-meta{flex:1;min-width:0}
 .history-meta .h-plan{font-size:.875rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .history-meta .h-time{font-size:.75rem;color:var(--text2)}
-.history-actions{display:flex;gap:8px;flex-shrink:0}
+.history-actions{display:flex;gap:6px;flex-shrink:0}
 .btn-sm{
-  padding:8px 14px;border-radius:6px;font-size:.8125rem;font-weight:600;
+  padding:6px 12px;border-radius:6px;font-size:.75rem;font-weight:600;
   border:none;cursor:pointer;white-space:nowrap;
 }
-.btn-sm.copy{background:#eff6ff;color:var(--primary)}
-.btn-sm.open{background:#f0fdf4;color:var(--success)}
-.empty-state{text-align:center;padding:24px;color:var(--text2);font-size:.875rem}
-.sku-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.sku-tag{background:#eff6ff;color:var(--primary);font-size:.75rem;font-weight:500;padding:4px 10px;border-radius:6px}
+.btn-sm.copy{background:var(--primary-light);color:var(--primary)}
+.btn-sm.open{background:var(--success-light);color:var(--success)}
+.empty-state{text-align:center;padding:32px 16px;color:var(--text3);font-size:.875rem}
+
+/* ── Modal ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.active{display:flex}
+.modal-box{
+  background:var(--card);border-radius:var(--radius);padding:20px;
+  width:100%;max-width:360px;
+}
+.modal-box h3{font-size:1rem;font-weight:600;margin-bottom:12px}
+.modal-box input{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;
+  font-size:.9375rem;margin-bottom:12px;
+}
+.modal-box input:focus{outline:none;border-color:var(--primary)}
+.modal-btns{display:flex;gap:8px}
+.modal-btns .btn{flex:1}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:calc(var(--tab-h) + 60px);left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1e293b;color:#fff;padding:10px 24px;border-radius:20px;
+  font-size:.8125rem;font-weight:500;opacity:0;transition:all .3s;
+  z-index:999;pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── Loading ── */
+.loading{text-align:center;padding:40px;color:var(--text3)}
+.spinner{
+  width:20px;height:20px;border:2.5px solid rgba(37,99,235,.2);
+  border-top-color:var(--primary);border-radius:50%;
+  animation:spin .6s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .25s ease}
+
+/* ── Log box ── */
+.log-box{
+  background:#1e293b;color:#e2e8f0;border-radius:8px;padding:12px;
+  font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.6875rem;
+  max-height:160px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;
+  display:none;margin-top:10px;
+}
+.log-box.active{display:block}
+.result-url{
+  background:var(--success-light);border:1.5px solid #86efac;border-radius:8px;
+  padding:12px;font-size:.8125rem;word-break:break-all;color:var(--text);margin:10px 0;
+}
+.result-url.error{background:var(--danger-light);border-color:#fca5a5;color:var(--danger)}
+.result-btns{display:flex;gap:8px}
+.result-btns .btn{flex:1;padding:8px 12px;font-size:.8125rem}
 </style>
 </head>
 <body>
+
+<!-- ══════ Header ══════ -->
 <header class="app-header">
-  <h1>GYM Sales Hub</h1>
-  <span style="font-size:.8125rem"><span class="status-dot"></span>在线</span>
+  <h1>ProvenLift 业务中台</h1>
+  <div class="header-actions">
+    <button class="btn-refresh" onclick="refreshCache()" title="刷新数据">↻</button>
+    <span class="status-dot"></span>
+  </div>
 </header>
-<div class="app-body">
-  <div class="card">
-    <div class="card-title">第一步 · 选择套餐方案</div>
-    <div class="form-group">
-      <label for="planSelect">套餐方案</label>
-      <select id="planSelect"><option value="">加载中…</option></select>
+
+<!-- ══════ View 1: 方案管理 ══════ -->
+<div id="viewPlans" class="view active">
+
+  <!-- 列表模式 -->
+  <div id="planListMode">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-sub="templates">套餐模板</button>
+      <button class="sub-tab" data-sub="clients">客户方案</button>
     </div>
-    <div id="planInfo" class="plan-info">
-      <div class="info-grid">
-        <div class="info-item"><div class="label">客户名</div><div class="value" id="infoClient">—</div></div>
-        <div class="info-item"><div class="label">目标市场</div><div class="value" id="infoMarket">—</div></div>
-        <div class="info-item"><div class="label">器材数量</div><div class="value" id="infoCount">—</div></div>
-        <div class="info-item"><div class="label">面积 m²</div><div class="value" id="infoArea">—</div></div>
-      </div>
-      <div id="skuTags" class="sku-tags"></div>
+    <div id="subTemplates" class="fade-in">
+      <div class="loading"><span class="spinner"></span> 加载中…</div>
+    </div>
+    <div id="subClients" style="display:none" class="fade-in">
+      <div class="loading"><span class="spinner"></span> 加载中…</div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title">第二步 · 生成客户网页</div>
-    <button class="btn btn-primary" id="btnGenerate" disabled>
-      <span id="btnText">选择方案后可生成</span>
-    </button>
-    <div id="resultArea" class="result-area">
-      <div id="resultUrl" class="result-url"></div>
-      <div class="btn-row">
-        <button class="btn btn-success" id="btnCopy">复制链接</button>
-        <button class="btn btn-outline" id="btnOpen">打开预览</button>
-      </div>
+
+  <!-- 编辑模式（选中某个客户方案后） -->
+  <div id="planEditMode" style="display:none">
+    <div class="edit-header">
+      <button class="btn-back" onclick="exitEditMode()">←</button>
+      <div class="edit-title" id="editTitle">—</div>
     </div>
-    <div id="logBox" class="log-box"></div>
+    <div class="summary-grid" id="editSummary"></div>
+    <div class="card" id="editProductList">
+      <div class="card-title">当前器材清单</div>
+      <div class="loading"><span class="spinner"></span></div>
+    </div>
+
+    <!-- 生成区域 -->
+    <div class="card" id="generateCard">
+      <div class="card-title">生成客户网页</div>
+      <button class="btn btn-primary" id="btnGenerate" style="width:100%">
+        <span id="btnGenText">生成网页</span>
+      </button>
+      <div id="genResult" style="display:none">
+        <div id="genResultUrl" class="result-url"></div>
+        <div class="result-btns">
+          <button class="btn btn-success" id="btnCopyUrl">复制链接</button>
+          <button class="btn btn-outline" id="btnOpenUrl">打开预览</button>
+        </div>
+      </div>
+      <div id="genLog" class="log-box"></div>
+    </div>
   </div>
+</div>
+
+<!-- ══════ View 2: 产品总库 ══════ -->
+<div id="viewProducts" class="view">
+  <div id="editingBanner" class="editing-banner warn">请先在「方案管理」中选择一个客户方案</div>
+  <div class="filter-bar">
+    <input type="text" class="search-box" id="searchInput" placeholder="搜索 SKU 或中文名…">
+    <div class="filter-row" id="catFilters"></div>
+    <div class="filter-row" id="muscleFilters"></div>
+  </div>
+  <div class="product-grid" id="productGrid">
+    <div class="loading" style="grid-column:1/-1"><span class="spinner"></span> 加载产品…</div>
+  </div>
+</div>
+
+<!-- ══════ View 3: 历史记录 ══════ -->
+<div id="viewHistory" class="view">
   <div class="card">
-    <div class="card-title">最近生成记录</div>
+    <div class="card-title">生成历史</div>
     <div id="historyList"><div class="empty-state">暂无记录</div></div>
   </div>
 </div>
+
+<!-- ══════ Bottom Tabs ══════ -->
+<nav class="tab-bar">
+  <button class="tab-btn active" data-view="viewPlans">
+    <span class="tab-icon">📋</span>方案
+  </button>
+  <button class="tab-btn" data-view="viewProducts">
+    <span class="tab-icon">🏋️</span>选品
+  </button>
+  <button class="tab-btn" data-view="viewHistory">
+    <span class="tab-icon">📁</span>历史
+  </button>
+</nav>
+
+<!-- ══════ Modal: 新建客户方案 ══════ -->
+<div class="modal-overlay" id="modalCreate">
+  <div class="modal-box">
+    <h3>新建客户方案</h3>
+    <div style="font-size:.8125rem;color:var(--text2);margin-bottom:10px" id="modalTplName"></div>
+    <input type="text" id="inputClientName" placeholder="输入客户名称（如 ProGym KL）">
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" id="btnConfirmCreate">创建</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
 <div class="toast" id="toast"></div>
+
 <script>
-let plans=[], selectedPlan=null, generatedUrl='';
+/* ══════════════════════════════════════
+   全局状态
+   ══════════════════════════════════════ */
+let STATE = {
+  templates: [],
+  clientPlans: [],
+  editingPlan: null,       // 当前编辑的客户方案 record_id
+  editingDetail: null,     // 当前方案详情
+  editingSkuSet: new Set(),// 当前方案包含的产品 record_id 集合
+  allProducts: [],
+  filterOptions: { categories: [], muscles: [] },
+  activeCategory: '',
+  activeMuscle: '',
+};
 
-(async function(){
-  const sel=document.getElementById('planSelect');
-  try{
-    const r=await fetch('/api/plans');
-    const d=await r.json();
-    if(!d.ok) throw new Error(d.error||'加载失败');
-    plans=d.plans||[];
-    sel.innerHTML='<option value="">— 请选择方案 —</option>';
-    plans.forEach(p=>{
-      const o=document.createElement('option');
-      o.value=p.plan_id;
-      o.textContent=p.plan_id+' · '+p.client_name+' ('+p.n_products+'台)';
-      sel.appendChild(o);
+/* ══════════════════════════════════════
+   Tab 切换
+   ══════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.view).classList.add('active');
+    // 切到产品库时自动加载
+    if (btn.dataset.view === 'viewProducts' && !STATE.allProducts.length) {
+      loadProducts();
+      loadFilterOptions();
+    }
+  });
+});
+
+/* Sub-tabs */
+document.querySelectorAll('.sub-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const show = btn.dataset.sub === 'templates' ? 'subTemplates' : 'subClients';
+    const hide = btn.dataset.sub === 'templates' ? 'subClients' : 'subTemplates';
+    document.getElementById(show).style.display = 'block';
+    document.getElementById(hide).style.display = 'none';
+  });
+});
+
+/* ══════════════════════════════════════
+   数据加载
+   ══════════════════════════════════════ */
+async function loadPlans() {
+  try {
+    const r = await fetch('/api/plans');
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    STATE.templates = d.templates || [];
+    STATE.clientPlans = d.client_plans || [];
+    renderTemplates();
+    renderClientPlans();
+  } catch(e) {
+    document.getElementById('subTemplates').innerHTML = `<div class="empty-state">加载失败: ${e.message}</div>`;
+  }
+}
+
+function renderTemplates() {
+  const box = document.getElementById('subTemplates');
+  if (!STATE.templates.length) { box.innerHTML = '<div class="empty-state">暂无套餐模板</div>'; return; }
+  box.innerHTML = STATE.templates.map(t => {
+    const cats = Object.entries(t.cat_counts||{}).map(([k,v])=>`${k}×${v}`).join(' / ');
+    return `<div class="plan-item">
+      <div class="plan-name">${t.plan_id} · ${t.client_name}</div>
+      <div class="plan-meta">
+        <span>${t.n_products}台</span><span>${t.area_m2||'—'}m²</span>
+        <span>${t.market||'—'}</span><span>FOB $${(t.fob_total_usd||0).toLocaleString()}</span>
+      </div>
+      ${cats ? `<div class="plan-cats">${cats}</div>` : ''}
+      <button class="plan-action" onclick="openCreateModal('${t.record_id}','${t.plan_id} · ${t.client_name}')">＋ 以此创建客户方案</button>
+    </div>`;
+  }).join('');
+}
+
+function renderClientPlans() {
+  const box = document.getElementById('subClients');
+  if (!STATE.clientPlans.length) { box.innerHTML = '<div class="empty-state">暂无客户方案，请从套餐模板创建</div>'; return; }
+  box.innerHTML = STATE.clientPlans.map(p => {
+    const cats = Object.entries(p.cat_counts||{}).map(([k,v])=>`${k}×${v}`).join(' / ');
+    return `<div class="plan-item" onclick="enterEditMode('${p.record_id}')">
+      <div class="plan-name">${p.client_name}</div>
+      <div class="plan-meta">
+        <span>${p.plan_id}</span><span>${p.n_products}台</span>
+        <span>${p.market||'—'}</span><span>FOB $${(p.fob_total_usd||0).toLocaleString()}</span>
+      </div>
+      ${cats ? `<div class="plan-cats">${cats}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════
+   创建客户方案 Modal
+   ══════════════════════════════════════ */
+let _createTplRid = '';
+
+function openCreateModal(tplRid, tplName) {
+  _createTplRid = tplRid;
+  document.getElementById('modalTplName').textContent = '基于模板: ' + tplName;
+  document.getElementById('inputClientName').value = '';
+  document.getElementById('modalCreate').classList.add('active');
+  setTimeout(() => document.getElementById('inputClientName').focus(), 100);
+}
+function closeModal() {
+  document.getElementById('modalCreate').classList.remove('active');
+}
+
+document.getElementById('btnConfirmCreate').addEventListener('click', async () => {
+  const name = document.getElementById('inputClientName').value.trim();
+  if (!name) { showToast('请输入客户名称'); return; }
+  const btn = document.getElementById('btnConfirmCreate');
+  btn.disabled = true; btn.textContent = '创建中…';
+  // ── 乐观更新：立刻关闭弹窗并跳转 ──
+  closeModal();
+  showToast('正在创建方案…');
+
+  try {
+    const r = await fetch('/api/client-plan/create', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ template_record_id: _createTplRid, client_name: name })
     });
-  }catch(e){sel.innerHTML='<option value="">加载失败: '+e.message+'</option>';}
-})();
-
-document.getElementById('planSelect').addEventListener('change',function(){
-  const pid=this.value;
-  const info=document.getElementById('planInfo');
-  const btn=document.getElementById('btnGenerate');
-  const btnText=document.getElementById('btnText');
-  if(!pid){info.classList.remove('active');btn.disabled=true;btnText.textContent='选择方案后可生成';selectedPlan=null;return;}
-  selectedPlan=plans.find(p=>p.plan_id===pid);
-  if(!selectedPlan) return;
-  document.getElementById('infoClient').textContent=selectedPlan.client_name||'—';
-  document.getElementById('infoMarket').textContent=selectedPlan.market||'—';
-  document.getElementById('infoCount').textContent=selectedPlan.n_products+'台';
-  document.getElementById('infoArea').textContent=(selectedPlan.area_m2||'—')+' m²';
-  var tags=document.getElementById('skuTags');
-  tags.innerHTML=(selectedPlan.skus||[]).map(function(s){return '<span class="sku-tag">'+s+'</span>';}).join('');
-  info.classList.add('active');
-  btn.disabled=false;
-  btnText.textContent='生成网页';
-  document.getElementById('resultArea').classList.remove('active');
-  document.getElementById('logBox').classList.remove('active');
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    showToast(`已创建: ${d.plan_id}`);
+    await loadPlans();
+    document.querySelectorAll('.sub-tab')[1].click();
+    setTimeout(() => enterEditMode(d.record_id), 100);
+  } catch(e) {
+    showToast('创建失败: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '创建';
+  }
 });
 
-document.getElementById('btnGenerate').addEventListener('click',async function(){
-  if(!selectedPlan) return;
-  var btn=this, btnText=document.getElementById('btnText');
-  var logBox=document.getElementById('logBox');
-  var resultArea=document.getElementById('resultArea');
-  var resultUrl=document.getElementById('resultUrl');
-  btn.disabled=true;
-  btnText.innerHTML='<span class="spinner"></span> 生成中…';
-  resultArea.classList.remove('active');
-  logBox.textContent='';logBox.classList.add('active');
-  try{
-    var r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({plan_id:selectedPlan.plan_id,client_id:selectedPlan.plan_id})});
-    var d=await r.json();
-    logBox.textContent=d.output||d.log||'';
-    if(!d.ok) throw new Error(d.error||'生成失败');
-    generatedUrl=d.preview_url||d.url||'';
-    resultUrl.textContent=generatedUrl;
-    resultUrl.classList.remove('error');
-    resultArea.classList.add('active');
-    saveHistory(selectedPlan.plan_id,selectedPlan.client_name,generatedUrl);
-    renderHistory();
-    showToast('生成成功');
-  }catch(e){
-    resultUrl.textContent='错误: '+e.message;
-    resultUrl.classList.add('error');
-    resultArea.classList.add('active');
+/* ══════════════════════════════════════
+   编辑模式
+   ══════════════════════════════════════ */
+async function enterEditMode(recordId) {
+  STATE.editingPlan = recordId;
+  document.getElementById('planListMode').style.display = 'none';
+  document.getElementById('planEditMode').style.display = 'block';
+  document.getElementById('editProductList').innerHTML = '<div class="card-title">当前器材清单</div><div class="loading"><span class="spinner"></span> 加载中…</div>';
+  document.getElementById('genResult').style.display = 'none';
+  document.getElementById('genLog').classList.remove('active');
+
+  try {
+    const r = await fetch(`/api/client-plan/${recordId}`);
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    STATE.editingDetail = d;
+    STATE.editingSkuSet = new Set((d.products||[]).map(p=>p.record_id));
+    renderEditView(d);
+    updateEditingBanner();
+  } catch(e) {
+    showToast('加载方案详情失败: ' + e.message);
+  }
+}
+
+function exitEditMode() {
+  STATE.editingPlan = null;
+  STATE.editingDetail = null;
+  STATE.editingSkuSet.clear();
+  document.getElementById('planEditMode').style.display = 'none';
+  document.getElementById('planListMode').style.display = 'block';
+  updateEditingBanner();
+  loadPlans(); // 刷新列表
+}
+
+function renderEditView(d) {
+  document.getElementById('editTitle').textContent = d.plan_id;
+
+  // 摘要
+  document.getElementById('editSummary').innerHTML = `
+    <div class="summary-item"><div class="s-val">${d.n_products}</div><div class="s-label">台器材</div></div>
+    <div class="summary-item"><div class="s-val">$${(d.fob_total_usd||0).toLocaleString()}</div><div class="s-label">FOB 总价</div></div>
+    <div class="summary-item"><div class="s-val">${d.area_m2||'—'}m²</div><div class="s-label">适用面积</div></div>
+  `;
+
+  // 按分类分组
+  const groups = {};
+  (d.products||[]).forEach(p => {
+    const cat = p.category_zh || p.category || '其他';
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(p);
+  });
+
+  let html = '<div class="card-title">当前器材清单</div>';
+  for (const [cat, prods] of Object.entries(groups)) {
+    html += `<div class="cat-group">
+      <div class="cat-group-title">${cat} <span class="cat-count">${prods.length}</span></div>`;
+    prods.forEach(p => {
+      html += `<div class="prod-row">
+        <img class="prod-thumb" src="${p.image_url||''}" alt="" onerror="this.style.background='#e2e8f0'">
+        <div class="prod-info">
+          <div class="p-sku">${p.sku}</div>
+          <div class="p-name">${p.name_zh || p.name}</div>
+          <div class="p-price">$${p.price_fob_usd}</div>
+        </div>
+        <button class="btn-remove" onclick="removeSku('${p.record_id}','${p.sku}')" title="移除">✕</button>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  document.getElementById('editProductList').innerHTML = html;
+}
+
+/* ══════════════════════════════════════
+   SKU 增删操作
+   ══════════════════════════════════════ */
+async function removeSku(productRid, sku) {
+  if (!STATE.editingPlan) return;
+
+  // ── 乐观更新：立刻从前端移除 ──
+  STATE.editingSkuSet.delete(productRid);
+  if (STATE.editingDetail) {
+    STATE.editingDetail.products = (STATE.editingDetail.products||[]).filter(p => p.record_id !== productRid);
+    STATE.editingDetail.n_products = STATE.editingDetail.products.length;
+    STATE.editingDetail.fob_total_usd = STATE.editingDetail.products.reduce((s,p) => s + (p.price_fob_usd||0), 0);
+    // 重算品类分布
+    const cc = {};
+    STATE.editingDetail.products.forEach(p => { const c = p.category_zh||'其他'; cc[c]=(cc[c]||0)+1; });
+    STATE.editingDetail.cat_counts = cc;
+    renderEditView(STATE.editingDetail);
+  }
+  renderProductGrid();
+  showToast(`已移除 ${sku}`);
+
+  // ── 异步写飞书 ──
+  try {
+    const r = await fetch(`/api/client-plan/${STATE.editingPlan}/remove-sku`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ product_record_id: productRid })
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+  } catch(e) {
+    // 写入失败：回滚
+    showToast('同步失败，正在恢复: ' + e.message);
+    STATE.editingSkuSet.add(productRid);
+    await enterEditMode(STATE.editingPlan);
+    renderProductGrid();
+  }
+}
+
+async function addSku(productRid, sku) {
+  if (!STATE.editingPlan) {
+    showToast('请先选择一个客户方案');
+    return;
+  }
+
+  // ── 乐观更新：立刻在前端添加 ──
+  STATE.editingSkuSet.add(productRid);
+  // 从 allProducts 找到该产品信息，塞入 editingDetail
+  const prod = STATE.allProducts.find(p => p.record_id === productRid);
+  if (prod && STATE.editingDetail) {
+    STATE.editingDetail.products.push({
+      record_id: prod.record_id,
+      sku: prod.sku,
+      name: prod.name,
+      name_zh: prod.name_zh,
+      category: prod.category,
+      category_zh: prod.category_zh,
+      price_fob_usd: prod.price_fob_usd,
+      image_url: prod.image_url,
+      muscles: prod.muscles || [],
+    });
+    STATE.editingDetail.n_products = STATE.editingDetail.products.length;
+    STATE.editingDetail.fob_total_usd = STATE.editingDetail.products.reduce((s,p) => s + (p.price_fob_usd||0), 0);
+    const cc = {};
+    STATE.editingDetail.products.forEach(p => { const c = p.category_zh||'其他'; cc[c]=(cc[c]||0)+1; });
+    STATE.editingDetail.cat_counts = cc;
+  }
+  renderProductGrid();
+  showToast(`已添加 ${sku}`);
+
+  // ── 异步写飞书 ──
+  try {
+    const r = await fetch(`/api/client-plan/${STATE.editingPlan}/add-sku`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ product_record_id: productRid })
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+  } catch(e) {
+    // 写入失败：回滚
+    showToast('同步失败，正在恢复: ' + e.message);
+    STATE.editingSkuSet.delete(productRid);
+    if (STATE.editingDetail) {
+      STATE.editingDetail.products = STATE.editingDetail.products.filter(p => p.record_id !== productRid);
+      STATE.editingDetail.n_products = STATE.editingDetail.products.length;
+      STATE.editingDetail.fob_total_usd = STATE.editingDetail.products.reduce((s,p) => s + (p.price_fob_usd||0), 0);
+    }
+    renderProductGrid();
+    await enterEditMode(STATE.editingPlan);
+  }
+}
+
+/* ══════════════════════════════════════
+   产品总库
+   ══════════════════════════════════════ */
+async function loadFilterOptions() {
+  try {
+    const r = await fetch('/api/filter-options');
+    const d = await r.json();
+    if (!d.ok) return;
+    STATE.filterOptions = d;
+    renderFilters();
+  } catch(e) {}
+}
+
+function renderFilters() {
+  // 分类 chips
+  const catBox = document.getElementById('catFilters');
+  let catHtml = '<span class="chip active" data-cat="">全部</span>';
+  STATE.filterOptions.categories.forEach(c => {
+    catHtml += `<span class="chip" data-cat="${c.code}">${c.label_zh}</span>`;
+  });
+  catBox.innerHTML = catHtml;
+  catBox.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      catBox.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      STATE.activeCategory = chip.dataset.cat;
+      loadProducts();
+    });
+  });
+
+  // 肌群 chips
+  const muscleBox = document.getElementById('muscleFilters');
+  let mHtml = '<span class="chip active" data-muscle="">全部肌群</span>';
+  STATE.filterOptions.muscles.forEach(m => {
+    mHtml += `<span class="chip" data-muscle="${m}">${m}</span>`;
+  });
+  muscleBox.innerHTML = mHtml;
+  muscleBox.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      muscleBox.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      STATE.activeMuscle = chip.dataset.muscle;
+      loadProducts();
+    });
+  });
+}
+
+let _searchTimer = null;
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(() => loadProducts(), 300);
+});
+
+async function loadProducts() {
+  const keyword = document.getElementById('searchInput').value.trim();
+  const params = new URLSearchParams();
+  if (STATE.activeCategory) params.set('category', STATE.activeCategory);
+  if (STATE.activeMuscle) params.set('muscle', STATE.activeMuscle);
+  if (keyword) params.set('keyword', keyword);
+
+  try {
+    const r = await fetch('/api/products?' + params.toString());
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    STATE.allProducts = d.products || [];
+    renderProductGrid();
+  } catch(e) {
+    document.getElementById('productGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">加载失败: ${e.message}</div>`;
+  }
+}
+
+function renderProductGrid() {
+  const grid = document.getElementById('productGrid');
+  if (!STATE.allProducts.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">无匹配产品</div>';
+    return;
+  }
+  grid.innerHTML = STATE.allProducts.map(p => {
+    const inPlan = STATE.editingSkuSet.has(p.record_id);
+    return `<div class="product-card">
+      <img class="pc-img" src="${p.image_url||''}" alt="${p.sku}" onerror="this.style.background='#e2e8f0'" loading="lazy">
+      <button class="pc-action ${inPlan?'added':'add'}"
+        onclick="event.stopPropagation();${inPlan ? `removeSku('${p.record_id}','${p.sku}')` : `addSku('${p.record_id}','${p.sku}')`}">
+        ${inPlan?'✓':'+'}
+      </button>
+      <div class="pc-body">
+        <div class="pc-sku">${p.sku} · ${p.category_zh||''}</div>
+        <div class="pc-name">${p.name_zh || p.name}</div>
+        <div class="pc-price">FOB $${p.price_fob_usd}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateEditingBanner() {
+  const banner = document.getElementById('editingBanner');
+  if (STATE.editingPlan && STATE.editingDetail) {
+    banner.className = 'editing-banner';
+    banner.textContent = `正在编辑：${STATE.editingDetail.client_name}（当前 ${STATE.editingDetail.n_products} 台）`;
+  } else {
+    banner.className = 'editing-banner warn';
+    banner.textContent = '请先在「方案管理」中选择一个客户方案';
+  }
+}
+
+/* ══════════════════════════════════════
+   生成网页
+   ══════════════════════════════════════ */
+document.getElementById('btnGenerate').addEventListener('click', async () => {
+  if (!STATE.editingDetail) return;
+  const btn = document.getElementById('btnGenerate');
+  const btnText = document.getElementById('btnGenText');
+  const logBox = document.getElementById('genLog');
+  const resultBox = document.getElementById('genResult');
+
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px"></span> 生成中…';
+  resultBox.style.display = 'none';
+  logBox.textContent = ''; logBox.classList.add('active');
+
+  try {
+    const r = await fetch('/api/generate', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        plan_id: STATE.editingDetail.plan_id,
+        client_id: STATE.editingDetail.plan_id
+      })
+    });
+    const d = await r.json();
+    logBox.textContent = d.output || '';
+    if (!d.ok) throw new Error(d.error);
+
+    const url = d.preview_url || '';
+    const version = d.version || '';
+    document.getElementById('genResultUrl').textContent = url;
+    document.getElementById('genResultUrl').className = 'result-url';
+    resultBox.style.display = 'block';
+
+    // 存历史（含版本号）
+    saveHistory(STATE.editingDetail.plan_id, STATE.editingDetail.client_name, url, version);
+    showToast('生成成功 ' + version);
+  } catch(e) {
+    document.getElementById('genResultUrl').textContent = '错误: ' + e.message;
+    document.getElementById('genResultUrl').className = 'result-url error';
+    document.getElementById('genResult').style.display = 'block';
     showToast('生成失败');
-  }finally{btn.disabled=false;btnText.textContent='重新生成';}
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = '重新生成';
+  }
 });
 
-document.getElementById('btnCopy').addEventListener('click',function(){
-  if(!generatedUrl) return;
-  navigator.clipboard.writeText(generatedUrl).then(function(){showToast('链接已复制');}).catch(function(){
-    var ta=document.createElement('textarea');ta.value=generatedUrl;document.body.appendChild(ta);
+document.getElementById('btnCopyUrl').addEventListener('click', () => {
+  const url = document.getElementById('genResultUrl').textContent;
+  if (!url || url.startsWith('错误')) return;
+  navigator.clipboard.writeText(url).then(()=>showToast('链接已复制')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);
     ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('链接已复制');
   });
 });
-document.getElementById('btnOpen').addEventListener('click',function(){
-  if(!generatedUrl) return; window.open(generatedUrl,'_blank');
+document.getElementById('btnOpenUrl').addEventListener('click', () => {
+  const url = document.getElementById('genResultUrl').textContent;
+  if (url && !url.startsWith('错误')) window.open(url, '_blank');
 });
 
+/* ══════════════════════════════════════
+   历史记录
+   ══════════════════════════════════════ */
 function getHistory(){try{return JSON.parse(localStorage.getItem('admin_history')||'[]');}catch(e){return[];}}
-function saveHistory(planId,client,url){
-  var h=getHistory();h.unshift({planId:planId,client:client,url:url,time:new Date().toLocaleString('zh-CN')});
-  if(h.length>20) h.length=20;localStorage.setItem('admin_history',JSON.stringify(h));
+function saveHistory(planId, client, url, version){
+  const h=getHistory();
+  h.unshift({planId,client,url,version:version||'',time:new Date().toLocaleString('zh-CN')});
+  if(h.length>30) h.length=30;
+  localStorage.setItem('admin_history',JSON.stringify(h));
+  renderHistory();
 }
 function renderHistory(){
-  var box=document.getElementById('historyList');var h=getHistory();
+  const box=document.getElementById('historyList');
+  const h=getHistory();
   if(!h.length){box.innerHTML='<div class="empty-state">暂无记录</div>';return;}
-  box.innerHTML=h.map(function(item){
-    return '<div class="history-item"><div class="history-meta"><div class="h-plan">'+item.planId+' · '+item.client+'</div><div class="h-time">'+item.time+'</div></div><div class="history-actions"><button class="btn-sm copy" data-url="'+item.url+'">复制</button><button class="btn-sm open" data-url="'+item.url+'">打开</button></div></div>';
-  }).join('');
+  box.innerHTML=h.map(item=>`
+    <div class="history-item">
+      <div class="history-meta">
+        <div class="h-plan">${item.planId} · ${item.client} ${item.version ? '<span style="color:var(--primary);font-size:.6875rem;font-weight:600">'+item.version+'</span>' : ''}</div>
+        <div class="h-time">${item.time}</div>
+      </div>
+      <div class="history-actions">
+        <button class="btn-sm copy" data-url="${item.url}">复制</button>
+        <button class="btn-sm open" data-url="${item.url}">打开</button>
+      </div>
+    </div>
+  `).join('');
 }
-renderHistory();
-document.getElementById('historyList').addEventListener('click',function(e){
-  var btn=e.target.closest('.btn-sm');if(!btn) return;
-  var url=btn.getAttribute('data-url');if(!url) return;
-  if(btn.classList.contains('copy')){
-    navigator.clipboard.writeText(url).then(function(){showToast('已复制');}).catch(function(){showToast('复制失败');});
-  }else if(btn.classList.contains('open')){window.open(url,'_blank');}
+document.getElementById('historyList').addEventListener('click', e => {
+  const btn = e.target.closest('.btn-sm'); if (!btn) return;
+  const url = btn.dataset.url; if (!url) return;
+  if (btn.classList.contains('copy')) {
+    navigator.clipboard.writeText(url).then(()=>showToast('已复制')).catch(()=>showToast('复制失败'));
+  } else if (btn.classList.contains('open')) {
+    window.open(url,'_blank');
+  }
 });
 
-function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2000);}
+/* ══════════════════════════════════════
+   工具函数
+   ══════════════════════════════════════ */
+async function refreshCache() {
+  showToast('正在刷新数据…');
+  try {
+    await fetch('/api/refresh-cache', {method:'POST'});
+    await loadPlans();
+    if (STATE.allProducts.length) await loadProducts();
+    if (STATE.editingPlan) await enterEditMode(STATE.editingPlan);
+    showToast('数据已刷新');
+  } catch(e) { showToast('刷新失败'); }
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+/* ══════════════════════════════════════
+   初始化
+   ══════════════════════════════════════ */
+loadPlans();
+renderHistory();
 </script>
 </body>
 </html>

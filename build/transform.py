@@ -35,6 +35,7 @@ FIELD_MAP_PACKAGE = {
     "适用面积m²":    "area_m2",
     "精准运费USD":   "override_freight_usd",
     "目标市场":      "market",
+    "记录类型":      "record_type",
 }
 
 FIELD_MAP_QC = {
