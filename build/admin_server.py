@@ -17,6 +17,7 @@ from feishu_client import (
 )
 from transform import (
     build_data, _map_fields, _extract_link_record_ids, _extract_url, _num,
+    _calc_sell_rmb,
     FIELD_MAP_PACKAGE, FIELD_MAP_PRODUCT, CATEGORY_DEFS, MUSCLE_ZH_TO_EN
 )
 
@@ -41,6 +42,16 @@ _cache = {
     "rid_to_product": {},
 }
 CACHE_TTL = 120  # 秒
+
+def _format_feishu_datetime(val):
+    """将飞书 DateTime 字段（毫秒时间戳或字符串）转为可读字符串"""
+    if not val:
+        return ""
+    if isinstance(val, (int, float)):
+        import datetime
+        return datetime.datetime.fromtimestamp(val / 1000).strftime("%Y-%m-%d %H:%M")
+    return str(val)
+
 
 # 汇率缓存（以 CNY 为基准）
 _fx_cache = {
@@ -279,6 +290,71 @@ def api_products():
 # ============================================================
 #  API: 获取可用的筛选选项
 # ============================================================
+
+
+# ── 查询下一个可用SKU ──
+@app.route("/api/product/next-sku")
+def api_product_next_sku():
+    category = request.args.get("category", "").strip()
+    CAT_TO_PREFIX = {
+        "固定力量": "FS", "挂片式": "PL", "力量架": "RF", "训练凳": "BN",
+        "有氧器械": "CD", "自由重量": "FW", "功能训练": "FT", "辅助配件": "AC",
+    }
+    prefix = CAT_TO_PREFIX.get(category)
+    if not prefix:
+        return jsonify({"error": "未知分类"}), 400
+    all_records = fetch_all_records("product")
+    max_num = 0
+    for rec in all_records:
+        sku = rec.get("fields", {}).get("我的SKU", "")
+        if sku.startswith(prefix + "-"):
+            try:
+                num = int(sku.split("-")[1])
+                if num > max_num: max_num = num
+            except (ValueError, IndexError):
+                pass
+    return jsonify({"next_sku": f"{prefix}-{max_num + 1:03d}", "current_max": max_num})
+
+
+# ── 新建产品（自动分配SKU） ──
+@app.route("/api/product/create", methods=["POST"])
+def api_product_create():
+    data = request.json or {}
+    category = data.get("category", "").strip()
+    name_zh = data.get("name_zh", "").strip()
+    if not category or not name_zh:
+        return jsonify({"error": "分类和中文名必填"}), 400
+
+    # 分类 → SKU前缀映射
+    CAT_TO_PREFIX = {
+        "固定力量": "FS", "挂片式": "PL", "力量架": "RF", "训练凳": "BN",
+        "有氧器械": "CD", "自由重量": "FW", "功能训练": "FT", "辅助配件": "AC",
+    }
+    prefix = CAT_TO_PREFIX.get(category)
+    if not prefix:
+        return jsonify({"error": f"未知分类: {category}"}), 400
+
+    # 查询该前缀当前最大编号
+    all_records = fetch_all_records("product")
+    max_num = 0
+    for rec in all_records:
+        sku = rec.get("fields", {}).get("我的SKU", "")
+        if sku.startswith(prefix + "-"):
+            try:
+                num = int(sku.split("-")[1])
+                if num > max_num:
+                    max_num = num
+            except (ValueError, IndexError):
+                pass
+
+    new_sku = f"{prefix}-{max_num + 1:03d}"
+
+    # 创建飞书记录
+    fields = {"我的SKU": new_sku, "分类": category, "中文名": name_zh}
+    new_id = create_record("product", fields)
+    return jsonify({"ok": True, "sku": new_sku, "record_id": new_id})
+
+
 @app.route("/api/filter-options")
 def api_filter_options():
     """返回所有分类和肌群选项，供前端构建筛选 UI"""
@@ -1312,7 +1388,7 @@ def api_freight_rates():
                 "module_6": f.get("⑥综合税率", ""),
                 "module_7": f.get("⑦尾程派送", ""),
                 "module_8": f.get("⑧安全系数", ""),
-                "updated_at": f.get("更新时间", ""),
+                "updated_at": _format_feishu_datetime(f.get("更新时间", "")),
             })
         return jsonify({"ok": True, "rates": rates})
     except Exception as e:
@@ -1329,7 +1405,10 @@ def api_freight_update():
         if not country:
             return jsonify({"ok": False, "error": "缺少国家"})
 
-        now_str = __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M")
+        import datetime as _dt_freight
+        _now = _dt_freight.datetime.now()
+        now_ts = int(_now.timestamp()) * 1000   # 飞书 DateTime 要毫秒时间戳
+        now_str = _now.strftime("%Y-%m-%d %H:%M")  # 返回前端展示用
 
         fields = {
             "国家": country,
@@ -1342,7 +1421,7 @@ def api_freight_update():
             "⑦尾程派送": float(data.get("module_7", 0)),
             "⑧安全系数": float(data.get("module_8", 1.15)),
             "有效天数": int(data.get("valid_days", 7)),
-            "更新时间": now_str,
+            "更新时间": now_ts,
         }
         if data.get("container_type"):
             fields["柜型"] = data["container_type"]
@@ -1411,7 +1490,6 @@ def api_freight_calculate():
             return jsonify({"ok": True, "has_data": False, "reason": f"暂无 {market} 的物流费率"})
 
         # 计算方案售价总和（用于税费计算）
-        from build.transform import _num, _extract_link_record_ids, _calc_sell_rmb
         USD_TO_CNY = 7.25
 
         linked_rids = _extract_link_record_ids(pkg.get("包含器材列表", []))
@@ -1446,14 +1524,18 @@ def api_freight_calculate():
 
         updated_at = logistics_fields.get("更新时间", "")
 
-        # 判断是否过期（超过7天）
+        # 判断是否过期（超过有效天数）
         is_expired = False
-        if updated_at:
+        raw_time = logistics_fields.get("更新时间", "")
+        if raw_time:
             try:
-                from datetime import datetime, timedelta
-                dt = datetime.strptime(updated_at, "%Y-%m-%d %H:%M")
+                from datetime import datetime as _dtc
+                if isinstance(raw_time, (int, float)):
+                    dt = _dtc.fromtimestamp(raw_time / 1000)
+                else:
+                    dt = _dtc.strptime(str(raw_time), "%Y-%m-%d %H:%M")
                 valid_days = int(_num(logistics_fields.get("有效天数"), default=7))
-                is_expired = (datetime.now() - dt).days > valid_days
+                is_expired = (_dtc.now() - dt).days > valid_days
             except:
                 pass
 
