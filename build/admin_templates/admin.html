@@ -419,6 +419,13 @@ body{
 <!-- ══════ View 2: 产品总库 ══════ -->
 <div id="viewProducts" class="view">
   <div id="editingBanner" class="editing-banner warn">请先在「方案管理」中选择一个客户方案</div>
+  <div style="margin-bottom:12px">
+    <button onclick="openNewProductModal()" style="
+      width:100%;padding:12px;border-radius:10px;border:2px dashed var(--primary);
+      background:var(--primary-light);color:var(--primary);font-size:.875rem;
+      font-weight:600;cursor:pointer;transition:all .15s;
+    ">＋ 新建产品</button>
+  </div>
   <div class="filter-bar">
     <input type="text" class="search-box" id="searchInput" placeholder="搜索 SKU 或中文名…">
     <div class="filter-row" id="catFilters"></div>
@@ -449,6 +456,38 @@ body{
     <span class="tab-icon">📁</span>历史
   </button>
 </nav>
+
+<!-- ══════ Modal: 新建产品 ══════ -->
+<div class="modal-overlay" id="newProductModal" style="display:none">
+  <div class="modal-box" style="width:92%;max-width:400px">
+    <h3 style="margin-bottom:16px;font-size:1rem">新建产品</h3>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:4px">分类 *</label>
+      <select id="newProdCat" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:.875rem;background:#fff">
+        <option value="">请选择分类</option>
+        <option value="固定力量">固定力量（FS）</option>
+        <option value="挂片式">挂片式（PL）</option>
+        <option value="力量架">力量架（RF）</option>
+        <option value="训练凳">训练凳（BN）</option>
+        <option value="有氧器械">有氧器械（CD）</option>
+        <option value="自由重量">自由重量（FW）</option>
+        <option value="功能训练">功能训练（FT）</option>
+        <option value="辅助配件">辅助配件（AC）</option>
+      </select>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:4px">中文名 *</label>
+      <input type="text" id="newProdName" placeholder="如：反飞鸟" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:.875rem">
+    </div>
+    <div id="newProdSkuPreview" style="padding:10px 12px;background:#f0fdf4;border-radius:8px;margin-bottom:16px;font-size:.8125rem;color:#16a34a;font-weight:600;display:none">
+      系统将自动分配 SKU：<span id="newProdSkuText"></span>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="closeNewProductModal()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text2);font-size:.875rem;cursor:pointer">取消</button>
+      <button onclick="submitNewProduct()" id="newProdSubmitBtn" style="flex:1;padding:10px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-size:.875rem;font-weight:600;cursor:pointer">创建</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══════ Modal: 新建客户方案 ══════ -->
 <div class="modal-overlay" id="modalCreate">
@@ -557,6 +596,60 @@ document.querySelectorAll('.sub-tab').forEach(btn => {
     document.getElementById(hide).style.display = 'none';
   });
 });
+
+/* ══════════════════════════════════════
+   新建产品
+   ══════════════════════════════════════ */
+const CAT_PREFIX = {"固定力量":"FS","挂片式":"PL","力量架":"RF","训练凳":"BN","有氧器械":"CD","自由重量":"FW","功能训练":"FT","辅助配件":"AC"};
+
+function openNewProductModal() {
+  document.getElementById('newProductModal').style.display = 'flex';
+  document.getElementById('newProdCat').value = '';
+  document.getElementById('newProdName').value = '';
+  document.getElementById('newProdSkuPreview').style.display = 'none';
+}
+function closeNewProductModal() {
+  document.getElementById('newProductModal').style.display = 'none';
+}
+
+document.getElementById('newProdCat').addEventListener('change', async function() {
+  const cat = this.value;
+  const prefix = CAT_PREFIX[cat];
+  const preview = document.getElementById('newProdSkuPreview');
+  if (!prefix) { preview.style.display = 'none'; return; }
+  document.getElementById('newProdSkuText').textContent = '计算中…';
+  preview.style.display = 'block';
+  try {
+    const resp = await fetch('/api/product/next-sku?category=' + encodeURIComponent(cat));
+    const data = await resp.json();
+    document.getElementById('newProdSkuText').textContent = data.next_sku;
+  } catch(e) {
+    document.getElementById('newProdSkuText').textContent = prefix + '-???';
+  }
+});
+
+async function submitNewProduct() {
+  const cat = document.getElementById('newProdCat').value;
+  const name = document.getElementById('newProdName').value.trim();
+  if (!cat || !name) { alert('请填写分类和中文名'); return; }
+  const btn = document.getElementById('newProdSubmitBtn');
+  btn.disabled = true; btn.textContent = '创建中…';
+  try {
+    const resp = await fetch('/api/product/create', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({category: cat, name_zh: name})
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      alert('创建成功！SKU: ' + data.sku);
+      closeNewProductModal();
+      loadProducts();
+    } else {
+      alert('创建失败: ' + (data.error || '未知错误'));
+    }
+  } catch(e) { alert('网络错误: ' + e.message); }
+  btn.disabled = false; btn.textContent = '创建';
+}
 
 /* ══════════════════════════════════════
    数据加载
