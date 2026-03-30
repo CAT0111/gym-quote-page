@@ -260,6 +260,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 </style>
 
 
+  <script src="/static/sop_data.js"></script>
 </head>
 <body>
 
@@ -267,7 +268,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 <header class="app-header">
   <h1>素材任务管理</h1>
   <div class="header-actions">
-    <button class="btn-icon" onclick="loadTasks()" title="刷新">↻</button>
+    <button class="btn-icon" onclick="showToast('正在从飞书拉取最新数据...'); loadTasks(true)" title="强制刷新">↻</button>
     <button class="btn-icon" onclick="location.href='/'" title="返回中台">←</button>
   </div>
 </header>
@@ -392,18 +393,43 @@ function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 /* ══════════════════════════════════════
    数据加载
    ══════════════════════════════════════ */
-async function loadTasks() {
+async function loadTasks(silent = false) {
+  // 1. 先尝试从本地缓存渲染（实现秒开）
+  if (!silent) {
+    try {
+      const cached = localStorage.getItem('shoot_tasks_cache');
+      if (cached) {
+        const c = JSON.parse(cached);
+        S.allTasks = c.tasks || [];
+        S.batches = c.batches || [];
+        S.statusCounts = c.status_counts || {};
+        updateCounts();
+        renderCurrentView();
+      }
+    } catch(e) {}
+  }
+
+  // 2. 异步向飞书请求最新数据
   try {
     const r = await fetch('/api/shoot/tasks?view=all');
     const d = await r.json();
     if (!d.ok) throw new Error(d.error);
+    
+    // 3. 数据返回后更新内存与缓存，并静默重绘
     S.allTasks = d.tasks || [];
     S.batches = d.batches || [];
     S.statusCounts = d.status_counts || {};
+    try { localStorage.setItem('shoot_tasks_cache', JSON.stringify(d)); } catch(e) {}
+    
     updateCounts();
     renderCurrentView();
+    if (silent) showToast('数据已刷新');
   } catch(e) {
-    showToast('加载失败: ' + e.message);
+    // 如果缓存和线上都没数据，才显示错误
+    if (!S.allTasks.length) {
+      document.querySelector('.view-panel.active').innerHTML = `<div class="empty-state">加载失败: ${e.message}</div>`;
+      showToast('加载失败: ' + e.message);
+    }
   }
 }
 
@@ -951,50 +977,6 @@ loadTasks();
 /* ══════════════════════════════════════
    SOP 抽屉逻辑 (预留结构，供后续细化)
    ══════════════════════════════════════ */
-const SHOOT_BRIEF = {
-  'SC': {
-    '产品主图': '<strong style="color:#1d4ed8">【视觉锚点：45°黄金视角】</strong>严禁正面平光！采用斜侧45度构图，必须将「配重塔」与「主操作臂」置于同一焦平面。利用侧逆光打透顶部的亚克力/ABS罩壳，勾勒管材的工业肌肉线条。',
-    '试机视频': '<strong style="color:#7c3aed">【运镜公式：平顺与咬合】</strong>全景环绕3秒入场 → 中景：教练标准试机(停驻展示顶峰收缩) → 特写：摇摄捕捉钢索拉动、铝合金滑轮转动时的机械阻尼感与清脆声。',
-    '细节特写': '<strong style="color:#ea580c">【质感放大：微距解析】</strong>开启微距模式。1. 抓拍黄色/红色调节插销的金属滚花；2. 聚焦PU坐垫的碳纤维纹路与双排车缝线；3. 拍摄半透明罩壳透出的配重片数字标码。',
-    '场景图': '<strong style="color:#059669">【空间张力】</strong>利用场馆纵深作背景，开启大光圈（f/2.8以下）虚化杂乱元素。打一束轮廓光凸显金属框架的厚重感，营造高端商用健身房氛围。'
-  },
-  'PL': {
-    '产品主图': '<strong style="color:#1d4ed8">【承重威压：拒绝单薄】</strong><span style="background:#fef2f2;color:#b91c1c;padding:2px 4px;border-radius:4px;font-weight:bold">⚠️ 绝对禁止空载！</span>两侧必须对称挂满 20kg+15kg 杠铃片。采用低角度仰拍（约胸部高度），放大器械的庞大体积与重型工业力量感。',
-    '试机视频': '<strong style="color:#7c3aed">【硬核爆发：野兽气场】</strong>模特试机需展现极强爆发力。重点特写杠铃片碰撞时的金属震颤，以及重负荷下粗壮挂片杆的微形变，传达器械的极致承重上限。',
-    '细节特写': '<strong style="color:#ea580c">【钢铁骨架：工业美学】</strong>重点拍摄：1. 50*100mm重型管材的无缝鱼鳞焊接纹理；2. 挂片套筒表面的防刮镀硬铬工艺；3. 核心转轴处的超大号紧固螺栓。',
-    '场景图': '<strong style="color:#059669">【硬核氛围】</strong>搭配周边的深蹲架或力量区环境，采用冷色调/暗调布光，突出力量感和纯粹的铁馆荷尔蒙。'
-  },
-  'FM': {
-    '产品主图': '<strong style="color:#1d4ed8">【全景阵列：功能最大化】</strong>采用极广角端，正面微侧（约15°），展示器械极高的空间占有率。所有配件（J钩、保护杠、高低拉把手）需挂载至最丰满状态，展现“一机多用”的旗舰感。',
-    '试机视频': '<strong style="color:#7c3aed">【流线快切：一机搞定】</strong>通过快切剪辑展现功能转换：深蹲、引体、飞鸟、高拉连续切换。极其关键：必须特写史密斯杆上下滑动的绝对顺滑度，无任何卡顿。',
-    '细节特写': '<strong style="color:#ea580c">【精密配件：工艺说服力】</strong>拉近聚焦：1. 立柱上激光切割孔位的排列秩序感；2. 铝合金防滑滚花把手的切面；3. 史密斯挂钩的安全锁定结构。',
-    '场景图': '<strong style="color:#059669">【核心C位】</strong>放置在画面视觉中心，展现其作为“镇馆之宝”或“私教全能王”的统治力。'
-  },
-  'BENCH': {
-    '产品主图': '<strong style="color:#1d4ed8">【形态张力：最美角度】</strong>将靠背调节至 45° 上斜角拍摄（最具视觉张力）。利用侧方轮廓光打亮皮面边缘，凸显超厚海绵的包裹感与绝对支撑度。',
-    '试机视频': '<strong style="color:#7c3aed">【绝对稳定：拒绝摇晃】</strong>重点拍摄角度调节时的清脆卡点声。由教练进行大重量哑铃卧推试机，画面重点证明底盘的绝对稳定性（画面内严禁出现器械晃动）。',
-    '细节特写': '<strong style="color:#ea580c">【接触面解析】</strong>近景特写：1. 头部/背部加宽加厚垫的饱满剖面；2. 方便移动的耐磨滚轮与底脚防滑橡胶；3. 调节齿板厚重的激光切割截面。',
-    '场景图': '<strong style="color:#059669">【配套出镜】</strong>不要孤立拍摄，旁边搭配一组高端哑铃架或置于深蹲架内部，展示其实际应用场景。'
-  },
-  'CARDIO': {
-    '产品主图': '<strong style="color:#1d4ed8">【科技点亮：人机交互】</strong><span style="background:#fef2f2;color:#b91c1c;padding:2px 4px;border-radius:4px;font-weight:bold">⚠️ 必须通电亮屏！</span>稍微降低环境光，利用暗调突出中控大屏的UI界面发光感。侧面低位拍摄，展现流线型前卫外观与速度感。',
-    '试机视频': '<strong style="color:#7c3aed">【动态律动：静音平顺】</strong>使用稳定器跟拍。拍摄跑带/踏板高速运转时的绝对平顺画面。构图对比：模特急促呼吸的“动”与机器底盘稳如泰山的“静”。',
-    '细节特写': '<strong style="color:#ea580c">【高端触感】</strong>捕捉：1. 屏幕触控响应的高清特写；2. 心率监测握把的亮面金属感；3. 超宽减震跑带的钻石防滑纹理。',
-    '场景图': '<strong style="color:#059669">【列阵气势】</strong>如果是多台设备，以45度斜线阵列排开，利用透视关系拍摄出大型商用俱乐部的豪华阵容感。'
-  },
-  'FREE': {
-    '产品主图': '<strong style="color:#1d4ed8">【秩序美学：整齐划一】</strong>哑铃/杠铃片需按重量从小到大排列极其整齐。采用平视或微微俯视，展现包胶的哑光高级质感和清晰的数字标识。',
-    '试机视频': '<strong style="color:#7c3aed">【抓握实录】</strong>展现教练从架子上取下、抓握时的防滑饱满感，以及放下时包胶材质的静音与减震效果。',
-    '细节特写': '<strong style="color:#ea580c">【材质微距】</strong>特写电镀手柄的防滑精密滚花、包胶边缘的无毛刺处理，以及一体成型/激光雕刻的LOGO与重量数字。',
-    '场景图': '<strong style="color:#059669">【铁馆灵魂】</strong>将整套器材置于大面镜子前或黑胶地垫区，充分展现出硬核专业的训练氛围。'
-  },
-  'DEFAULT': {
-    '产品主图': '<strong style="color:#1d4ed8">【商业棚拍：质感为王】</strong>遵循45°标准产品视角。布光必须包含顶光+侧方轮廓光以勾勒管材线条。保持器材一尘不染，呈现高反差的商业大片质感。',
-    '试机视频': '<strong style="color:#7c3aed">【功能解析三步法】</strong>全景展示外观 → 特写关键活动部件 → 中景试机演示。必须使用三脚架或稳定器，保证运镜丝滑，严禁手持抖动。',
-    '细节特写': '<strong style="color:#ea580c">【造价说服力】</strong>不放过任何体现造价的细节：平滑无橘皮的烤漆反光、精密的激光切割边缘、扎实的大号五金紧固件。',
-    '场景图': '<strong style="color:#059669">【氛围烘托】</strong>结合健身房灯光，利用大光圈虚化前后杂乱背景，让器械成为画面的绝对焦点。'
-  }
-};
 
 function getSopCategory(skuStr, nameStr) {
   if (/挂片|悍马|倒蹬|哈克|深蹲推|推举机|PL-/.test(nameStr) || skuStr.startsWith('PL')) return 'PL';
@@ -1016,30 +998,29 @@ function openSopSheet(rid) {
   const nameStr = (task.product_name_zh || task.product_name || '');
   const catKey = getSopCategory(skuStr, nameStr);
   
-  const briefHtml = SHOOT_BRIEF[catKey][task.media_type] || SHOOT_BRIEF['DEFAULT'][task.media_type] || '保持画幅平稳，突出器械质感与使用功能。';
+  // 健壮的数据读取，带安全回退机制
+  let briefHtml = '<span style="color:#ef4444">【SOP 数据未加载】</span>';
+  try {
+    if (typeof window.SOP_DETAILS !== 'undefined') {
+      if (window.SOP_DETAILS[catKey] && window.SOP_DETAILS[catKey][task.media_type]) {
+        briefHtml = window.SOP_DETAILS[catKey][task.media_type];
+      } else if (window.SOP_DETAILS['DEFAULT'] && window.SOP_DETAILS['DEFAULT'][task.media_type]) {
+        briefHtml = window.SOP_DETAILS['DEFAULT'][task.media_type];
+      }
+    }
+  } catch(e) {
+    console.error("SOP加载错误: ", e);
+  }
 
   const html = `
     <div class="sop-head">
-      <div class="sop-head-tag">${CAT_LABELS[catKey]}</div>
+      <div class="sop-head-tag">${CAT_LABELS[catKey] || '通用'}</div>
       <div class="sop-head-title">${task.media_type} · SOP 指南</div>
     </div>
     <div class="sop-card">
       <div class="sop-step">
-        <div class="sop-step-title"><span class="badge badge-${task.status}">核心要点</span></div>
-        <div class="sop-step-desc">${briefHtml}</div>
-      </div>
-      
-      <!-- 这里就是为你后续填补详细步骤预留的长内容板块 -->
-      <div class="sop-step" style="margin-top:24px;border-top:1px dashed #e2e8f0;padding-top:20px;">
-        <div class="sop-step-title" style="color:#64748b">📌 逐步操作流（内容筹备中...）</div>
-        <div class="sop-step-desc" style="color:#94a3b8">
-          我们将在这里提供：<br>
-          1. 拍摄前的器材准备与机位确认<br>
-          2. 打光技巧与参数建议<br>
-          3. 模特动作示范细节<br>
-          <br>
-          (将在后续会话中为您补全这里的知识库)
-        </div>
+        <div class="sop-step-title"><span class="badge badge-${task.status}">专家分镜指导</span></div>
+        <div class="sop-step-desc" style="margin-top:10px">${briefHtml}</div>
       </div>
     </div>
   `;
