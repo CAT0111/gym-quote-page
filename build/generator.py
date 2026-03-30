@@ -38,7 +38,7 @@ def group_products_by_category(products, categories):
 
 def generate_package_page(package, categories, products):
     env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)), autoescape=False)
-    env.filters["tojson"] = lambda x: json.dumps(x, ensure_ascii=False)
+    env.filters["tojson"] = lambda x: json.dumps(x, ensure_ascii=False).replace(chr(39), "&#39;")
     template = env.get_template("base.html")
     grouped = group_products_by_category(products, categories)
     html = template.render(package=package, categories=categories, grouped_products=grouped)

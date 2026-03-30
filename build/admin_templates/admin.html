@@ -378,6 +378,20 @@ body{
       <div class="loading"><span class="spinner"></span></div>
     </div>
 
+    <!-- 物流预估 -->
+    <div class="card" id="freightCard" style="padding:0;overflow:hidden;display:none">
+      <div id="freightCardHeader" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+        <div style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em">物流预估 DDP</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="freightSummary" style="font-size:.75rem;color:var(--text3)">—</span>
+          <span id="freightArrow" style="font-size:.75rem;color:var(--text3);transition:transform .2s">▼</span>
+        </div>
+      </div>
+      <div id="freightCardBody" style="display:none;padding:0 16px 16px">
+        <div id="freightDetail"></div>
+      </div>
+    </div>
+
     <!-- 生成区域 -->
     <div class="card" id="generateCard">
       <div class="card-title">生成客户网页</div>
@@ -474,6 +488,7 @@ let STATE = {
   templates: [],
   clientPlans: [],
   editingPlan: null,
+  previewingTemplate: null,
   editingDetail: null,
   editingSkuSet: new Set(),
   allProducts: [],
@@ -585,22 +600,26 @@ function renderTemplates() {
   if (!STATE.templates.length) { box.innerHTML = '<div class="empty-state">暂无套餐模板</div>'; return; }
   box.innerHTML = STATE.templates.map(t => {
     const cats = Object.entries(t.cat_counts||{}).map(([k,v])=>`${k}×${v}`).join(' / ');
-    return `<div class="plan-item">
+    return `<div class="plan-item" onclick="enterTemplatePreview('${t.record_id}')">
       <div class="plan-name">${t.plan_id} · ${t.client_name}</div>
       <div class="plan-meta">
         <span>${t.n_products}台</span><span>${t.area_m2||'—'}m²</span>
         <span>${t.market||'—'}</span><span>¥${(t.sell_total_rmb||0).toLocaleString()}</span>
       </div>
       ${cats ? `<div class="plan-cats">${cats}</div>` : ''}
-      <button class="plan-action" onclick="openCreateModal('${t.record_id}','${t.plan_id} · ${t.client_name}','${t.market}','${t.area_m2}')">＋ 以此创建客户方案</button>
+      <button class="plan-action" onclick="event.stopPropagation();openCreateModal('${t.record_id}','${t.plan_id} · ${t.client_name}','${t.market}','${t.area_m2}')">＋ 以此创建客户方案</button>
     </div>`;
   }).join('');
 }
 
 function renderClientPlans() {
   const box = document.getElementById('subClients');
-  if (!STATE.clientPlans.length) { box.innerHTML = '<div class="empty-state">暂无客户方案，请从套餐模板创建</div>'; return; }
-  box.innerHTML = STATE.clientPlans.map(p => {
+  const btnHtml = `<div style="margin-bottom:12px">
+    <button class="btn btn-primary" style="width:100%;padding:12px;font-size:.875rem"
+      onclick="openCreateModalBlank()">＋ 新建客户方案</button>
+  </div>`;
+  if (!STATE.clientPlans.length) { box.innerHTML = btnHtml + '<div class="empty-state">暂无客户方案</div>'; return; }
+  box.innerHTML = btnHtml + STATE.clientPlans.map(p => {
     const cats = Object.entries(p.cat_counts||{}).map(([k,v])=>`${k}×${v}`).join(' / ');
     return `<div class="plan-item" onclick="enterEditMode('${p.record_id}')">
       <div class="plan-name">${p.client_name}</div>
@@ -618,9 +637,21 @@ function renderClientPlans() {
    ══════════════════════════════════════ */
 let _createTplRid = '';
 
+function openCreateModalBlank() {
+  _createTplRid = '';
+  document.getElementById('modalTplName').style.display = 'none';
+  document.getElementById('inputClientName').value = '';
+  document.getElementById('inputMarket').value = '';
+  document.getElementById('inputArea').value = '';
+  document.getElementById('modalCreate').classList.add('active');
+  setTimeout(() => document.getElementById('inputClientName').focus(), 100);
+}
+
 function openCreateModal(tplRid, tplName, tplMarket, tplArea) {
   _createTplRid = tplRid;
-  document.getElementById('modalTplName').textContent = '基于模板: ' + tplName;
+  const tplNameEl = document.getElementById('modalTplName');
+  tplNameEl.textContent = '基于模板: ' + tplName;
+  tplNameEl.style.display = '';
   document.getElementById('inputClientName').value = '';
   document.getElementById('inputMarket').value = (tplMarket || '').trim();
   document.getElementById('inputArea').value = (tplArea || '').trim();
@@ -642,7 +673,8 @@ document.getElementById('btnConfirmCreate').addEventListener('click', async () =
   showToast('正在创建方案…');
 
   try {
-    const body = { template_record_id: _createTplRid, client_name: name };
+    const body = { client_name: name };
+    if (_createTplRid) body.template_record_id = _createTplRid;
     if (market) body.market = market;
     if (areaVal) body.area_m2 = parseFloat(areaVal);
 
@@ -666,7 +698,29 @@ document.getElementById('btnConfirmCreate').addEventListener('click', async () =
 /* ══════════════════════════════════════
    编辑模式
    ══════════════════════════════════════ */
+async function enterTemplatePreview(recordId) {
+  STATE.editingPlan = null;  // 模板预览不算"编辑中"
+  STATE.previewingTemplate = recordId;
+  document.getElementById('planListMode').style.display = 'none';
+  document.getElementById('planEditMode').style.display = 'block';
+  document.getElementById('editProductList').innerHTML = '<div class="card-title">当前器材清单</div><div class="loading"><span class="spinner"></span> 加载中…</div>';
+  document.getElementById('genResult').style.display = 'none';
+  document.getElementById('genLog').classList.remove('active');
+
+  try {
+    const r = await fetch(`/api/client-plan/${recordId}`);
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    STATE.editingDetail = d;
+    STATE.editingSkuSet = new Set((d.products||[]).map(p=>p.record_id));
+    renderEditView(d);
+  } catch(e) {
+    showToast('加载模板详情失败: ' + e.message);
+  }
+}
+
 async function enterEditMode(recordId) {
+  STATE.previewingTemplate = null;
   STATE.editingPlan = recordId;
   document.getElementById('planListMode').style.display = 'none';
   document.getElementById('planEditMode').style.display = 'block';
@@ -682,6 +736,7 @@ async function enterEditMode(recordId) {
     STATE.editingSkuSet = new Set((d.products||[]).map(p=>p.record_id));
     renderEditView(d);
     updateEditingBanner();
+    loadFreightDetail(recordId);
   } catch(e) {
     showToast('加载方案详情失败: ' + e.message);
   }
@@ -690,6 +745,7 @@ async function enterEditMode(recordId) {
 function exitEditMode() {
   STATE.editingPlan = null;
   STATE.editingDetail = null;
+  STATE.previewingTemplate = null;
   STATE.editingSkuSet.clear();
   document.getElementById('planEditMode').style.display = 'none';
   document.getElementById('planListMode').style.display = 'block';
@@ -698,7 +754,12 @@ function exitEditMode() {
 }
 
 function renderEditView(d) {
-  document.getElementById('editTitle').textContent = d.plan_id;
+  if (STATE.previewingTemplate) {
+    const _tpl = STATE.templates.find(t => t.record_id === STATE.previewingTemplate);
+    document.getElementById('editTitle').textContent = _tpl ? (_tpl.plan_id + ' · ' + _tpl.client_name) : d.plan_id;
+  } else {
+    document.getElementById('editTitle').textContent = d.plan_id;
+  }
 
   // 摘要（双币 + 交期）
   const _cur = getCurrency();
@@ -846,12 +907,46 @@ function renderEditView(d) {
           <div class="p-name">${p.name_zh || p.name}</div>
           <div class="p-price">¥${(p.sell_rmb||0).toLocaleString()} · ${fmtLocal(p.sell_rmb||0)}</div>
         </div>
-        <button class="btn-remove" onclick="event.stopPropagation();removeSku('${p.record_id}','${p.sku}')" title="移除">✕</button>
+        ${STATE.previewingTemplate ? '' : `<button class="btn-remove" onclick="event.stopPropagation();removeSku('${p.record_id}','${p.sku}')" title="移除">✕</button>`}
       </div>`;
     });
     html += '</div></div>';
   }
   document.getElementById('editProductList').innerHTML = html;
+
+  // ── 模板预览模式：隐藏生成区、显示创建按钮 ──
+  const genCard = document.getElementById('generateCard');
+  let tplActionBar = document.getElementById('tplActionBar');
+  if (STATE.previewingTemplate) {
+    genCard.style.display = 'none';
+    if (!tplActionBar) {
+      tplActionBar = document.createElement('div');
+      tplActionBar.id = 'tplActionBar';
+      tplActionBar.className = 'card';
+      tplActionBar.style.cssText = 'text-align:center;padding:16px';
+      genCard.parentNode.insertBefore(tplActionBar, genCard.nextSibling);
+    }
+    // 从 templates 中找到当前模板信息
+    const tpl = STATE.templates.find(t => t.record_id === STATE.previewingTemplate);
+    const tplName = tpl ? (tpl.plan_id + ' · ' + tpl.client_name) : '';
+    const tplMarket = tpl ? (tpl.market||'') : '';
+    const tplArea = tpl ? (tpl.area_m2||'') : '';
+    tplActionBar.innerHTML = `
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:.9375rem"
+        onclick="openCreateModal('${STATE.previewingTemplate}','${tplName.replace(/'/g,"\\'")}','${tplMarket}','${tplArea}')">
+        ＋ 以此创建客户方案
+      </button>
+    `;
+    tplActionBar.style.display = '';
+    // 隐藏方案信息编辑卡片（模板不可编辑）
+    const infoCard = document.getElementById('editInfoCard');
+    if (infoCard) infoCard.style.display = 'none';
+  } else {
+    genCard.style.display = '';
+    if (tplActionBar) tplActionBar.style.display = 'none';
+    const infoCard = document.getElementById('editInfoCard');
+    if (infoCard) infoCard.style.display = '';
+  }
 }
 
 async function savePlanInfo(recordId) {
@@ -1021,7 +1116,7 @@ async function addSku(productRid, sku) {
     if (STATE.editingDetail) {
       STATE.editingDetail.products = STATE.editingDetail.products.filter(p => p.record_id !== productRid);
       STATE.editingDetail.n_products = STATE.editingDetail.products.length;
-      STATE.editingDetail.fob_total_usd = STATE.editingDetail.products.reduce((s,p) => s + (p.price_fob_usd||0), 0);
+      // fob_total_usd 已废弃，使用 sell_total_rmb
     }
     renderProductGrid();
     await enterEditMode(STATE.editingPlan);
@@ -1360,6 +1455,107 @@ function updateFreightPreview() {
   const cur = getCurrency();
   const local = Math.round(val * cur.rate);
   preview.textContent = cur.symbol + local.toLocaleString() + ' ' + cur.code;
+}
+
+
+/* ══════════════════════════════════════
+   物流预估明细
+   ══════════════════════════════════════ */
+document.addEventListener('click', function(e) {
+  if (e.target.closest('#freightCardHeader')) {
+    const body = document.getElementById('freightCardBody');
+    const arrow = document.getElementById('freightArrow');
+    if (body.style.display === 'none') {
+      body.style.display = 'block';
+      arrow.style.transform = 'rotate(180deg)';
+    } else {
+      body.style.display = 'none';
+      arrow.style.transform = '';
+    }
+  }
+});
+
+async function loadFreightDetail(planRecordId) {
+  const card = document.getElementById('freightCard');
+  const summary = document.getElementById('freightSummary');
+  const detail = document.getElementById('freightDetail');
+
+  try {
+    const r = await fetch('/api/freight/calculate?plan_record_id=' + planRecordId);
+    const d = await r.json();
+    if (!d.ok) { card.style.display = 'none'; return; }
+    if (!d.has_data) {
+      card.style.display = '';
+      summary.textContent = d.reason || '暂无数据';
+      detail.innerHTML = '<div style="padding:8px 0;color:var(--text3);font-size:.8125rem">' + (d.reason||'暂无数据') + '</div>';
+      return;
+    }
+
+    card.style.display = '';
+    const cur = getCurrency();
+    const freightLocal = Math.round(d.ddp_freight_usd * (cur.rate / (STATE.fx.rates['USD'] || 0.1379)));
+
+    if (d.is_override) {
+      summary.textContent = '精准运费 $' + d.ddp_freight_usd.toLocaleString();
+    } else {
+      summary.textContent = '预估 $' + d.ddp_freight_usd.toLocaleString();
+    }
+
+    const LABELS = {
+      m1: '① 起运段（工厂→港口）',
+      m2: '② 海运费',
+      m3: '③ 目的港杂费',
+      m4: '④ 综合税率',
+      m5: '⑤ 尾程派送',
+      m6: '⑥ 安全系数',
+    };
+
+    const m = d.modules;
+    const MARKET_NAMES = {MY:'马来西亚',AU:'澳洲',NZ:'新西兰',CA:'加拿大'};
+
+    let html = '';
+
+    // 过期警告
+    if (d.is_expired) {
+      html += '<div style="background:var(--danger-light);color:var(--danger);padding:8px 12px;border-radius:8px;font-size:.75rem;font-weight:500;margin-bottom:10px">⚠️ 费率已超过 7 天未更新（' + (d.updated_at||'') + '），请联系货代更新</div>';
+    }
+
+    if (d.is_override) {
+      html += '<div style="background:var(--success-light);color:var(--success);padding:8px 12px;border-radius:8px;font-size:.75rem;font-weight:500;margin-bottom:10px">✅ 使用精准运费（货代确认价）：¥' + d.override_freight_rmb.toLocaleString() + ' → $' + d.ddp_freight_usd.toLocaleString() + '</div>';
+    } else {
+      html += '<div style="font-size:.75rem;color:var(--text2);margin-bottom:8px">目标市场：' + (MARKET_NAMES[d.market]||d.market) + ' · 基于系统费率预估</div>';
+
+      // 6模块拆解
+      for (const [key, label] of Object.entries(LABELS)) {
+        const val = m[key] || 0;
+        let valStr = '';
+        if (key === 'm4') {
+          valStr = (val * 100).toFixed(1) + '%';
+        } else if (key === 'm6') {
+          valStr = '×' + val;
+        } else {
+          valStr = '$' + val.toLocaleString();
+        }
+        html += '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:.8125rem"><span style="color:var(--text2)">' + label + '</span><span style="font-weight:600">' + valStr + '</span></div>';
+      }
+
+      // 公式说明
+      html += '<div style="padding:8px 0;font-size:.6875rem;color:var(--text3);border-bottom:1px solid #f1f5f9">公式：(①+②+③+(货值+②)×④+⑤) × ⑥</div>';
+    }
+
+    // 汇总
+    html += '<div style="display:flex;justify-content:space-between;padding:10px 0;font-size:.875rem;font-weight:700"><span>DDP 运费</span><span style="color:var(--primary)">$' + d.ddp_freight_usd.toLocaleString() + ' / ¥' + d.ddp_freight_rmb.toLocaleString() + '</span></div>';
+    html += '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:.875rem;font-weight:700;border-top:2px solid var(--primary)"><span>DDP 总计（货值+运费）</span><span style="color:var(--primary)">$' + d.ddp_total_usd.toLocaleString() + '</span></div>';
+
+    // 更新时间
+    if (d.updated_at) {
+      html += '<div style="text-align:center;padding:8px 0;font-size:.6875rem;color:var(--text3)">费率更新于 ' + d.updated_at + '</div>';
+    }
+
+    detail.innerHTML = html;
+  } catch(e) {
+    card.style.display = 'none';
+  }
 }
 
 function showToast(msg){

@@ -60,7 +60,7 @@
            data-video="{{ p.video_url }}"
            data-video-en="{{ p.video_url_en }}"
            data-video-ms="{{ p.video_url_ms }}"
-           data-specs='{{ p.specs | tojson }}' data-maintenance='{{ p.maintenance | default("{}") | tojson }}'>
+           data-specs='{{ p.specs | tojson }}' data-maintenance='{{ p.maintenance | default({}) | tojson }}'>
         <div class="grid-thumb">
           <img src="{{ p.thumb_url }}" loading="lazy" alt="{{ p.name }}">
           {% if p.qty and p.qty > 1 %}

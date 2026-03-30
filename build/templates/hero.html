@@ -10,7 +10,7 @@
       <span class="hero-price-unit" data-en="USD landed" data-zh="落地总价" data-ms="Jumlah DDP">落地总价</span>
     </div>
     <div class="hero-price-breakdown">
-      <span data-en="Factory ${{ '{:,}'.format(package.fob_total_usd) }} + Freight ${{ '{:,}'.format(package.ddp_freight_usd) }}" data-zh="出厂 ¥{{ '{:,}'.format(package.fob_total_cny) }} + 运费 ¥{{ '{:,}'.format(package.ddp_freight_cny) }}" data-ms="Kilang RM{{ '{:,}'.format(package.fob_total_myr) }} + Pengangkutan RM{{ '{:,}'.format(package.ddp_freight_myr) }}">出厂 ¥{{ '{:,}'.format(package.fob_total_cny) }} + 运费 ¥{{ '{:,}'.format(package.ddp_freight_cny) }}</span>
+      <span data-en="Equipment ${{ '{:,}'.format(package.sell_total_usd) }} + Freight ${{ '{:,}'.format(package.ddp_freight_usd) }}" data-zh="器械 ¥{{ '{:,}'.format(package.sell_total_rmb) }} + 运费 ¥{{ '{:,}'.format(package.ddp_freight_cny) }}" data-ms="Peralatan RM{{ '{:,}'.format(package.sell_total_myr) }} + Pengangkutan RM{{ '{:,}'.format(package.ddp_freight_myr) }}">器械 ¥{{ '{:,}'.format(package.sell_total_rmb) }} + 运费 ¥{{ '{:,}'.format(package.ddp_freight_cny) }}</span>
     </div>
     <div class="hero-disclaimer">
       <span data-en="Based on {{ package.ddp_quote_date_en }} rates. Final price confirmed at order." data-zh="基于{{ package.ddp_quote_date_zh }}运费报价，最终价格以下单时确认为准。" data-ms="Berdasarkan kadar {{ package.ddp_quote_date_ms }}. Harga akhir disahkan semasa pesanan.">基于{{ package.ddp_quote_date_zh }}运费报价，最终价格以下单时确认为准。</span>

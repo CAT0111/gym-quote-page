@@ -12,6 +12,17 @@ FIELD_MAP_PRODUCT = {
     "配重kg":        "weight_stack_kg", "主训练肌群":    "muscle_group", "准入市场认证":  "certifications",
     "澳洲专属卖点":  "selling_points_au", "马来专属卖点":  "selling_points_my",
     "毛重kg":        "gross_weight_kg", "包装尺寸mm":    "packing_mm", "详细参数JSON":  "extra_specs_json",
+    "维保徽章":      "maint_badge",
+    "维保承诺(自定义)": "maint_badge_custom",
+    "耐用性说明":    "durability_en",
+    "耐用性说明中文":  "durability_zh",
+    "耐用性说明马来文": "durability_ms",
+    "保养计划JSON":  "schedule_json",
+    "备件清单JSON":  "spare_parts_json",
+    "产品特点":      "feature",
+    "产品备注":      "note",
+    "主要材质":      "material",
+    "最大承重kg":    "max_load_kg",
 }
 
 FIELD_MAP_PACKAGE = {
@@ -20,7 +31,7 @@ FIELD_MAP_PACKAGE = {
 }
 
 FIELD_MAP_QC = {"客户ID": "client_id", "对应SKU": "sku", "专属视频链接": "video_url"}
-FIELD_MAP_LOGISTICS = {"国家": "country", "柜型": "container_type", "①起运段费用": "module_1", "②海运费": "module_2", "③目的港杂费": "module_3", "④综合税率": "module_4", "⑤尾程费": "module_5", "⑥安全系数": "module_6"}
+FIELD_MAP_LOGISTICS = {"国家": "country", "柜型": "container_type", "①内陆运输": "module_1", "②起运港港杂": "module_2", "③海运费": "module_3", "④目的港杂费": "module_4", "⑤清关服务费": "module_5", "⑥综合税率": "module_6", "⑦尾程派送": "module_7", "⑧安全系数": "module_8"}
 
 MUSCLE_ZH_TO_EN = {"胸部": "Chest", "背部": "Back", "腿部": "Legs", "臂部": "Arms", "肩部": "Shoulders", "核心": "Core"}
 
@@ -139,9 +150,12 @@ def build_data(raw, plan_id=None, client_id=None):
         ddp_freight_usd = override_freight_rmb / USD_TO_CNY
         ddp_is_estimate = False
     elif logistics_for_market:
-        m1, m2, m3, m4, m5, m6 = _num(logistics_for_market.get("module_1")), _num(logistics_for_market.get("module_2")), _num(logistics_for_market.get("module_3")), _num(logistics_for_market.get("module_4")), _num(logistics_for_market.get("module_5")), _num(logistics_for_market.get("module_6"), default=1.0)
-        # DDP 6模块公式，这里用售价USD近似货值（用于税费计算）
-        ddp_freight_usd = (m1 + m2 + m3 + (sell_total_usd + m2) * m4 + m5) * m6
+        m1, m2, m3, m4, m5, m6, m7, m8 = _num(logistics_for_market.get("module_1")), _num(logistics_for_market.get("module_2")), _num(logistics_for_market.get("module_3")), _num(logistics_for_market.get("module_4")), _num(logistics_for_market.get("module_5")), _num(logistics_for_market.get("module_6")), _num(logistics_for_market.get("module_7")), _num(logistics_for_market.get("module_8"), default=1.15)
+        # DDP 8模块公式: CIF货值 = 机器总价RMB + 海运费
+        cif_rmb = sell_total_rmb + m3
+        tax_rmb = cif_rmb * m6
+        ddp_freight_rmb = (m1 + m2 + m3 + m4 + m5 + tax_rmb + m7) * m8
+        ddp_freight_usd = ddp_freight_rmb / USD_TO_CNY
         ddp_is_estimate = True
     else:
         ddp_freight_usd = 0
@@ -155,7 +169,7 @@ def build_data(raw, plan_id=None, client_id=None):
 
     area = int(_num(target_pkg.get("area_m2")))
     n_machines = len(pkg_products_raw)
-    MARKET_PORT = {"MY": {"port": "Kuala Lumpur", "port_zh": "吉隆坡", "port_ms": "Kuala Lumpur"}, "AU": {"port": "Sydney", "port_zh": "悉尼", "port_ms": "Sydney"}, "NZ": {"port": "Auckland", "port_zh": "奥克兰", "port_ms": "Auckland"}, "CA": {"port": "Vancouver", "port_zh": "温哥华", "port_ms": "Vancouver"}}
+    MARKET_PORT = {"MY": {"port": "Kuala Lumpur (near Twin Towers)", "port_zh": "吉隆坡（双子塔周边）", "port_ms": "Kuala Lumpur (berhampiran Menara Berkembar)"}, "AU": {"port": "Sydney CBD (near Opera House)", "port_zh": "悉尼市区（歌剧院周边）", "port_ms": "Sydney CBD"}, "NZ": {"port": "Auckland CBD (near Sky Tower)", "port_zh": "奥克兰市区（天空塔周边）", "port_ms": "Auckland CBD"}, "CA": {"port": "Toronto (near CN Tower)", "port_zh": "多伦多（CN塔周边）", "port_ms": "Toronto"}}
     port_info = MARKET_PORT.get(market, MARKET_PORT["MY"])
 
     PACKAGE = {
@@ -214,6 +228,48 @@ def build_data(raw, plan_id=None, client_id=None):
             "video_url_ms": p.get("video_url_ms", ""),
             "specs": specs,
         }
+        # ── 组装 maintenance dict ──
+        BADGE_TEXT_DEFAULTS = {
+            "full-kit":    {"en": "Full spare parts kit shipped with equipment",      "zh": "全套备件已随货配送",         "ms": "Kit alat ganti lengkap dihantar bersama peralatan"},
+            "long-life":   {"en": "Industrial-grade durability, minimal maintenance", "zh": "工业级耐久，极少维护",       "ms": "Ketahanan gred industri, penyelenggaraan minimum"},
+            "consumable":  {"en": "Consumable — replace on schedule",                 "zh": "消耗品 · 按周期整体更换",    "ms": "Boleh guna — ganti mengikut jadual"},
+        }
+        badge = p.get("maint_badge", "")
+        maint = {}
+        if badge:
+            maint["badge"] = badge
+            # badge_text: 自定义优先，否则用默认
+            custom_text = (p.get("maint_badge_custom") or "").strip()
+            defaults = BADGE_TEXT_DEFAULTS.get(badge, {})
+            maint["badge_text"]    = custom_text or defaults.get("en", "")
+            maint["badge_text_zh"] = defaults.get("zh", "")
+            maint["badge_text_ms"] = defaults.get("ms", "")
+            if custom_text:
+                # 自定义只覆盖英文，中马文仍用默认（除非以后加自定义中马文字段）
+                maint["badge_text"] = custom_text
+        if p.get("durability_en"):  maint["durability_note"]    = p["durability_en"]
+        if p.get("durability_zh"):  maint["durability_note_zh"] = p["durability_zh"]
+        if p.get("durability_ms"):  maint["durability_note_ms"] = p["durability_ms"]
+        # schedule & spare_parts: 从JSON字符串解析回list
+        for src, dst in [("schedule_json", "schedule"), ("spare_parts_json", "spare_parts")]:
+            raw_json = p.get(src, "")
+            if raw_json and isinstance(raw_json, str):
+                try:
+                    maint[dst] = json.loads(raw_json)
+                except (json.JSONDecodeError, TypeError):
+                    pass
+        product["maintenance"] = maint
+
+        # ── specs 补入新独立字段 ──
+        if p.get("feature") and "Feature" not in specs:
+            specs["Feature"] = p["feature"]
+        if p.get("note") and "Note" not in specs:
+            specs["Note"] = p["note"]
+        if p.get("material") and "Material" not in specs:
+            specs["Material"] = p["material"]
+        if _num(p.get("max_load_kg")) > 0 and "Max Load" not in specs:
+            specs["Max Load"] = f"{_num(p.get('max_load_kg')):.0f} kg"
+
         if p.get("_qc_override"): product["qc_override"] = True
         PRODUCTS.append(product)
 

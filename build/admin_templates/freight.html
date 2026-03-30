@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ProvenLift · 专线物流基准</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f7fa;--card:#fff;--primary:#2563eb;--primary-light:#eff6ff;
+  --success:#16a34a;--success-light:#f0fdf4;--danger:#dc2626;--danger-light:#fef2f2;
+  --warn:#f59e0b;--warn-light:#fffbeb;
+  --text:#1e293b;--text2:#64748b;--text3:#94a3b8;
+  --border:#e2e8f0;--radius:12px;
+}
+html{font-size:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100dvh;padding:0;padding-bottom:40px;}
+.header{background:var(--primary);color:#fff;padding:16px 20px;text-align:center}
+.header h1{font-size:1.125rem;font-weight:600}
+.header p{font-size:.75rem;opacity:.8;margin-top:4px}
+.container{max-width:500px;margin:0 auto;padding:12px}
+.notice{padding:12px 16px;border-radius:var(--radius);margin-bottom:12px;font-size:.8125rem;display:flex;align-items:flex-start;gap:8px}
+.notice.info{background:var(--primary-light);color:var(--primary);border:1px solid #bfdbfe}
+.notice.warn{background:var(--warn-light);color:#92400e;border:1px solid #fde68a}
+.notice .notice-icon{font-size:1rem;flex-shrink:0;line-height:1.3}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid var(--border)}
+.card-title{font-size:.8125rem;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.badge{font-size:.6875rem;padding:2px 8px;border-radius:10px;font-weight:500}
+.badge-ok{background:var(--success-light);color:var(--success)}
+.badge-expired{background:var(--danger-light);color:var(--danger)}
+.badge-empty{background:#f1f5f9;color:var(--text3)}
+.country-tabs{display:flex;gap:0;margin-bottom:16px;background:#f1f5f9;border-radius:10px;padding:3px}
+.country-tab{flex:1;padding:10px 0;text-align:center;border-radius:8px;font-size:.8125rem;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text2);transition:all .2s}
+.country-tab.active{background:var(--primary);color:#fff}
+.ref-address{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:.75rem;color:var(--text2);line-height:1.6}
+.ref-address .ref-label{font-weight:600;color:var(--text);display:block;margin-bottom:2px;font-size:.6875rem;text-transform:uppercase;letter-spacing:.05em}
+.ref-address .ref-addr{color:var(--text);font-weight:500}
+.ref-address .ref-landmark{color:var(--primary);font-size:.6875rem}
+.route-box{background:#f0f4ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 12px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.route-box .route-icon{font-size:1.25rem;flex-shrink:0}
+.route-box .route-detail{flex:1;font-size:.75rem;color:var(--text)}
+.route-box .route-detail strong{color:var(--primary)}
+.port-select-row{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin-bottom:14px}
+.port-select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.8125rem;background:var(--card);color:var(--text)}
+.port-arrow{font-size:.875rem;color:var(--primary);font-weight:700;text-align:center}
+.port-label{font-size:.625rem;color:var(--text3);text-transform:uppercase;font-weight:600;letter-spacing:.05em;margin-bottom:3px;display:block}
+.field-group{margin-bottom:14px}
+.field-label{font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.field-label .field-hint{font-weight:400;color:var(--text3);font-size:.6875rem}
+.field-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9375rem;background:var(--card);color:var(--text)}
+.field-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.input-row{display:flex;gap:8px;align-items:stretch}
+.input-main{flex:1;position:relative}
+.input-main .currency-prefix{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.8125rem;color:var(--text2);font-weight:600}
+.input-main .field-input{padding-left:28px}
+.input-foreign{width:130px;flex-shrink:0;position:relative;background:#f8fafc;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .15s}
+.input-foreign:focus-within{border-color:var(--primary)}
+.input-foreign .foreign-label{font-size:.5625rem;color:var(--text3);text-align:center;padding:3px 0 0;line-height:1}
+.input-foreign .foreign-input{width:100%;border:none;background:transparent;text-align:center;font-size:.875rem;font-weight:600;color:var(--primary);outline:none;padding:2px 6px 6px}
+.input-foreign .foreign-input::placeholder{color:var(--text3);font-weight:400;font-size:.75rem}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border:none;border-radius:8px;width:100%;font-size:.9375rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#1d4ed8}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.fx-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;margin-bottom:14px;font-size:.75rem;color:var(--text2);flex-wrap:wrap}
+.fx-bar strong{color:var(--text)}
+.tax-hint{font-size:.6875rem;color:var(--primary);margin-top:4px;padding-left:4px;display:flex;align-items:center;gap:4px;}
+/* 模态框样式 */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s;}
+.modal-overlay.active{display:flex;opacity:1;}
+.modal-card{background:#fff;width:100%;max-width:400px;border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.2);transform:translateY(20px);transition:transform .2s;}
+.modal-overlay.active .modal-card{transform:translateY(0);}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);font-weight:600;font-size:1rem;color:var(--text);display:flex;justify-content:space-between;align-items:center}
+.modal-body{padding:20px;max-height:65vh;overflow-y:auto;}
+.modal-footer{padding:16px 20px;background:#f8fafc;border-top:1px solid var(--border);display:flex;gap:12px;}
+.preview-info{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;margin-bottom:12px;font-size:.75rem;color:var(--text2);line-height:1.6;}
+.preview-info strong{color:var(--text);}
+.preview-list{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:16px;}
+.preview-item{display:flex;justify-content:space-between;font-size:.8125rem;padding:6px 0;border-bottom:1px dashed #e2e8f0;}
+.preview-item:last-child{border-bottom:none;padding-bottom:0;}
+.preview-key{color:var(--text2);}
+.preview-val{font-weight:600;color:var(--primary);}
+.validity-box{background:#f1f5f9;border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;font-size:.8125rem;text-align:center;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px;}
+.validity-input{width:46px;text-align:center;border:1px solid #94a3b8;border-radius:4px;padding:2px;font-weight:600;color:var(--primary);outline:none;}
+.validity-input:focus{border-color:var(--primary);}
+/* 当前记录样式 */
+.history-box{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;padding:12px;font-size:.75rem;color:var(--text2);margin-top:20px;}
+.history-box h4{font-size:.8125rem;color:var(--text);margin-bottom:8px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.history-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.history-row{display:flex;justify-content:space-between;background:#fff;padding:4px 8px;border-radius:4px;border:1px solid #e2e8f0;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ProvenLift · 专线物流基准设定</h1>
+  <p>为前端系统提供精准计算参数 · 所有金额强制统一为人民币（¥）</p>
+</div>
+
+<div class="container">
+
+  <div class="notice info">
+    <span class="notice-icon">📋</span>
+    <div>所有费用最终以<strong>人民币</strong>录入。海运费/杂费/尾程如果拿到的是外币报价，在右侧输入外币，左侧自动换算为人民币。</div>
+  </div>
+  <div class="notice warn" id="noticeExpired" style="display:none">
+    <span class="notice-icon">⚠️</span>
+    <div id="expiredText">该国家物流底价已超期未更新，请尽快更新以保障前端报价准确性！</div>
+  </div>
+
+  <div class="country-tabs" id="countryTabs">
+    <button class="country-tab active" data-country="MY">🇲🇾 马来</button>
+    <button class="country-tab" data-country="AU">🇦🇺 澳洲</button>
+    <button class="country-tab" data-country="NZ">🇳🇿 新西兰</button>
+    <button class="country-tab" data-country="CA">🇨🇦 加拿大</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span id="cardTitleText">马来西亚 🇲🇾 物流底价基准</span>
+      <span class="badge badge-empty" id="statusBadge">未录入</span>
+    </div>
+
+    <!-- 参考收货地址 -->
+    <div class="ref-address" id="refAddress">
+      <span class="ref-label">📍 标准报价基准地址（每次请按此地址询价）</span>
+      <span class="ref-addr" id="refAddrText">—</span><br>
+      <span class="ref-landmark" id="refLandmark">—</span>
+    </div>
+
+    <!-- 港口选择：起运港 → 目的港 -->
+    <div>
+      <div class="port-select-row">
+        <div>
+          <span class="port-label">起运港（中国）</span>
+          <select class="port-select" id="selectOriginPort">
+            <option value="青岛港 Qingdao">青岛港 Qingdao ⭐</option>
+            <option value="天津港 Tianjin">天津港 Tianjin</option>
+            <option value="上海港 Shanghai">上海港 Shanghai</option>
+            <option value="宁波港 Ningbo">宁波港 Ningbo</option>
+          </select>
+        </div>
+        <div class="port-arrow">→</div>
+        <div>
+          <span class="port-label">目的港</span>
+          <select class="port-select" id="selectDestPort"></select>
+        </div>
+      </div>
+      <div class="route-box" id="routeBox">
+        <span class="route-icon">🚢</span>
+        <div class="route-detail">当前参考航线：<strong id="routeText">—</strong></div>
+      </div>
+    </div>
+
+    <!-- 实时汇率 -->
+    <div class="fx-bar" id="fxBar">
+      系统参考汇率：<strong id="fxDisplay">获取中...</strong>
+    </div>
+
+    <!-- ① 内陆运输 -->
+    <div class="field-group">
+      <label class="field-label">① 内陆运输 <span class="field-hint">工厂提货→宁津集货→起运港</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix">¥</span>
+          <input type="number" class="field-input" id="inputM1" placeholder="0" step="any">
+        </div>
+      </div>
+    </div>
+
+    <!-- ② 起运港港杂 -->
+    <div class="field-group">
+      <label class="field-label">② 起运港港杂 <span class="field-hint">装箱、THC、报关、单证</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix">¥</span>
+          <input type="number" class="field-input" id="inputM2" placeholder="0" step="any">
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ 海运费 -->
+    <div class="field-group">
+      <label class="field-label">③ 海运费 <span class="field-hint">起运港→目的港（行业常为 USD 计价）</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix">¥</span>
+          <input type="number" class="field-input" id="inputM3" placeholder="0" step="any">
+        </div>
+        <div class="input-foreign">
+          <div class="foreign-label">输入 USD</div>
+          <input type="number" class="foreign-input" id="foreignM3" placeholder="美元" step="any" data-currency="USD" data-target="inputM3">
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ 目的港杂费 -->
+    <div class="field-group">
+      <label class="field-label">④ 目的港杂费 <span class="field-hint">卸货、港杂、换单</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix">¥</span>
+          <input type="number" class="field-input" id="inputM4" placeholder="0" step="any">
+        </div>
+        <div class="input-foreign">
+          <div class="foreign-label" id="foreignLabelM4">输入当地货币</div>
+          <input type="number" class="foreign-input" id="foreignM4" placeholder="外币" step="any" data-currency="" data-target="inputM4">
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ 清关服务费 -->
+    <div class="field-group">
+      <label class="field-label">⑤ 清关服务费 <span class="field-hint">目的国代理报关服务费</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix">¥</span>
+          <input type="number" class="field-input" id="inputM5" placeholder="0" step="any">
+        </div>
+        <div class="input-foreign">
+          <div class="foreign-label" id="foreignLabelM5">输入当地货币</div>
+          <input type="number" class="foreign-input" id="foreignM5" placeholder="外币" step="any" data-currency="" data-target="inputM5">
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑥ 综合税率 -->
+    <div class="field-group">
+      <label class="field-label">⑥ 综合税率 <span class="field-hint" style="color:var(--primary);font-weight:500;">健身器材(HS 9506.91)关税+增值税。税基为CIF(总价+海运费)</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix" style="left:8px">%</span>
+          <input type="number" class="field-input" id="inputM6" placeholder="0.1" step="0.01" style="padding-left:28px">
+        </div>
+      </div>
+      <div class="tax-hint" id="taxHintText">💡 经验参考：免关税 + SST 10% = 0.10</div>
+    </div>
+
+    <!-- ⑦ 尾程派送 -->
+    <div class="field-group">
+      <label class="field-label">⑦ 尾程派送 <span class="field-hint">目的港→客户地址</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix">¥</span>
+          <input type="number" class="field-input" id="inputM7" placeholder="0" step="any">
+        </div>
+        <div class="input-foreign">
+          <div class="foreign-label" id="foreignLabelM7">输入当地货币</div>
+          <input type="number" class="foreign-input" id="foreignM7" placeholder="外币" step="any" data-currency="" data-target="inputM7">
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑧ 安全系数 -->
+    <div class="field-group">
+      <label class="field-label">⑧ 安全系数 <span class="field-hint">防亏损溢价缓冲，建议 1.10 - 1.20</span></label>
+      <div class="input-row">
+        <div class="input-main">
+          <span class="currency-prefix">×</span>
+          <input type="number" class="field-input" id="inputM8" placeholder="1.15" step="0.01" value="1.15" style="padding-left:28px">
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <button class="btn btn-primary" onclick="showPreviewModal()">验证并提交</button>
+  </div>
+
+  <!-- 当前系统生效记录 -->
+  <div class="history-box" id="historyBox" style="display:none;">
+    <h4><span style="font-size:1.1rem">💾</span> 线上当前生效数据 <span id="historyTime" style="font-weight:400;color:var(--text3);margin-left:auto;font-size:0.6875rem;"></span></h4>
+    <p style="margin-bottom:10px;line-height:1.4;">这是系统目前保存的底价。如果您发现填错了，直接在上方修改并重新提交即可覆盖。</p>
+    <div class="history-grid" id="historyGrid">
+      <!-- JS填充 -->
+    </div>
+  </div>
+
+</div>
+
+<!-- 提交确认弹窗 -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      确认更新基准？
+      <span style="cursor:pointer;color:var(--text3);" onclick="closeModal('confirmModal')">✕</span>
+    </div>
+    <div class="modal-body">
+      
+      <div class="preview-info">
+        <div><strong>目标市场：</strong> <span id="previewCountryText"></span></div>
+        <div style="margin:4px 0;"><strong>基准地址：</strong> <span id="previewAddressText"></span></div>
+        <div><strong>参考汇率：</strong> <span id="previewFxText"></span></div>
+      </div>
+
+      <p style="font-size:0.75rem;color:var(--text2);margin-bottom:8px;">本次录入的各项最终人民币（RMB）底价：</p>
+      <div class="preview-list" id="previewList">
+        <!-- JS填充 -->
+      </div>
+      
+      <div class="validity-box">
+        ⏳ 有效期限：
+        <input type="number" class="validity-input" id="inputValidDays" value="7"> 
+        <span>天 (至 <strong id="validityDateText" style="color:var(--primary)"></strong> 失效)</span>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal('confirmModal')">返回修改</button>
+      <button class="btn btn-primary" style="flex:1" id="btnConfirmSubmit" onclick="doSubmit()">确认提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- 成功反馈弹窗 -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-card" style="text-align:center;padding:30px 20px;">
+    <div style="font-size:3rem;margin-bottom:10px;">🎉</div>
+    <h3 style="margin-bottom:10px;color:var(--text);">更新成功！</h3>
+    <p style="font-size:0.875rem;color:var(--text2);line-height:1.6;">
+      感谢您的及时维护！<br>
+      精准的物流底价是建立信任的第一步，<br>
+      这将极大助力业务员拿下更多海外订单！
+    </p>
+    <button class="btn btn-primary" style="margin-top:24px;width:auto;padding:10px 30px;" onclick="closeModal('successModal')">好的</button>
+  </div>
+</div>
+
+<script>
+/* ══════ 基础配置 ══════ */
+const COUNTRIES = {MY:'马来西亚 🇲🇾', AU:'澳洲 🇦🇺', NZ:'新西兰 🇳🇿', CA:'加拿大 🇨🇦'};
+const LOCAL_CURRENCY = {MY:'MYR', AU:'AUD', NZ:'NZD', CA:'CAD'};
+const CURRENCY_SYMBOL = {MYR:'RM', AUD:'A$', NZD:'NZ$', CAD:'C$', USD:'$'};
+
+const DEST_PORTS = {
+  MY: [
+    {value:'Port Klang 巴生港', label:'Port Klang 巴生港 ⭐ 吉隆坡首选'},
+    {value:'Penang 槟城港', label:'Penang 槟城港'},
+    {value:'Johor 柔佛港', label:'Johor 柔佛港（新山）'},
+    {value:'Tanjung Pelepas 丹绒帕拉帕斯', label:'Tanjung Pelepas 丹绒帕拉帕斯'},
+  ],
+  AU: [
+    {value:'Sydney 悉尼港', label:'Sydney 悉尼港 (Port Botany) ⭐'},
+    {value:'Melbourne 墨尔本港', label:'Melbourne 墨尔本港'},
+    {value:'Brisbane 布里斯班港', label:'Brisbane 布里斯班港'},
+    {value:'Fremantle 弗里曼特尔港', label:'Fremantle 弗里曼特尔港（珀斯）'},
+    {value:'Adelaide 阿德莱德港', label:'Adelaide 阿德莱德港'},
+  ],
+  NZ: [
+    {value:'Auckland 奥克兰港', label:'Auckland 奥克兰港 ⭐'},
+    {value:'Tauranga 陶朗加港', label:'Tauranga 陶朗加港（货量最大）'},
+    {value:'Lyttelton 利特尔顿港', label:'Lyttelton 利特尔顿港（基督城）'},
+    {value:'Wellington 惠灵顿港', label:'Wellington 惠灵顿港'},
+  ],
+  CA: [
+    {value:'Vancouver 温哥华港', label:'Vancouver 温哥华港 ⭐ 太平洋侧首选'},
+    {value:'Toronto 多伦多港', label:'Toronto 多伦多港（内陆，温哥华中转）'},
+    {value:'Montreal 蒙特利尔港', label:'Montreal 蒙特利尔港（东海岸）'},
+    {value:'Prince Rupert 鲁珀特王子港', label:'Prince Rupert 鲁珀特王子港'},
+    {value:'Halifax 哈利法克斯港', label:'Halifax 哈利法克斯港（东海岸）'},
+  ],
+};
+
+const REF_ADDRESSES = {
+  MY: {name:'Triad Fit（双子塔旁）', address:'Level 31, Naza Tower, Platinum Park, 10 Persiaran KLCC, 50088 KL', landmark:'距 Petronas Twin Towers 步行 3 分钟'},
+  AU: {name:'Anytime Fitness Circular Quay（歌剧院旁）', address:'Level 1, 22 Pitt St, Sydney NSW 2000', landmark:'距 Sydney Opera House 步行 5 分钟'},
+  NZ: {name:'Les Mills Victoria Street（天空塔旁）', address:'73 Victoria St W, Auckland CBD 1010', landmark:'距 Sky Tower 步行 2 分钟'},
+  CA: {name:'GoodLife Fitness（CN塔旁）', address:'111 Wellington St W, Toronto ON M5J 2S6', landmark:'距 CN Tower 步行 5 分钟'},
+};
+
+const TAX_HINTS = {
+  MY: '💡 经验参考：免关税 + SST 10% = 0.10',
+  AU: '💡 经验参考：关税 5% + GST 10% = 0.15',
+  NZ: '💡 经验参考：关税 5% + GST 15% = 0.20',
+  CA: '💡 经验参考：关税(原产地证免除) + GST/HST (约5~15%) = 0.05~0.15',
+};
+
+let FX = {USD:7.25, MYR:1.63, AUD:4.73, NZD:4.35, CAD:5.28};
+let allRates = {};
+let currentCountry = 'MY';
+let currentValidDays = 7; // 用于记录当前选中国家的有效期，默认7
+
+/* ══════ 页面初始化 ══════ */
+updateDestPorts('MY');
+fillAddressUI('MY'); 
+loadFxRates();
+loadRates();
+
+/* ══════ 汇率换算 ══════ */
+async function loadFxRates() {
+  try {
+    const r = await fetch('/api/exchange-rates');
+    const d = await r.json();
+    if (d.ok && d.rates) {
+      for (const [code, rate] of Object.entries(d.rates)) {
+        if (rate > 0) FX[code] = +(1 / rate).toFixed(4);
+      }
+      if (d.rates.USD) FX.USD = +(1 / d.rates.USD).toFixed(4);
+    }
+  } catch(e) {}
+  updateFxDisplay();
+}
+
+function updateFxDisplay() {
+  const cur = LOCAL_CURRENCY[currentCountry] || 'USD';
+  const sym = CURRENCY_SYMBOL[cur] || '$';
+  const rate = FX[cur] || 1;
+  const txt = `1 USD ≈ ¥${FX.USD.toFixed(2)} · 1 ${sym} ≈ ¥${rate.toFixed(2)}`;
+  document.getElementById('fxDisplay').textContent = txt;
+  document.getElementById('previewFxText').textContent = txt; // 同步给弹窗
+  
+  document.getElementById('foreignLabelM4').textContent = '输入 ' + sym + ' ' + cur;
+  document.getElementById('foreignLabelM5').textContent = '输入 ' + sym + ' ' + cur;
+  document.getElementById('foreignLabelM7').textContent = '输入 ' + sym + ' ' + cur;
+  
+  ['foreignM4', 'foreignM5', 'foreignM7'].forEach(id => {
+    document.getElementById(id).placeholder = sym + ' 金额';
+    document.getElementById(id).dataset.currency = cur;
+  });
+}
+
+document.querySelectorAll('.foreign-input').forEach(input => {
+  input.addEventListener('input', function() {
+    const val = parseFloat(this.value);
+    const targetId = this.dataset.target;
+    const targetInput = document.getElementById(targetId);
+    if (!val || isNaN(val)) { targetInput.value = ''; return; }
+    const cur = this.dataset.currency || 'USD';
+    const rate = FX[cur] || FX.USD || 7.25;
+    const rmb = Math.round(val * rate);
+    targetInput.value = rmb;
+  });
+});
+
+/* ══════ UI 更新与切换 ══════ */
+function fillAddressUI(country) {
+  document.getElementById('cardTitleText').textContent = (COUNTRIES[country]||country) + ' 物流底价基准';
+  const ref = REF_ADDRESSES[country];
+  if (ref) {
+    const addrFull = ref.name + ' — ' + ref.address;
+    document.getElementById('refAddrText').textContent = addrFull;
+    document.getElementById('refLandmark').textContent = ref.landmark;
+    // 同步给弹窗
+    document.getElementById('previewCountryText').textContent = COUNTRIES[country]||country;
+    document.getElementById('previewAddressText').textContent = addrFull;
+  }
+  document.getElementById('taxHintText').textContent = TAX_HINTS[country] || '';
+}
+
+function updateDestPorts(country) {
+  const sel = document.getElementById('selectDestPort');
+  const ports = DEST_PORTS[country] || [];
+  sel.innerHTML = ports.map(p => `<option value="${p.value}">${p.label}</option>`).join('');
+  updateRoute();
+}
+
+function updateRoute() {
+  const origin = document.getElementById('selectOriginPort').value;
+  const dest = document.getElementById('selectDestPort').value;
+  document.getElementById('routeText').textContent = origin + ' → ' + dest;
+}
+
+document.getElementById('selectOriginPort').addEventListener('change', updateRoute);
+document.getElementById('selectDestPort').addEventListener('change', updateRoute);
+
+document.querySelectorAll('.country-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentCountry = tab.dataset.country;
+    
+    updateDestPorts(currentCountry);
+    fillAddressUI(currentCountry);
+    updateFxDisplay();
+    document.querySelectorAll('.foreign-input').forEach(i => i.value = '');
+    
+    renderFormData(currentCountry);
+    renderHistoryBox(currentCountry);
+  });
+});
+
+/* ══════ 数据加载与展示 ══════ */
+async function loadRates() {
+  try {
+    const r = await fetch('/api/freight/rates');
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    allRates = {};
+    (d.rates || []).forEach(rate => { allRates[rate.country] = rate; });
+    
+    renderFormData(currentCountry);
+    renderHistoryBox(currentCountry);
+  } catch(e) { console.error('加载失败', e); }
+}
+
+function renderFormData(country) {
+  const rate = allRates[country];
+  const badge = document.getElementById('statusBadge');
+  const expiredNotice = document.getElementById('noticeExpired');
+
+  if (rate) {
+    document.getElementById('inputM1').value = rate.module_1 || '';
+    document.getElementById('inputM2').value = rate.module_2 || '';
+    document.getElementById('inputM3').value = rate.module_3 || '';
+    document.getElementById('inputM4').value = rate.module_4 || '';
+    document.getElementById('inputM5').value = rate.module_5 || '';
+    document.getElementById('inputM6').value = rate.module_6 || '';
+    document.getElementById('inputM7').value = rate.module_7 || '';
+    document.getElementById('inputM8').value = rate.module_8 || '1.15';
+    currentValidDays = parseInt(rate.valid_days) || 7;
+    
+    const updated = rate.updated_at || '';
+    let isExpired = false;
+    if (updated) {
+      try {
+        const parts = updated.split(/[-\s:]/);
+        const dt = new Date(parts[0], parts[1]-1, parts[2], parts[3]||0, parts[4]||0);
+        isExpired = Math.floor((Date.now() - dt.getTime()) / 86400000) > currentValidDays;
+      } catch(e) {}
+      badge.textContent = isExpired ? '超期需更新' : '正常';
+      badge.className = 'badge ' + (isExpired ? 'badge-expired' : 'badge-ok');
+      expiredNotice.style.display = isExpired ? 'flex' : 'none';
+    }
+  } else {
+    ['inputM1','inputM2','inputM3','inputM4','inputM5','inputM6','inputM7'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('inputM8').value = '1.15';
+    currentValidDays = 7;
+    badge.textContent = '未录入'; badge.className = 'badge badge-empty';
+    expiredNotice.style.display = 'none';
+  }
+}
+
+// 渲染底部的历史记录对比模块
+function renderHistoryBox(country) {
+  const rate = allRates[country];
+  const box = document.getElementById('historyBox');
+  const grid = document.getElementById('historyGrid');
+  const timeEl = document.getElementById('historyTime');
+  
+  if (!rate) {
+    box.style.display = 'none';
+    return;
+  }
+  
+  box.style.display = 'block';
+  timeEl.textContent = '生效于：' + (rate.updated_at || '未知') + ` (有效期 ${rate.valid_days || 7} 天)`;
+  
+  const labels = ['①内陆','②起运港杂','③海运费','④目的港杂','⑤清关服务','⑥综合税率','⑦尾程派送','⑧安全系数'];
+  const values = [
+    rate.module_1, rate.module_2, rate.module_3, rate.module_4, 
+    rate.module_5, rate.module_6, rate.module_7, rate.module_8
+  ];
+  
+  let html = '';
+  for(let i=0; i<8; i++){
+    let val = values[i] === '' || values[i] === undefined ? '-' : values[i];
+    if(i === 5 && val !== '-') val = (parseFloat(val)*100).toFixed(1) + '%';
+    else if(i !== 7 && val !== '-') val = '¥' + val;
+    else if(i === 7 && val !== '-') val = '× ' + val;
+    html += `<div class="history-row"><span style="color:var(--text3)">${labels[i]}</span><strong style="color:var(--text)">${val}</strong></div>`;
+  }
+  grid.innerHTML = html;
+}
+
+/* ══════ 弹窗交互与提交 ══════ */
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// 动态计算截止日期
+function updateValidityDateUI() {
+  let days = parseInt(document.getElementById('inputValidDays').value) || 0;
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  document.getElementById('validityDateText').textContent = `${d.getFullYear()}-${m}-${day}`;
+}
+
+document.getElementById('inputValidDays').addEventListener('input', updateValidityDateUI);
+
+function showPreviewModal() {
+  const m1 = document.getElementById('inputM1').value || 0;
+  const m2 = document.getElementById('inputM2').value || 0;
+  const m3 = document.getElementById('inputM3').value || 0;
+  const m4 = document.getElementById('inputM4').value || 0;
+  const m5 = document.getElementById('inputM5').value || 0;
+  const m6 = document.getElementById('inputM6').value || 0;
+  const m7 = document.getElementById('inputM7').value || 0;
+  const m8 = document.getElementById('inputM8').value || 1.15;
+  
+  const labels = ['① 内陆运输','② 起运港杂','③ 海运费','④ 目的港杂','⑤ 清关服务费','⑥ 综合税率','⑦ 尾程派送','⑧ 安全系数'];
+  const vals = [m1, m2, m3, m4, m5, m6, m7, m8];
+  
+  let html = '';
+  for(let i=0; i<8; i++){
+    let valStr = vals[i];
+    if(i === 5) valStr = (parseFloat(valStr)*100).toFixed(1) + '%';
+    else if(i === 7) valStr = '× ' + valStr;
+    else valStr = '¥ ' + valStr;
+    html += `<div class="preview-item"><span class="preview-key">${labels[i]}</span><span class="preview-val">${valStr}</span></div>`;
+  }
+  
+  document.getElementById('previewList').innerHTML = html;
+  
+  // 填入并触发有效期计算
+  document.getElementById('inputValidDays').value = currentValidDays;
+  updateValidityDateUI();
+  
+  document.getElementById('confirmModal').classList.add('active');
+}
+
+async function doSubmit() {
+  const btn = document.getElementById('btnConfirmSubmit');
+  btn.disabled = true; btn.textContent = '提交中...';
+  
+  const body = {
+    country: currentCountry,
+    module_1: document.getElementById('inputM1').value || 0,
+    module_2: document.getElementById('inputM2').value || 0,
+    module_3: document.getElementById('inputM3').value || 0,
+    module_4: document.getElementById('inputM4').value || 0,
+    module_5: document.getElementById('inputM5').value || 0,
+    module_6: document.getElementById('inputM6').value || 0,
+    module_7: document.getElementById('inputM7').value || 0,
+    module_8: document.getElementById('inputM8').value || 1.15,
+    valid_days: parseInt(document.getElementById('inputValidDays').value) || 7
+  };
+  
+  try {
+    const r = await fetch('/api/freight/update', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    
+    closeModal('confirmModal');
+    document.getElementById('successModal').classList.add('active');
+    
+    await loadRates(); // 重新拉取以更新底部的"当前线上数据"
+  } catch(e) { 
+    alert('提交失败: ' + e.message); 
+  } finally { 
+    btn.disabled = false; btn.textContent = '确认提交'; 
+  }
+}
+</script>
+</body>
+</html>

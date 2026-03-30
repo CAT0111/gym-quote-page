@@ -331,27 +331,28 @@ def api_create_client_plan():
     """
     try:
         data = request.get_json()
-        tpl_rid = data.get("template_record_id", "")
+        tpl_rid = data.get("template_record_id", "").strip()
         client_name = data.get("client_name", "").strip()
-        if not tpl_rid or not client_name:
-            return jsonify({"ok": False, "error": "缺少 template_record_id 或 client_name"})
+        if not client_name:
+            return jsonify({"ok": False, "error": "缺少 client_name"})
 
         raw = _ensure_cache()
 
-        # 找到模板记录
-        tpl_rec = None
-        for rec in raw["package"]:
-            if rec["record_id"] == tpl_rid:
-                tpl_rec = rec
-                break
-        if not tpl_rec:
-            return jsonify({"ok": False, "error": f"找不到模板 {tpl_rid}"})
-
-        tpl_fields = tpl_rec["fields"]
+        # ── 如果指定了模板，查找模板记录 ──
+        tpl_fields = {}
+        if tpl_rid:
+            tpl_rec = None
+            for rec in raw["package"]:
+                if rec["record_id"] == tpl_rid:
+                    tpl_rec = rec
+                    break
+            if not tpl_rec:
+                return jsonify({"ok": False, "error": f"找不到模板 {tpl_rid}"})
+            tpl_fields = tpl_rec["fields"]
 
         # ── 目标市场：优先前端传入，否则继承模板 ──
         market = data.get("market", "").strip()
-        if not market:
+        if not market and tpl_fields:
             market = tpl_fields.get("目标市场", "")
 
         # ── 适用面积：优先前端传入，否则继承模板 ──
@@ -361,32 +362,39 @@ def api_create_client_plan():
                 area = float(area_raw)
             except (TypeError, ValueError):
                 area = None
-        else:
+        elif tpl_fields:
             try:
                 area = float(tpl_fields.get("适用面积m²", 0)) or None
             except (TypeError, ValueError):
                 area = None
+        else:
+            area = None
 
         # ── 生成方案 ID ──
         market_zh_map = {"MY": "马来西亚", "AU": "澳洲", "NZ": "新西兰", "CA": "加拿大"}
-        market_zh = market_zh_map.get(market, market)
+        market_zh = market_zh_map.get(market, market) if market else ""
         area_str = f"{int(area)}m²" if area else ""
-        plan_id = f"{market_zh}-{client_name}-{area_str}" if area_str else f"{market_zh}-{client_name}"
+        parts = [p for p in [market_zh, client_name, area_str] if p]
+        plan_id = "-".join(parts)
 
         # ── 构建新记录 fields ──
-        linked_rids = _extract_link_record_ids(tpl_fields.get("包含器材列表", []))
+        if tpl_fields:
+            linked_rids = _extract_link_record_ids(tpl_fields.get("包含器材列表", []))
+        else:
+            linked_rids = []
 
         new_fields = {
             "方案ID": plan_id,
             "客户名": client_name,
-            "包含器材列表": linked_rids,
             "记录类型": "客户方案",
         }
+        if linked_rids:
+            new_fields["包含器材列表"] = linked_rids
         if market:
             new_fields["目标市场"] = market
         if area:
             new_fields["适用面积m²"] = area
-        # 精准运费从模板继承
+        # 精准运费从模板继承（空方案无模板则跳过）
         if tpl_fields.get("精准运费USD"):
             try:
                 new_fields["精准运费USD"] = float(tpl_fields["精准运费USD"])
@@ -402,12 +410,13 @@ def api_create_client_plan():
                 "fields": {
                     "方案ID": plan_id,
                     "客户名": client_name,
-                    "包含器材列表": tpl_fields.get("包含器材列表", []),
                     "记录类型": "客户方案",
                     "目标市场": market,
                     "适用面积m²": area or "",
                 }
             }
+            if linked_rids:
+                new_rec["fields"]["包含器材列表"] = tpl_fields.get("包含器材列表", [])
             if tpl_fields.get("精准运费USD"):
                 new_rec["fields"]["精准运费USD"] = tpl_fields.get("精准运费USD")
             _cache["raw"]["package"].append(new_rec)
@@ -1272,6 +1281,204 @@ def api_shoot_batch_update():
     except Exception as e:
         traceback.print_exc()
         return jsonify({"ok": False, "error": str(e)})
+
+
+# ============================================================
+#  货代费率管理
+# ============================================================
+
+@app.route("/freight")
+def freight_page():
+    return render_template("freight.html")
+
+
+@app.route("/api/freight/rates")
+def api_freight_rates():
+    """获取所有国家的物流费率"""
+    try:
+        raw = _ensure_cache()
+        rates = []
+        for rec in raw.get("logistics", []):
+            f = rec["fields"]
+            rates.append({
+                "record_id": rec["record_id"],
+                "country": f.get("国家", ""),
+                "container_type": f.get("柜型", ""),
+                "module_1": f.get("①内陆运输", ""),
+                "module_2": f.get("②起运港港杂", ""),
+                "module_3": f.get("③海运费", ""),
+                "module_4": f.get("④目的港杂费", ""),
+                "module_5": f.get("⑤清关服务费", ""),
+                "module_6": f.get("⑥综合税率", ""),
+                "module_7": f.get("⑦尾程派送", ""),
+                "module_8": f.get("⑧安全系数", ""),
+                "updated_at": f.get("更新时间", ""),
+            })
+        return jsonify({"ok": True, "rates": rates})
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e)})
+
+
+@app.route("/api/freight/update", methods=["POST"])
+def api_freight_update():
+    """货代更新某国家费率（存在则更新，不存在则新建）"""
+    try:
+        data = request.get_json()
+        country = data.get("country", "").strip()
+        if not country:
+            return jsonify({"ok": False, "error": "缺少国家"})
+
+        now_str = __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        fields = {
+            "国家": country,
+            "①内陆运输": float(data.get("module_1", 0)),
+            "②起运港港杂": float(data.get("module_2", 0)),
+            "③海运费": float(data.get("module_3", 0)),
+            "④目的港杂费": float(data.get("module_4", 0)),
+            "⑤清关服务费": float(data.get("module_5", 0)),
+            "⑥综合税率": float(data.get("module_6", 0)),
+            "⑦尾程派送": float(data.get("module_7", 0)),
+            "⑧安全系数": float(data.get("module_8", 1.15)),
+            "有效天数": int(data.get("valid_days", 7)),
+            "更新时间": now_str,
+        }
+        if data.get("container_type"):
+            fields["柜型"] = data["container_type"]
+
+        # 查找已有记录
+        raw = _ensure_cache()
+        existing_rid = None
+        for rec in raw.get("logistics", []):
+            if rec["fields"].get("国家") == country:
+                existing_rid = rec["record_id"]
+                break
+
+        if existing_rid:
+            update_record("logistics", existing_rid, fields)
+            # 更新本地缓存
+            for rec in raw.get("logistics", []):
+                if rec["record_id"] == existing_rid:
+                    rec["fields"].update(fields)
+                    break
+            action = "updated"
+        else:
+            new_rid = create_record("logistics", fields)
+            raw.setdefault("logistics", []).append({
+                "record_id": new_rid,
+                "fields": fields
+            })
+            action = "created"
+
+        return jsonify({"ok": True, "action": action, "country": country, "updated_at": now_str})
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e)})
+
+
+@app.route("/api/freight/calculate")
+def api_freight_calculate():
+    """根据方案计算DDP物流明细"""
+    try:
+        plan_rid = request.args.get("plan_record_id", "")
+        if not plan_rid:
+            return jsonify({"ok": False, "error": "缺少 plan_record_id"})
+
+        raw = _ensure_cache()
+
+        # 找到方案
+        pkg = None
+        for rec in raw.get("package", []):
+            if rec["record_id"] == plan_rid:
+                pkg = rec["fields"]
+                break
+        if not pkg:
+            return jsonify({"ok": False, "error": "找不到方案"})
+
+        market = pkg.get("目标市场", "")
+        if not market:
+            return jsonify({"ok": True, "has_data": False, "reason": "方案未设置目标市场"})
+
+        # 找物流费率
+        logistics_fields = None
+        for rec in raw.get("logistics", []):
+            if rec["fields"].get("国家") == market:
+                logistics_fields = rec["fields"]
+                break
+
+        if not logistics_fields:
+            return jsonify({"ok": True, "has_data": False, "reason": f"暂无 {market} 的物流费率"})
+
+        # 计算方案售价总和（用于税费计算）
+        from build.transform import _num, _extract_link_record_ids, _calc_sell_rmb
+        USD_TO_CNY = 7.25
+
+        linked_rids = _extract_link_record_ids(pkg.get("包含器材列表", []))
+        sell_total_rmb = 0
+        for rec in raw.get("product", []):
+            if rec["record_id"] in linked_rids:
+                cost = _num(rec["fields"].get("采购价RMB"))
+                margin = rec["fields"].get("利润率")
+                sell_total_rmb += _calc_sell_rmb(cost, margin)
+        sell_total_usd = round(sell_total_rmb / USD_TO_CNY)
+
+        m1 = _num(logistics_fields.get("①内陆运输"))
+        m2 = _num(logistics_fields.get("②起运港港杂"))
+        m3 = _num(logistics_fields.get("③海运费"))
+        m4 = _num(logistics_fields.get("④目的港杂费"))
+        m5 = _num(logistics_fields.get("⑤清关服务费"))
+        m6 = _num(logistics_fields.get("⑥综合税率"))
+        m7 = _num(logistics_fields.get("⑦尾程派送"))
+        m8 = _num(logistics_fields.get("⑧安全系数"), default=1.15)
+
+        # 检查精准运费覆盖
+        override_freight_rmb = _num(pkg.get("精准运费USD"), default=None)
+        if override_freight_rmb:
+            ddp_freight_usd = override_freight_rmb / USD_TO_CNY
+            is_override = True
+        else:
+            cif_rmb = sell_total_rmb + m3
+            tax_rmb = cif_rmb * m6
+            ddp_freight_rmb = (m1 + m2 + m3 + m4 + m5 + tax_rmb + m7) * m8
+            ddp_freight_usd = ddp_freight_rmb / USD_TO_CNY
+            is_override = False
+
+        updated_at = logistics_fields.get("更新时间", "")
+
+        # 判断是否过期（超过7天）
+        is_expired = False
+        if updated_at:
+            try:
+                from datetime import datetime, timedelta
+                dt = datetime.strptime(updated_at, "%Y-%m-%d %H:%M")
+                valid_days = int(_num(logistics_fields.get("有效天数"), default=7))
+                is_expired = (datetime.now() - dt).days > valid_days
+            except:
+                pass
+
+        result = {
+            "ok": True,
+            "has_data": True,
+            "market": market,
+            "is_override": is_override,
+            "modules": {
+                "m1": m1, "m2": m2, "m3": m3, "m4": m4, "m5": m5, "m6": m6, "m7": m7, "m8": m8
+            },
+            "sell_total_usd": sell_total_usd,
+            "ddp_freight_usd": round(ddp_freight_usd),
+            "ddp_freight_rmb": round(ddp_freight_usd * USD_TO_CNY),
+            "ddp_total_usd": sell_total_usd + round(ddp_freight_usd),
+            "updated_at": updated_at,
+            "is_expired": is_expired,
+        }
+        if override_freight_rmb:
+            result["override_freight_rmb"] = override_freight_rmb
+        return jsonify(result)
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e)})
+
 
 if __name__ == "__main__":
     print("=" * 50)
